@@ -1,4 +1,4 @@
-import { esc, t, each, pad2 } from '../lib.js';
+import { esc, t, rich, each, pad2 } from '../lib.js';
 import { icon } from '../icons.js';
 import { button, sectionHead, serviceFeature, features, steps, faq, counters, reviewCard, ctaBand, pageHero, section, messengerLinks } from '../components.js';
 import { service, faqPage } from '../schema.js';
@@ -37,6 +37,75 @@ export function servicesHub(ctx) {
   };
 }
 
+/**
+ * Слой «до» или «после»: настоящее фото из content/media.json, если оно есть,
+ * иначе нарисованная иллюстрация — ржавая поверхность (rust) или чистая сталь (steel).
+ */
+export function metalLayer(ctx, key, tex, seed, [w, h]) {
+  const m = ctx.c.media[key];
+  if (m?.src) return `<img src="${esc(m.src)}" alt="${esc(m.alt)}" loading="lazy" decoding="async">`;
+  return `<canvas data-tex="${tex}" data-seed="${seed}" width="${w}" height="${h}" aria-hidden="true"></canvas>`;
+}
+
+export const hasPhoto = (ctx, ...keys) => keys.every((k) => ctx.c.media[k]?.src);
+
+/** Сцена «до → после»: закрепляется на экране, луч лазера идёт по ржавой пластине (scripts: pages/cleaning.js). */
+function plateScene(ctx, sc) {
+  const caps = sc.caps;
+  const ranges = [[-1, 0.2], [0.2, 0.8], [0.8, 2]];
+  return `<section class="scene-section plate-scene" data-plate-scene aria-label="Лазерная очистка: до и после">
+    <div class="container plate-scene__inner">
+      <div class="plate-scene__head">
+        <h2 class="h2">${rich(sc.title)}</h2>
+      </div>
+      <div class="plate" data-plate>
+        <div class="plate__layer plate__layer--before">${metalLayer(ctx, 'cleaning.scene-before', 'rust', 7, [480, 240])}</div>
+        <div class="plate__layer plate__layer--after">${metalLayer(ctx, 'cleaning.scene-after', 'steel', 7, [480, 240])}</div>
+        <div class="plate__beam" aria-hidden="true"></div>
+        <canvas class="plate__sparks" data-plate-sparks aria-hidden="true"></canvas>
+        <span class="plate__tag plate__tag--before">${esc(sc.tagBefore)}</span>
+        <span class="plate__tag plate__tag--after">${esc(sc.tagAfter)}</span>
+        ${hasPhoto(ctx, 'cleaning.scene-before', 'cleaning.scene-after') ? '' : `<span class="plate__note">${esc(sc.note)}</span>`}
+      </div>
+      <div class="plate-scene__caps">
+        ${each(caps, (cap, i) => `<div class="plate-cap" data-plate-cap data-from="${ranges[i][0]}" data-to="${ranges[i][1]}"><h3 class="plate-cap__title">${t(cap.title)}</h3><p>${t(cap.text)}</p></div>`)}
+      </div>
+      <div class="plate-scene__meter" aria-hidden="true">
+        <span class="plate-scene__label">${esc(sc.readout)}</span>
+        <span class="plate-scene__bar" data-plate-bar></span>
+        <span class="plate-scene__value"><b data-plate-readout>000</b>%</span>
+      </div>
+    </div>
+  </section>`;
+}
+
+/** Карточка «до/после» при наведении: слой «после» открывается за курсором. */
+function baCard(ctx, o, i) {
+  const photo = hasPhoto(ctx, o.mediaBefore, o.media);
+  return `<article class="object">
+    <div class="ba" data-ba tabindex="0" role="group" aria-label="${esc(o.title)}: до и после" data-cursor="Проведите">
+      <div class="ba__layer ba__layer--before">${metalLayer(ctx, o.mediaBefore, 'rust', 21 + i * 13, [320, 240])}</div>
+      <div class="ba__layer ba__layer--after">${metalLayer(ctx, o.media, 'steel', 21 + i * 13, [320, 240])}</div>
+      <span class="ba__line" aria-hidden="true"></span>
+      <span class="ba__tag ba__tag--before">До</span>
+      <span class="ba__tag ba__tag--after">После</span>
+      <span class="ba__hint"><span class="ba__hint-hover">Наведите</span><span class="ba__hint-touch">Нажмите</span></span>
+      ${photo ? '' : '<span class="ba__ill">Иллюстрация</span>'}
+    </div>
+    <h3 class="object__title">${t(o.title)}</h3>
+    <p class="object__text">${t(o.text)}</p>
+  </article>`;
+}
+
+function compareTable(cmp) {
+  return `<div class="table-wrap" data-reveal>
+    <table class="compare-table">
+      <thead><tr><th scope="col">${esc(cmp.head[0])}</th><th scope="col" class="is-us">${esc(cmp.head[1])}</th><th scope="col">${esc(cmp.head[2])}</th></tr></thead>
+      <tbody>${each(cmp.rows, (r) => `<tr><th scope="row">${t(r.param)}</th><td class="is-us">${t(r.laser)}</td><td>${t(r.sand)}</td></tr>`)}</tbody>
+    </table>
+  </div>`;
+}
+
 export function serviceCleaning(ctx) {
   const { c } = ctx;
   const s = c.services.cleaning;
@@ -51,20 +120,17 @@ export function serviceCleaning(ctx) {
       mediaKey: s.media,
     })}
 
-    <section class="scene-section" data-scene="cleaning" aria-label="Лазерная очистка: до и после">
-      <div class="scene-stub container"><p class="eyebrow"><i></i>Здесь будет scroll-сцена «до → после» (этап 4)</p></div>
-    </section>
+    ${plateScene(ctx, s.scene)}
 
     ${section(`${sectionHead({ eyebrow: 'Что удаляем', title: 'Лазер снимает всё лишнее', lead: s.short })}
       <ul class="chips" data-stagger>${each(s.removes, (r) => `<li class="chip">${icon('spark')}${t(r)}</li>`)}</ul>`)}
 
     ${section(`${sectionHead({ eyebrow: 'Почему лазер', title: 'Преимущества метода' })}${features(s.benefits)}`)}
 
-    ${section(`${sectionHead({ eyebrow: 'Что чистим', title: 'Для авто и производства' })}
-      <div class="objects-grid" data-stagger>${each(
-        s.objects,
-        (o) => `<article class="object">${ctx.media(o.media)}<h3 class="object__title">${t(o.title)}</h3><p class="object__text">${t(o.text)}</p></article>`,
-      )}</div>`)}
+    ${section(`${sectionHead({ eyebrow: 'Что чистим', title: 'Для авто и производства', lead: s.objectsLead })}
+      <div class="objects-grid" data-stagger>${each(s.objects, (o, i) => baCard(ctx, o, i))}</div>`)}
+
+    ${section(`${sectionHead({ eyebrow: 'Сравнение', title: s.compare.title, lead: s.compare.lead })}${compareTable(s.compare)}`)}
 
     ${section(`<div class="split">
       <div>${sectionHead({ eyebrow: 'Как работаем', title: 'Этапы' })}${priceBlock(s)}</div>
@@ -75,6 +141,59 @@ export function serviceCleaning(ctx) {
     ${ctaBand(ctx, { title: 'Привезите деталь — покажем результат' })}`,
     schema: [service(ctx, s, { serviceType: 'Лазерная очистка металла' }), faqPage(items)],
   };
+}
+
+/** «Разрез» слоёв защиты: закрепляется на экране, слои ложатся по скроллу (скрипт: pages/anticor.js). */
+function layersScene(ctx, s) {
+  const sc = s.scene;
+  const n = s.layers.length;
+  // сверху вниз: защитный слой → … → металл кузова
+  const stack = [...s.layers].reverse();
+  return `<section class="scene-section layers-scene" data-layers-scene aria-label="Слои антикоррозийной защиты">
+    <div class="container layers-scene__inner">
+      <div class="layers-scene__head"><h2 class="h2">${rich(sc.title)}</h2></div>
+      <div class="layers-scene__grid">
+        <ol class="layer-caps">
+          ${each(s.layers, (l, i) => `<li class="layer-cap" data-layer-cap="${i}"><span class="layer-cap__num">${pad2(i + 1)}</span><div><h3 class="layer-cap__title">${t(l.title)}</h3><p>${t(l.text)}</p></div></li>`)}
+        </ol>
+        <div class="slab" data-slab>
+          <div class="slab__stack">
+            ${each(
+              stack,
+              (l) => `<div class="slab__layer slab__layer--${esc(l.id)}" data-layer="${s.layers.indexOf(l)}">${
+                l.id === 'clean' ? '<canvas class="slab__rust" data-tex="rust" data-seed="5" width="480" height="64" aria-hidden="true"></canvas>' : ''
+              }<span class="slab__badge">${pad2(s.layers.indexOf(l) + 1)}</span></div>`,
+            )}
+            <div class="slab__beam" aria-hidden="true"></div>
+            <canvas class="slab__sparks" data-slab-sparks aria-hidden="true"></canvas>
+          </div>
+          <span class="slab__note">${esc(sc.note)}</span>
+        </div>
+      </div>
+      <div class="layers-scene__meter" aria-hidden="true">
+        <span class="layers-scene__label">${esc(sc.readout)}</span>
+        <span class="layers-scene__bar" data-layers-bar></span>
+        <span class="layers-scene__value"><b data-layers-readout>01</b> / ${pad2(n)}</span>
+      </div>
+    </div>
+  </section>`;
+}
+
+/** Интерактивная схема: типы кузова, зоны на силуэте и карточки зон связаны между собой (pages/anticor.js). */
+function zoneMap(ctx, s) {
+  const cars = ctx.c.prices.anticor.cars;
+  return `<div class="zone-map" data-zone-map>
+    <div class="zone-map__stage">
+      <div class="car-map">${carMap(cars[0].id)}</div>
+      <div class="type-switch" role="group" aria-label="Тип кузова">
+        ${each(cars, (car, i) => `<button class="type-btn${i === 0 ? ' is-active' : ''}" type="button" data-car="${esc(car.id)}" aria-pressed="${i === 0}">${esc(car.label)}</button>`)}
+      </div>
+    </div>
+    <div class="zones zones--stack" data-zones>${each(
+      s.zones,
+      (z, i) => `<article class="zone" data-zone="${esc(z.id)}" tabindex="0" role="button" aria-pressed="false"><span class="zone__num">${pad2(i + 1)}</span><h3 class="zone__title">${t(z.title)}</h3><p class="zone__text">${t(z.text)}</p></article>`,
+    )}</div>
+  </div>`;
 }
 
 export function serviceAnticor(ctx) {
@@ -93,15 +212,9 @@ export function serviceAnticor(ctx) {
 
     ${section(counters(s.facts), { extra: 'section--tight' })}
 
-    <section class="scene-section" data-scene="anticor" aria-label="Слои антикоррозийной защиты">
-      <div class="scene-stub container"><p class="eyebrow"><i></i>Здесь будет «разрез» слоёв покрытия по скроллу (этап 5)</p></div>
-    </section>
+    ${layersScene(ctx, s)}
 
-    ${section(`${sectionHead({ eyebrow: 'Зоны обработки', title: 'Днище, арки, пороги, полости', lead: 'Наведите на зону на схеме — подсветим и расскажем, как обрабатываем (интерактивная схема — этап 5).' })}
-      <div class="zones" data-zones>${each(
-        s.zones,
-        (z, i) => `<article class="zone" data-zone="${esc(z.id)}"><span class="zone__num">${pad2(i + 1)}</span><h3 class="zone__title">${t(z.title)}</h3><p class="zone__text">${t(z.text)}</p></article>`,
-      )}</div>`)}
+    ${section(`${sectionHead({ eyebrow: 'Зоны обработки', title: s.zonesTitle, lead: s.zonesLead })}${zoneMap(ctx, s)}`)}
 
     ${section(`<ul class="highlights" data-stagger>${each(s.highlights, (h) => `<li>${icon('check')}<span>${t(h)}</span></li>`)}</ul>`, { extra: 'section--tight' })}
 
@@ -111,7 +224,7 @@ export function serviceAnticor(ctx) {
     </div>`)}
 
     ${section(`${sectionHead({ eyebrow: 'Материалы', title: 'Dinitrol и Mercasol' })}
-      <div class="materials" data-stagger>${each(s.materials, (m) => `<article class="material"><h3 class="material__name">${esc(m.name)}</h3><p>${t(m.text)}</p></article>`)}</div>`)}
+      <div class="materials" data-stagger>${each(s.materials, (m) => `<article class="material" data-tilt="soft"><h3 class="material__name">${esc(m.name)}</h3><p>${t(m.text)}</p></article>`)}</div>`)}
 
     ${section(`${sectionHead({ eyebrow: 'Наши работы', title: 'Фото из бокса', action: button({ label: 'Все работы', href: '/raboty/', variant: 'ghost', size: 'sm' }) })}
       <div class="works-teaser" data-stagger>
@@ -121,7 +234,7 @@ export function serviceAnticor(ctx) {
         ${ctx.media('anticor.materials', { cls: 'works-teaser__item' })}
       </div>`)}
 
-    ${section(`${sectionHead({ eyebrow: 'Отзывы', title: 'Отзывы об антикоре' })}<div class="reviews-grid" data-stagger>${each(c.reviews.services.filter((r) => r.service === 'anticor').slice(0, 3), reviewCard)}</div>`)}
+    ${section(`${sectionHead({ eyebrow: 'Отзывы', title: 'Отзывы об антикоре', lead: `${c.reviews.stats.prefix}${c.reviews.stats.value}${c.reviews.stats.suffix} ${c.reviews.stats.label}.`, action: button({ label: 'Все отзывы', href: '/raboty/#otzyvy', variant: 'ghost', size: 'sm' }) })}<div class="reviews-grid" data-stagger>${each(c.reviews.services.filter((r) => r.service === 'anticor').slice(0, 3), reviewCard)}</div>`)}
     ${section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые вопросы', id: 'faq' })}${faq(items, { id: 'faq-anticor' })}`)}
     ${ctaBand(ctx, { title: 'Узнайте стоимость за 10 минут', text: 'Бесплатная оценка без разбора пластиковых элементов. Мастер перезвонит и проконсультирует.' })}`,
     schema: [service(ctx, s, { serviceType: 'Антикоррозийная обработка автомобиля' }), faqPage(items)],

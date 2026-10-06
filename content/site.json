@@ -64,26 +64,21 @@
     {
       "label": "Услуги",
       "url": "/uslugi/",
-      "mega": true,
       "section": "services",
       "items": [
         {
           "label": "Лазерная очистка металла",
           "url": "/uslugi/lazernaya-ochistka/",
           "text": "Ржавчина, окалина, краска, масло — без абразива и пыли",
-          "media": "nav.cleaning"
+          "icon": "spark"
         },
         {
           "label": "Антикоррозийная обработка",
           "url": "/uslugi/antikor/",
           "text": "Днище, арки, пороги, скрытые полости. Dinitrol и Mercasol",
-          "media": "nav.anticor"
+          "icon": "shield"
         }
       ],
-      "footer": {
-        "label": "Записаться на обработку",
-        "url": "/zapis/"
-      },
       "icon": "spark"
     },
     {

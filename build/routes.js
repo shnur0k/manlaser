@@ -38,6 +38,7 @@ export function buildRoutes(c, { dev = false } = {}) {
       url: post.url, page: 'blogPost', namespace: 'post',
       seo: { title: `${post.title} | Блог manlaser`, description: post.description },
       crumbs: [blog, { name: post.title, url: post.url }], data: { post },
+      noindex: post.draft, // черновики не должны попадать в поиск
     });
   }
 

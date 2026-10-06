@@ -3,17 +3,58 @@ import { icon } from '../icons.js';
 import { button, eyebrow, sectionHead, faq, counters, features, reviewCard, ctaBand, pageHero, section, messengerLinks, phoneLink, equipmentNote } from '../components.js';
 import { article, faqPage } from '../schema.js';
 import { hoursBlock, findUsBlock, requisitesBlock } from '../partials/contact-blocks.js';
+import { metalLayer, hasPhoto } from './services.js';
+
+const SERVICE_LABEL = { cleaning: 'Лазерная очистка', anticor: 'Антикор' };
+
+/** Карточка галереи: пара «до/после» с «выжиганием» под курсором или одиночное фото (скрипт: pages/works.js). */
+function workCard(ctx, it) {
+  const svc = SERVICE_LABEL[it.service] || it.service;
+  if (it.type === 'ba') {
+    const photo = hasPhoto(ctx, it.before, it.after);
+    return `<article class="work" data-tags="${esc(svc)}|До/после">
+      <div class="burn" data-burn tabindex="0" role="group" aria-label="${esc(it.title)}: до и после" data-cursor="Выжгите">
+        <div class="burn__layer burn__layer--before">${metalLayer(ctx, it.before, 'rust', it.seed, [320, 240])}</div>
+        <div class="burn__layer burn__layer--after">${metalLayer(ctx, it.after, it.texAfter, it.seed, [320, 240])}</div>
+        <canvas class="burn__canvas" aria-hidden="true"></canvas>
+        <canvas class="burn__sparks" aria-hidden="true"></canvas>
+        <span class="burn__torch" aria-hidden="true"></span>
+        <span class="burn__tag burn__tag--before">До</span>
+        <span class="burn__tag burn__tag--after">После</span>
+        <span class="burn__hint"><span class="burn__hint-hover">Проведите курсором</span><span class="burn__hint-touch">Проведите пальцем</span></span>
+        ${photo ? '' : '<span class="burn__ill">Иллюстрация</span>'}
+      </div>
+      <h3 class="work__title">${t(it.title)}</h3>
+      <p class="work__meta"><span class="tag">${esc(svc)}</span><span class="tag">До/после</span></p>
+    </article>`;
+  }
+  return `<article class="work" data-tags="${esc(svc)}|Фото">
+    <div class="work__photo">${ctx.media(it.media, { ratio: '4/3' })}</div>
+    <h3 class="work__title">${t(it.title)}</h3>
+    <p class="work__meta"><span class="tag">${esc(svc)}</span><span class="tag">Фото</span></p>
+  </article>`;
+}
 
 export function works(ctx) {
   const { c } = ctx;
   const p = c.pages.works;
-  const photos = ['anticor.prep', 'service.cleaning', 'anticor.underbody', 'anticor.arches'];
+  const items = c.gallery.items;
+  const filters = ['Лазерная очистка', 'Антикор', 'До/после', 'Фото'];
+  const reviews = c.reviews.services;
   return `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, actions: `<a class="pill-link" href="#galereya">Галерея</a><a class="pill-link" href="#otzyvy">Отзывы</a>` })}
-    ${section(`<div class="works-grid" data-stagger>${each(photos, (k) => ctx.media(k, { cls: 'works-grid__item' }))}</div>
-      <p class="muted small">Галерея «до/после» с эффектом лазерного выжигания и фильтром по услугам — этап 7.</p>`, { id: 'galereya' })}
+    ${section(`${sectionHead({ eyebrow: 'Галерея', title: 'Работы *до и после*', lead: 'Проведите курсором по карточке «до/после» — лазер «выжжет» загрязнение там, где вы проведёте. На телефоне — проведите пальцем, нажатие показывает результат целиком.' })}
+      <div class="tag-filter" role="group" aria-label="Фильтр галереи" data-tag-filter>
+        <button class="tag-filter__btn is-active" type="button" data-tag="*">Все</button>
+        ${each(filters, (f) => `<button class="tag-filter__btn" type="button" data-tag="${esc(f)}">${esc(f)}</button>`)}
+      </div>
+      <div class="works-gallery" data-post-grid>${each(items, (it) => workCard(ctx, it))}</div>`, { id: 'galereya' })}
     ${section(`${sectionHead({ eyebrow: 'Отзывы', title: 'Отзывы *клиентов*', lead: `${c.reviews.stats.prefix}${c.reviews.stats.value}${c.reviews.stats.suffix} ${c.reviews.stats.label}.` })}
-      <div class="reviews-grid" data-stagger>${each(c.reviews.services, reviewCard)}</div>`, { id: 'otzyvy' })}
+      <div class="reviews-grid" data-stagger data-reviews data-visible="6">${each(reviews, reviewCard)}</div>
+      <div class="reviews-more" data-reviews-more hidden>
+        <p class="muted small" data-reviews-count></p>
+        ${button({ label: 'Показать ещё', href: '', variant: 'ghost', iconName: 'chevron-down', attr: { 'data-reviews-button': true } })}
+      </div>`, { id: 'otzyvy' })}
     ${ctaBand(ctx)}`;
 }
 

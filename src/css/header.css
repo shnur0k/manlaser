@@ -129,6 +129,8 @@
   top: calc(100% + 12px);
   left: 50%;
   min-width: 300px;
+  width: max-content;
+  max-width: 360px;
   padding: 8px;
   border-radius: 22px;
   border: 1px solid var(--line);

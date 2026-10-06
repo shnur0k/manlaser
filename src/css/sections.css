@@ -794,3 +794,824 @@
 .note-card p {
   color: var(--muted);
 }
+
+/* ---------- Лазерная очистка: сцена «до → после» ---------- */
+.plate-scene {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--header-h) + 8px) 0 24px;
+}
+.plate-scene__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 2.4svh, 26px);
+  width: 100%;
+}
+.plate-scene__head {
+  text-align: center;
+}
+.plate {
+  --x: 50%;
+  --beam: 0;
+  --tag-before: 1;
+  --tag-after: 0;
+  position: relative;
+  width: min(100%, 1120px);
+  height: clamp(220px, 46svh, 520px);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line-strong);
+  background: #050505;
+  overflow: hidden;
+  box-shadow: 0 40px 120px -40px rgba(232, 80, 2, 0.35);
+  touch-action: pan-y;
+}
+.plate__layer,
+.ba__layer {
+  position: absolute;
+  inset: 0;
+}
+.plate__layer canvas,
+.plate__layer img,
+.ba__layer canvas,
+.ba__layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* «после» открыт слева от луча */
+.plate__layer--after,
+.ba__layer--after {
+  clip-path: inset(0 calc(100% - var(--x, 0%)) 0 0);
+}
+.plate__beam {
+  position: absolute;
+  top: -4%;
+  bottom: -4%;
+  left: var(--x);
+  width: 3px;
+  margin-left: -1.5px;
+  background: linear-gradient(180deg, #fff3e6, #fff 50%, #fff3e6);
+  box-shadow: 0 0 16px 4px rgba(241, 96, 1, 0.95), 0 0 70px 18px rgba(232, 80, 2, 0.5);
+  opacity: var(--beam);
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+/* раскалённый след за лучом */
+.plate__beam::before {
+  content: '';
+  position: absolute;
+  top: 4%;
+  bottom: 4%;
+  right: 3px;
+  width: clamp(40px, 8vw, 120px);
+  background: linear-gradient(90deg, transparent, rgba(241, 96, 1, 0.38));
+}
+.plate__sparks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.plate__tag,
+.ba__tag,
+.ba__hint,
+.ba__ill,
+.plate__note {
+  position: absolute;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  border: 1px solid var(--line-strong);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  pointer-events: none;
+}
+.plate__tag {
+  bottom: 16px;
+  font-size: 0.78rem;
+}
+.plate__tag--before {
+  left: 16px;
+  opacity: var(--tag-before);
+}
+.plate__tag--after {
+  right: 16px;
+  opacity: var(--tag-after);
+  color: var(--orange-hot);
+}
+.plate__note,
+.ba__ill {
+  top: 14px;
+  right: 14px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+.plate-scene__caps {
+  position: relative;
+  width: min(100%, 720px);
+  min-height: 92px;
+  text-align: center;
+}
+.plate-cap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  visibility: hidden;
+  opacity: 0;
+}
+.plate-cap__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--fs-h3);
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.plate-scene__meter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: min(100%, 520px);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.plate-scene__bar {
+  --p: 0;
+  flex: 1;
+  height: 2px;
+  background: var(--line-strong);
+  position: relative;
+  overflow: hidden;
+}
+.plate-scene__bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad-heat);
+  transform-origin: left;
+  transform: scaleX(var(--p));
+}
+.plate-scene__value b {
+  display: inline-block;
+  min-width: 3ch;
+  text-align: right;
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--orange-hot);
+}
+/* спокойный режим / без JS: без закрепления, подписи в ряд */
+.plate-scene.is-static {
+  min-height: 0;
+  padding: clamp(48px, 8vw, 96px) 0;
+}
+.plate-scene.is-static .plate-scene__caps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+  min-height: 0;
+}
+.plate-scene.is-static .plate-cap {
+  position: static;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.plate-scene.is-static .plate-scene__meter {
+  display: none;
+}
+.plate-scene.is-static .plate {
+  cursor: ew-resize;
+}
+.plate-scene.is-static .plate__beam {
+  opacity: 1;
+}
+.plate-scene.is-static .plate__tag {
+  opacity: 1;
+}
+@media (max-width: 767px) {
+  .plate {
+    height: clamp(200px, 36svh, 360px);
+  }
+  .plate-scene__caps {
+    min-height: 112px;
+  }
+  .plate-scene.is-static .plate-scene__caps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Лазерная очистка: карточки «до/после» ---------- */
+.ba {
+  --x: 0%;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: #050505;
+  cursor: ew-resize;
+  touch-action: pan-y;
+  outline-offset: 3px;
+  transition: border-color 0.3s, box-shadow 0.4s;
+}
+.ba:hover,
+.ba.is-on {
+  border-color: rgba(232, 80, 2, 0.5);
+  box-shadow: 0 24px 60px -28px rgba(232, 80, 2, 0.5);
+}
+.ba__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--x);
+  width: 2px;
+  margin-left: -1px;
+  background: linear-gradient(180deg, #fff3e6, var(--orange-hot));
+  box-shadow: 0 0 14px 3px rgba(241, 96, 1, 0.85), 0 0 40px 10px rgba(232, 80, 2, 0.4);
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+.ba.is-on .ba__line {
+  opacity: 1;
+}
+.ba__tag {
+  bottom: 12px;
+}
+.ba__tag--before {
+  left: 12px;
+}
+.ba__tag--after {
+  right: 12px;
+  color: var(--orange-hot);
+}
+.ba__hint {
+  top: 12px;
+  left: 12px;
+  color: var(--text);
+  transition: opacity 0.3s;
+}
+.ba.is-on .ba__hint {
+  opacity: 0;
+}
+.ba__hint-touch {
+  display: none;
+}
+@media (hover: none) {
+  .ba__hint-hover {
+    display: none;
+  }
+  .ba__hint-touch {
+    display: inline;
+  }
+}
+.ba__ill {
+  top: 12px;
+  right: 12px;
+}
+.objects-grid .object .ba {
+  margin-bottom: 8px;
+}
+
+/* ---------- Лазерная очистка: сравнение с пескоструем ---------- */
+.compare-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+}
+.compare-table td {
+  color: var(--muted);
+}
+.compare-table thead th.is-us {
+  color: var(--orange-hot);
+}
+.compare-table td.is-us {
+  color: var(--text);
+  font-weight: 650;
+  background: rgba(232, 80, 2, 0.06);
+}
+.compare-table tbody th {
+  white-space: normal;
+  min-width: 160px;
+}
+
+/* ---------- Антикор: «разрез» слоёв защиты ---------- */
+.layers-scene {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--header-h) + 8px) 0 24px;
+}
+.layers-scene__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 2.4svh, 28px);
+  width: 100%;
+}
+.layers-scene__head {
+  text-align: center;
+}
+.layers-scene__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 5vw, 80px);
+  align-items: center;
+  width: min(100%, 1120px);
+}
+.layer-caps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.layer-cap {
+  display: flex;
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: var(--r);
+  border: 1px solid transparent;
+  color: var(--muted);
+  opacity: 0.45;
+  transition: opacity 0.4s, background-color 0.4s, border-color 0.4s;
+}
+.layer-cap.is-done {
+  opacity: 0.7;
+}
+.layer-cap.is-active {
+  opacity: 1;
+  border-color: rgba(232, 80, 2, 0.5);
+  background: rgba(232, 80, 2, 0.07);
+}
+.layer-cap__num {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  color: var(--orange);
+  padding-top: 4px;
+}
+.layer-cap__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.layer-cap p {
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+.slab {
+  position: relative;
+}
+.slab__stack {
+  --clean: 1;
+  --beam: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: clamp(260px, 52svh, 480px);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line-strong);
+  overflow: hidden;
+  background: #050505;
+  box-shadow: 0 40px 120px -40px rgba(232, 80, 2, 0.35);
+}
+.slab__layer {
+  position: relative;
+  flex: var(--w, 1) 1 0;
+  min-height: 0;
+  opacity: var(--lp, 1);
+  transform: translateY(calc((1 - var(--lp, 1)) * -40px));
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+  transition: box-shadow 0.4s;
+}
+.slab__layer.is-active {
+  z-index: 2;
+  box-shadow: inset 0 0 0 2px var(--orange-hot), 0 0 26px rgba(241, 96, 1, 0.45);
+}
+.slab__badge {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.7);
+  mix-blend-mode: difference;
+}
+.slab__layer--shield {
+  --w: 1;
+  --lp: var(--l4, 1);
+  background:
+    linear-gradient(180deg, rgba(217, 195, 171, 0.35), transparent 14%),
+    linear-gradient(180deg, #1d1d1f, #0a0a0b);
+}
+.slab__layer--compound {
+  --w: 1.3;
+  --lp: var(--l3, 1);
+  background: linear-gradient(180deg, #d0661a, #8c3a0b 70%, #6e2a08);
+}
+.slab__layer--primer {
+  --w: 1;
+  --lp: var(--l2, 1);
+  background: linear-gradient(180deg, #62676b, #464a4d);
+}
+.slab__layer--clean {
+  --w: 0.8;
+  --lp: var(--l1, 1);
+  background: linear-gradient(180deg, #c9cdd0, #9ba1a6);
+  box-shadow: inset 0 0 22px rgba(241, 96, 1, 0.5);
+}
+.slab__layer--clean.is-active {
+  box-shadow: inset 0 0 0 2px var(--orange-hot), 0 0 26px rgba(241, 96, 1, 0.45);
+}
+.slab__layer--metal {
+  --w: 2.2;
+  --lp: var(--l0, 1);
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 5px),
+    linear-gradient(180deg, #9aa0a6, #686d72);
+  border-bottom: 0;
+}
+/* ржавчина на поверхности: луч счищает её слева направо */
+.slab__rust {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  clip-path: inset(0 0 0 calc(var(--clean) * 100%));
+  pointer-events: none;
+}
+.slab__beam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--clean) * 100%);
+  width: 3px;
+  margin-left: -1.5px;
+  background: linear-gradient(180deg, #fff3e6, #fff 50%, #fff3e6);
+  box-shadow: 0 0 16px 4px rgba(241, 96, 1, 0.95), 0 0 60px 14px rgba(232, 80, 2, 0.5);
+  opacity: var(--beam);
+  transition: opacity 0.25s;
+  pointer-events: none;
+  z-index: 3;
+}
+.slab__sparks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+.slab__note {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 4;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  border: 1px solid var(--line-strong);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  pointer-events: none;
+}
+.layers-scene__meter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: min(100%, 520px);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.layers-scene__bar {
+  --p: 0;
+  flex: 1;
+  height: 2px;
+  background: var(--line-strong);
+  position: relative;
+  overflow: hidden;
+}
+.layers-scene__bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad-heat);
+  transform-origin: left;
+  transform: scaleX(var(--p));
+}
+.layers-scene__value b {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--orange-hot);
+}
+/* спокойный режим: без закрепления, все слои и подписи сразу */
+.layers-scene.is-static {
+  min-height: 0;
+  padding: clamp(48px, 8vw, 96px) 0;
+}
+.layers-scene.is-static .layer-cap {
+  opacity: 1;
+}
+.layers-scene.is-static .layers-scene__meter {
+  display: none;
+}
+@media (max-width: 899px) {
+  .layers-scene__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .slab {
+    order: -1;
+  }
+  .slab__stack {
+    height: clamp(180px, 32svh, 320px);
+  }
+  /* в закреплённой сцене на телефоне показываем только текущий слой */
+  .layers-scene:not(.is-static) .layer-cap:not(.is-active) {
+    display: none;
+  }
+  .layers-scene:not(.is-static) .layer-cap {
+    border-color: transparent;
+    background: none;
+  }
+}
+
+/* ---------- Антикор: интерактивная схема зон ---------- */
+.zone-map {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: clamp(16px, 2.4vw, 36px);
+  align-items: start;
+}
+.zone-map .car-map {
+  margin-bottom: 14px;
+}
+.type-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.type-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-1);
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s, background-color 0.3s;
+}
+.type-btn:hover {
+  color: var(--text);
+  border-color: rgba(232, 80, 2, 0.5);
+}
+.type-btn.is-active {
+  color: var(--text);
+  border-color: var(--orange-hot);
+  background: rgba(232, 80, 2, 0.14);
+}
+.zones--stack {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+.zones--stack .zone {
+  cursor: pointer;
+  padding: 20px 22px;
+  outline-offset: 3px;
+}
+.zones--stack .zone.is-active {
+  border-color: var(--orange-hot);
+  background: rgba(232, 80, 2, 0.1);
+  box-shadow: 0 18px 50px -30px rgba(232, 80, 2, 0.8);
+}
+@media (max-width: 899px) {
+  .zone-map {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Работы: галерея «до/после» с «выжиганием» ---------- */
+.tag-filter {
+  margin-bottom: clamp(20px, 3vw, 36px);
+}
+.works-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 28px) clamp(14px, 1.6vw, 24px);
+}
+@media (max-width: 999px) {
+  .works-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 599px) {
+  .works-gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.work[hidden],
+.review[hidden] {
+  display: none;
+}
+.work {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.work__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+.work__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.work__photo .media {
+  border-radius: var(--r);
+}
+.burn {
+  --tx: 50%;
+  --ty: 50%;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: #050505;
+  cursor: none; /* курсор — раскалённый факел */
+  touch-action: pan-y;
+  outline-offset: 3px;
+  transition: border-color 0.3s, box-shadow 0.4s;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: none) {
+  .burn {
+    cursor: auto;
+  }
+}
+.burn:hover,
+.burn.is-hot {
+  border-color: rgba(232, 80, 2, 0.55);
+  box-shadow: 0 24px 60px -28px rgba(232, 80, 2, 0.55);
+}
+.burn__layer {
+  position: absolute;
+  inset: 0;
+}
+.burn__layer canvas,
+.burn__layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* слой «после» — источник для кисти; сам по себе скрыт */
+.burn__layer--after {
+  visibility: hidden;
+}
+.no-js .burn__layer--after,
+.burn.is-revealed .burn__layer--after {
+  visibility: visible;
+  z-index: 2;
+}
+.burn__canvas,
+.burn__sparks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.burn.is-revealed .burn__canvas {
+  opacity: 0;
+}
+.burn__sparks {
+  z-index: 4;
+}
+.burn__torch {
+  position: absolute;
+  z-index: 3;
+  left: var(--tx);
+  top: var(--ty);
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 243, 230, 0.95) 0 5%, rgba(241, 96, 1, 0.6) 13%, rgba(232, 80, 2, 0.25) 38%, transparent 68%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.25s, transform 0.35s var(--ease-out);
+  pointer-events: none;
+}
+.burn.is-hot .burn__torch {
+  opacity: 1;
+  transform: scale(1);
+}
+.burn__tag,
+.burn__hint,
+.burn__ill {
+  position: absolute;
+  z-index: 5;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  border: 1px solid var(--line-strong);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  pointer-events: none;
+}
+.burn__tag {
+  bottom: 12px;
+}
+.burn__tag--before {
+  left: 12px;
+}
+.burn__tag--after {
+  right: 12px;
+  color: var(--orange-hot);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.burn.is-hot .burn__tag--after,
+.burn.is-revealed .burn__tag--after {
+  opacity: 1;
+}
+.burn.is-revealed .burn__tag--before {
+  opacity: 0.4;
+}
+.burn__hint {
+  top: 12px;
+  left: 12px;
+  color: var(--text);
+  transition: opacity 0.3s;
+}
+.burn.is-hot .burn__hint {
+  opacity: 0;
+}
+.burn__hint-touch {
+  display: none;
+}
+@media (hover: none) {
+  .burn__hint-hover {
+    display: none;
+  }
+  .burn__hint-touch {
+    display: inline;
+  }
+}
+.burn__ill {
+  top: 12px;
+  right: 12px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+.reviews-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: clamp(24px, 3vw, 40px);
+}
+.reviews-more[hidden] {
+  display: none;
+}
