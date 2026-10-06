@@ -1,0 +1,123 @@
+{
+  "_help": "Места под фото. Чтобы добавить фото: положите файл в /public/images/... и впишите путь в src (например \"/images/works/my-photo.webp\"). Пока src = null, на сайте показывается заглушка с описанием из want. Список всех мест: http://localhost:5173/_photos/",
+  "nav.cleaning": {
+    "src": "/images/works/laser-cleaning-underbody.jpg",
+    "alt": "Лазерная очистка днища автомобиля",
+    "want": "Луч лазера снимает ржавчину, видны искры",
+    "ratio": "4/3"
+  },
+  "nav.anticor": {
+    "src": "/images/works/anticor-underbody-after.png",
+    "alt": "Днище автомобиля после антикоррозийной обработки",
+    "want": "Днище после антикора",
+    "ratio": "4/3"
+  },
+  "nav.calc": {
+    "src": null,
+    "alt": "Калькулятор стоимости",
+    "want": "Можно не фото — оставить фирменную графику",
+    "ratio": "4/3"
+  },
+  "home.hero-fallback": {
+    "src": null,
+    "alt": "Лазерная очистка металла",
+    "want": "Кадр для мобильных/слабых устройств вместо 3D: раскалённый луч на ржавом металле, тёмный фон, горизонталь 16:9",
+    "ratio": "16/9"
+  },
+  "home.bridge": {
+    "src": null,
+    "alt": "Мастер manlaser за работой",
+    "want": "Мастер с лазерным аппаратом в боксе — живой рабочий кадр",
+    "ratio": "4/5"
+  },
+  "home.team": {
+    "src": null,
+    "alt": "Сервис manlaser в Пружанах",
+    "want": "Общий план сервиса/бокса: авто на подъёмнике, аппарат рядом",
+    "ratio": "16/9"
+  },
+  "service.cleaning": {
+    "src": "/images/works/laser-cleaning-underbody.jpg",
+    "alt": "Лазерная очистка металла в Пружанах",
+    "want": "Лазерная очистка в процессе",
+    "ratio": "4/5"
+  },
+  "service.anticor": {
+    "src": "/images/works/anticor-underbody-after.png",
+    "alt": "Антикоррозийная обработка днища в Пружанах",
+    "want": "Днище после антикора",
+    "ratio": "4/5"
+  },
+  "cleaning.obj-car": {
+    "src": null,
+    "alt": "Лазерная очистка кузовной детали",
+    "want": "Кузовная деталь/днище: половина очищена, половина в ржавчине",
+    "ratio": "4/3"
+  },
+  "cleaning.obj-parts": {
+    "src": null,
+    "alt": "Лазерная очистка диска",
+    "want": "Диск, рычаг подвески или рама до/после",
+    "ratio": "4/3"
+  },
+  "cleaning.obj-industrial": {
+    "src": null,
+    "alt": "Лазерная очистка металлоконструкции",
+    "want": "Металлоконструкция/оборудование в процессе очистки",
+    "ratio": "4/3"
+  },
+  "cleaning.obj-prep": {
+    "src": null,
+    "alt": "Подготовка металла под покраску",
+    "want": "Чистый металл, готовый под покраску или сварку",
+    "ratio": "4/3"
+  },
+  "cleaning.process": {
+    "src": null,
+    "alt": "Процесс лазерной очистки",
+    "want": "Видео или серия кадров: луч проходит по ржавой детали (для scroll-сцены)",
+    "ratio": "16/9"
+  },
+  "anticor.underbody": {
+    "src": "/images/works/anticor-underbody-after.png",
+    "alt": "Днище после обработки",
+    "want": "Днище после обработки",
+    "ratio": "4/3"
+  },
+  "anticor.arches": {
+    "src": "/images/works/anticor-arch-after.webp",
+    "alt": "Колёсная арка после обработки",
+    "want": "Арка после обработки",
+    "ratio": "4/3"
+  },
+  "anticor.prep": {
+    "src": "/images/works/underbody-preparation.png",
+    "alt": "Подготовка днища к антикору",
+    "want": "Днище в процессе подготовки",
+    "ratio": "4/3"
+  },
+  "anticor.materials": {
+    "src": null,
+    "alt": "Материалы Dinitrol и Mercasol",
+    "want": "Банки/баллоны Dinitrol и Mercasol на полке сервиса",
+    "ratio": "16/9"
+  },
+  "about.company": {
+    "src": null,
+    "alt": "Команда manlaser",
+    "want": "Команда/мастера у входа в сервис или в боксе",
+    "ratio": "16/10"
+  },
+  "about.service": {
+    "src": null,
+    "alt": "Сервисный центр manlaser в Пружанах",
+    "want": "Фасад сервиса на ул. Лазо 5/5 — чтобы клиенты узнали здание",
+    "ratio": "16/10"
+  },
+  "blog.default": {
+    "src": null,
+    "alt": "Блог manlaser",
+    "want": "Обложка статьи по умолчанию",
+    "ratio": "16/9"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "name": "manlaser",
+  "url": "https://manlaser.by",
+  "lang": "ru",
+  "tagline": "Лазерная очистка металла и антикоррозийная обработка автомобилей в Пружанах",
+  "about": "manlaser — лазерный сервис в Пружанах. Очищаем металл лазером и делаем антикоррозийную обработку автомобилей материалами Dinitrol и Mercasol.",
+  "equipmentNote": {
+    "text": "Мы также поставляем и продаём лазерные аппараты CNMLaser",
+    "label": "manlaser.by",
+    "url": "https://manlaser.by"
+  },
+  "address": {
+    "region": "Брестская область",
+    "city": "Пружаны",
+    "street": "ул. Лазо, 5/5",
+    "postalCode": "[ИНДЕКС]",
+    "country": "BY",
+    "full": "Брестская обл., г. Пружаны, ул. Лазо, 5/5",
+    "mapQuery": "Пружаны, ул. Лазо 5/5",
+    "geo": {
+      "lat": null,
+      "lng": null
+    }
+  },
+  "hours": {
+    "text": "Ежедневно с 9:00 до 19:00, без выходных",
+    "short": "9:00–19:00, без выходных",
+    "schema": [
+      "Mo-Su 09:00-19:00"
+    ],
+    "open": "09:00",
+    "close": "19:00",
+    "days": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "timezone": "Europe/Minsk"
+  },
+  "email": "Inlazer@yandex.ru",
+  "responsePromise": "Ответим в течение 3 минут",
+  "requisites": "[РЕКВИЗИТЫ: наименование юрлица, УНП, банк, р/с]",
+  "contacts": {
+    "services": {
+      "label": "Запись на обработку",
+      "phone": "+375 (44) 768-76-77",
+      "tel": "+375447687677",
+      "telegram": "+375447687677",
+      "viber": "+375447687677",
+      "whatsapp": "375447687677"
+    }
+  },
+  "cta": {
+    "services": {
+      "label": "Записаться",
+      "url": "/zapis/"
+    }
+  },
+  "nav": [
+    {
+      "label": "Услуги",
+      "url": "/uslugi/",
+      "mega": true,
+      "section": "services",
+      "items": [
+        {
+          "label": "Лазерная очистка металла",
+          "url": "/uslugi/lazernaya-ochistka/",
+          "text": "Ржавчина, окалина, краска, масло — без абразива и пыли",
+          "media": "nav.cleaning"
+        },
+        {
+          "label": "Антикоррозийная обработка",
+          "url": "/uslugi/antikor/",
+          "text": "Днище, арки, пороги, скрытые полости. Dinitrol и Mercasol",
+          "media": "nav.anticor"
+        }
+      ],
+      "footer": {
+        "label": "Записаться на обработку",
+        "url": "/zapis/"
+      },
+      "icon": "spark"
+    },
+    {
+      "label": "Работы",
+      "url": "/raboty/",
+      "icon": "gallery"
+    },
+    {
+      "label": "Калькулятор",
+      "url": "/uslugi/kalkulyator/",
+      "icon": "calc"
+    },
+    {
+      "label": "Блог",
+      "url": "/blog/",
+      "icon": "article"
+    },
+    {
+      "label": "О нас",
+      "url": "/o-nas/",
+      "items": [
+        {
+          "label": "О компании",
+          "url": "/o-nas/",
+          "text": "Кто мы и как работаем",
+          "icon": "info"
+        },
+        {
+          "label": "Контакты",
+          "url": "/kontakty/",
+          "text": "Адрес, карта проезда, режим работы",
+          "icon": "pin"
+        },
+        {
+          "label": "Частые вопросы",
+          "url": "/o-nas/#faq",
+          "text": "Запись, очистка, антикор",
+          "icon": "chat"
+        }
+      ],
+      "icon": "info"
+    }
+  ],
+  "map": {
+    "_help": "Кнопки маршрута в блоке «Как нас найти» (страница «Контакты»).",
+    "yandex": "https://yandex.by/maps/?text=%D0%9F%D1%80%D1%83%D0%B6%D0%B0%D0%BD%D1%8B%2C%20%D1%83%D0%BB.%20%D0%9B%D0%B0%D0%B7%D0%BE%205%2F5",
+    "route": "https://yandex.by/maps/?rtext=~%D0%9F%D1%80%D1%83%D0%B6%D0%B0%D0%BD%D1%8B%2C%20%D1%83%D0%BB.%20%D0%9B%D0%B0%D0%B7%D0%BE%205%2F5",
+    "google": "https://www.google.com/maps/dir/?api=1&destination=%D0%9F%D1%80%D1%83%D0%B6%D0%B0%D0%BD%D1%8B%2C%20%D1%83%D0%BB.%20%D0%9B%D0%B0%D0%B7%D0%BE%205%2F5"
+  },
+  "requisitesList": [
+    [
+      "Наименование",
+      "[НАИМЕНОВАНИЕ ЮРЛИЦА / ИП]"
+    ],
+    [
+      "УНП",
+      "[УНП]"
+    ],
+    [
+      "Юридический адрес",
+      "[ЮРИДИЧЕСКИЙ АДРЕС]"
+    ],
+    [
+      "Банк",
+      "[НАЗВАНИЕ БАНКА]"
+    ],
+    [
+      "Расчётный счёт",
+      "[IBAN]"
+    ],
+    [
+      "БИК",
+      "[БИК]"
+    ]
+  ]
+}

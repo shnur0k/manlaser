@@ -1,0 +1,290 @@
+.arcticmodal-overlay,
+.arcticmodal-container {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.arcticmodal-container {
+    overflow: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-collapse: collapse;
+    z-index: 99999;
+    overflow-y: auto;
+    -webkit-overflow-scrolling:touch;
+    
+}
+
+*:first-child+html .arcticmodal-container {
+    height: 100%
+}
+
+.arcticmodal-container_i {
+    height: 100%;
+    margin: 0 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling:touch;
+    width: 100%;
+}
+
+.arcticmodal-container_i2 {
+    padding: 24px;
+    margin: 0;
+    border: 0;
+    vertical-align: middle;
+    overflow-y: auto;
+    -webkit-overflow-scrolling:touch;
+}
+
+.arcticmodal-error {
+    padding: 20px;
+    border-radius: 10px;
+    background: #000;
+    color: #fff;
+}
+
+.modal-close {
+    color: #168bed;
+    font-size: 46px;
+    cursor: pointer;
+    width: 22px;
+    margin-left: auto;
+    margin-bottom: 10px;
+    margin-right: 0px;
+    z-index: 10;
+    position: relative;
+    text-align: right;
+    display: flex;
+    align-content: flex-end;
+}
+
+.arcticmodal-loading {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    background: #000 url('../img/loading.gif') no-repeat 50% 50%;
+}
+
+
+.modal-content-box .forma {
+    margin: 0 auto;
+}
+.box-modal .rovno {
+    margin: 0 auto;
+}
+#feedback-modal-box {
+    text-align: center;
+}
+#feedback-modal-box b {
+    color: #168bed;
+}
+
+
+.box-modal .dop_form {
+    text-align: center;
+    margin-top: 23px;
+    z-index: 333333;
+    position: relative;
+}
+
+.box-modal .dop_form p {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #333333;
+}
+.box-modal .dop_form span {
+    font-size: 16px;
+}
+
+.box-modal .dop_form p a{
+    text-decoration: none;
+    color: #333333;
+}
+
+.box-modal li {
+    list-style-type: none;
+}
+.box-modal b {
+    font-size: 24px;
+    color: #fec93e;
+}
+
+
+#big-modal {
+width: 450px;
+margin: 0 auto;
+}
+#big-modal2 {
+    width: 450px;
+    margin: 0 auto;
+    }
+    #big-modal3 {
+        width: 450px;
+        margin: 0 auto;
+        }
+#big-modal4 {
+width: 450px!important;
+margin: 0 auto;
+        }
+#big-modal:after {
+
+  }
+
+#big-modal h4 span {
+    color: #168bed;
+}
+#big-modal p {
+    
+}
+
+#big-modal2 p {
+    text-align: center;
+}
+#big-modal label {
+    color: #333333;
+    text-align: left;
+}
+#big-modal span {
+    color: #333333;
+}
+
+
+#small-modal {
+    width: 400px;
+    margin: 0 auto;
+}
+
+
+#small-modal2 {
+     width: 400px;
+    margin: 0 auto;
+}
+
+#small-modal3 {
+     width: 400px;
+    margin: 0 auto;
+}
+
+
+#small-modal4 {
+    width: 400px;
+    margin: 0 auto;
+}
+#big-modal5 {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#small-modal5 {
+     width: 400px;
+    margin: 0 auto;
+}
+#big-modal6 {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#small-modal6 {
+    width: 400px;
+    margin: 0 auto;
+}
+#big-modal7 {
+    width: 80%;
+    margin: 0 auto;
+}
+#big-modal8 {
+    width: 80%;
+    margin: 0 auto;
+}
+#zayavka-modal2 {
+    width: 400px;
+    margin: 0 auto;
+}
+#zayavka-modal1 {
+    width: 400px;
+    margin: 0 auto;
+}
+
+
+
+
+@media screen and (max-width:660px){html{min-width:260px}
+
+
+.arcticmodal-container_i2 {
+    padding: 24px 0;
+    margin: 0;
+    border: 0;
+    vertical-align: middle;
+    -webkit-overflow-scrolling:touch;
+}
+#big-modal {
+    width: 95%!important;
+    margin: 0 auto;
+}
+#big-modal2 {
+    width: 95%!important;
+    margin: 0 auto;
+}
+#big-modal3 {
+    width: 95%!important;
+    margin: 0 auto;
+    }
+#big-modal4 {
+    width: 95%!important;
+    margin: 0 auto;
+    }
+
+#small-modal3 {
+    width: 80%;
+    margin: 0 auto;
+}
+
+
+#small-modal4 {
+    width: 80%;
+    margin: 0 auto;
+}
+#big-modal5 {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#small-modal5 {
+    width: 80%;
+    margin: 0 auto;
+}
+#big-modal6 {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#small-modal6 {
+    width: 80%;
+    margin: 0 auto;
+}
+#big-modal7 {
+    width: 80%;
+    margin: 0 auto;
+}
+#big-modal8 {
+    width: 80%;
+    margin: 0 auto;
+}
+#zayavka-modal2 {
+    width: 85%;
+    margin: 0 auto;
+}
+#zayavka-modal1 {
+    width: 85%;
+    margin: 0 auto;
+}
+
+}

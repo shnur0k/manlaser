@@ -1,0 +1,414 @@
+
+document.addEventListener("DOMContentLoaded", function () {
+       var modal = document.getElementById("modal");
+    var span = document.querySelector(".close");
+    var successMessageBtn = document.getElementById("successMessageBtn");
+    var btns = document.querySelectorAll(".open-modal");
+    var modalTitle = document.getElementById("modalTitle");
+    var feedbackField = document.getElementById("feedbackField");
+    var modalEmail = document.getElementById("modalEmail");
+    var formTitle = document.getElementById("formTitle");
+    var modalForm = document.getElementById("modalForm");
+    var modalContent = document.getElementById("modalContent");
+    var successMessage = document.getElementById("successMessage");
+    var nav = document.getElementById("nav");
+    var navBtn = document.getElementById("nav-btn");
+    var navBtnImg = document.getElementById("nav-btn-img");
+    var navLinks = nav ? nav.querySelectorAll("a") : [];
+
+    function handleResize() {
+        if (!nav || !navBtnImg) return;
+        const isDesktop = window.innerWidth > 768;
+        if (isDesktop) {
+            nav.classList.remove("open");
+            navBtnImg.src = "/img/icon/nav-open.svg";
+        } else {
+            // Never keep mobile menu stuck open after resize/load
+            nav.classList.remove("open");
+            navBtnImg.src = "/img/icon/nav-open.svg";
+            localStorage.setItem("navOpen", "false");
+        }
+    }
+
+    function toggleNav() {
+        if (!nav || !navBtnImg) return;
+        nav.classList.toggle("open");
+        var isOpen = nav.classList.contains("open");
+        navBtnImg.src = isOpen ? "/img/icon/nav-close.svg" : "/img/icon/nav-open.svg";
+        localStorage.setItem("navOpen", isOpen ? "true" : "false");
+        document.body.style.overflow = isOpen && window.innerWidth <= 768 ? "hidden" : "";
+    }
+
+    if (navBtn) navBtn.onclick = toggleNav;
+    navLinks.forEach(link => link.addEventListener("click", () => {
+        if (window.innerWidth <= 768) {
+            nav.classList.remove("open");
+            if (navBtnImg) navBtnImg.src = "/img/icon/nav-open.svg";
+            localStorage.setItem("navOpen", "false");
+            document.body.style.overflow = "";
+        }
+    }));
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    if (typeof ymaps !== "undefined") {
+        ymaps.ready(function () {
+            const map = new ymaps.Map("map", {
+                center: [52.551718, 24.478903],
+                zoom: 15
+            });
+
+            const myPlacemark = new ymaps.Placemark([52.551718, 24.478903], {
+                balloonContent: "Брестская область г. Пружаны, улица Лазо 5/5"
+            });
+
+            map.geoObjects.add(myPlacemark);
+            ["geolocationControl", "searchControl", "trafficControl", "typeSelector", "fullscreenControl", "zoomControl", "rulerControl"]
+                .forEach(control => map.controls.remove(control));
+            map.behaviors.disable(["scrollZoom"]);
+        });
+    }
+
+    btns.forEach(btn => {
+        btn.addEventListener("click", function () {
+            if (!modal || !modalTitle || !formTitle) return;
+            var newTitle = btn.getAttribute("data-title");
+            modalTitle.textContent = newTitle;
+            formTitle.value = newTitle;
+
+            if (btn.getAttribute("data-show-feedback") === "true") {
+                if (feedbackField) feedbackField.style.display = "block";
+                if (modalEmail) modalEmail.style.display = "none";
+            } else {
+                if (feedbackField) feedbackField.style.display = "none";
+                if (modalEmail) modalEmail.style.display = "block";
+            }
+
+            modal.style.display = "block";
+            document.body.classList.add("no-scroll");
+        });
+    });
+
+    function closeModal() {
+        if (!modal) return;
+        modal.style.display = "none";
+        document.body.classList.remove("no-scroll");
+        if (modalContent && successMessage) {
+            modalContent.style.display = "block";
+            successMessage.style.display = "none";
+        }
+    }
+
+    if (span) span.addEventListener("click", closeModal);
+    if (successMessageBtn) successMessageBtn.addEventListener("click", closeModal);
+    window.addEventListener("click", event => {
+        if (event.target === modal) closeModal();
+    });
+
+  // Флаг для предотвращения повторных отправок
+
+// Получаем все формы на странице
+var forms = document.querySelectorAll('form');
+
+// Проверяем, есть ли формы на странице
+if (forms.length > 0) {
+    // Флаг для предотвращения повторных отправок
+    let isSubmitting = false;
+
+    // Обрабатываем каждую форму
+    forms.forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            // Если форма уже отправляется, предотвращаем повторную отправку
+            if (isSubmitting) {
+                event.preventDefault();
+                return;
+            }
+
+            event.preventDefault(); // Предотвращаем стандартное поведение (перезагрузку)
+            
+            // Устанавливаем флаг, что форма отправляется
+            isSubmitting = true;
+
+            var formData = new FormData(form);
+            var formAction = form.action || '/index.php?id=1'; // Используем action формы, если оно задано, или по умолчанию /index.php?id=1
+
+            fetch(formAction, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text()) // Получаем ответ как текст
+            .then(data => {
+                modal.style.display = "block"; // Показываем модальное окно
+                modalContent.style.display = "none"; // Скрываем содержимое модала
+                successMessage.style.display = "block"; // Показываем сообщение об успехе
+                gtag('event', 'send', {
+                  'event_category': 'form',
+                  'event_label': 'send_form'
+                });
+                ym(97425244,'reachGoal','send_form')
+                console.log('send email!')
+            })
+            .catch((error) => {
+                // Ошибка обрабатывается тихо
+            })
+            .finally(() => {
+                // После завершения отправки сбрасываем флаг
+                isSubmitting = false;
+            });
+        });
+    });
+ }
+
+   
+
+        
+    function toggleDropdown(wrapper, dropdown, input = null) {
+        if (!wrapper || !dropdown) return; // Проверяем, что элементы существуют
+    
+        wrapper.addEventListener('click', function (event) {
+            if (!input || !input.contains(event.target)) {
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            }
+        });
+    }
+
+
+    function hideDropdown(wrapper, dropdown) {
+        if (!wrapper || !dropdown) return;
+    
+        document.addEventListener('click', function (e) {
+            if (!wrapper.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    }
+
+
+    function setupCountryDropdown(wrapper, dropdown, flagIcon, phoneInput) {
+        if (!wrapper || !dropdown || !flagIcon || !phoneInput ) return;
+    
+        toggleDropdown(wrapper, dropdown, phoneInput);
+        hideDropdown(wrapper, dropdown);
+    
+        // Установка маски по умолчанию
+        const initialPlaceholder = '+375 (99) 999-99-99'; 
+        Inputmask({ mask: initialPlaceholder.replace(/[0-9]/g, '9') }).mask(phoneInput);
+    
+        document.querySelectorAll('.country-option').forEach(option => {
+            if (!option) return;
+    
+            option.addEventListener('click', function () {
+                const flagSrc = option.getAttribute('data-flag');
+                const placeholder = option.getAttribute('data-placeholder');
+    
+                if (!flagSrc || !placeholder) return;
+    
+                flagIcon.src = flagSrc;
+   
+                phoneInput.placeholder = placeholder;
+                Inputmask({ mask: placeholder.replace(/[0-9]/g, '9') }).mask(phoneInput);
+              
+                dropdown.style.display = 'none';
+            });
+        });
+    }
+
+
+    // Установка dropdown для телефонов
+    setupCountryDropdown(
+        document.getElementById('phoneInputWrapper'),
+        document.getElementById('countryDropdown'),
+        document.getElementById('flagIcon'),
+        document.getElementById('phoneInput')
+        
+    );
+    
+    setupCountryDropdown(
+        document.getElementById('phoneInputWrapper1'),
+        document.getElementById('countryDropdown1'),
+        document.getElementById('flagIcon1'),
+        document.getElementById('phoneInput1')
+    
+    );
+
+    setupCountryDropdown(
+        document.getElementById('phoneInputWrapperModal'),
+        document.getElementById('countryDropdownModal'),
+        document.getElementById('flagIconModal'),
+        document.getElementById('phoneInputModal')
+    );
+
+    // Настройка выбора мессенджера
+    const messengerSelectWrapper = document.getElementById('messengerSelectWrapper');
+    const messengerDropdown = document.getElementById('messengerDropdown');
+    const messengerIcon = document.getElementById('messengerIcon');
+    const messengerName = document.getElementById('messengerName');
+    const selectedMessengerInput = document.getElementById('selectedMessenger');
+
+    toggleDropdown(messengerSelectWrapper, messengerDropdown);
+    hideDropdown(messengerSelectWrapper, messengerDropdown);
+
+    document.querySelectorAll('.messenger-option').forEach(option => {
+        option.addEventListener('click', function () {
+            messengerIcon.src = option.getAttribute('data-icon');
+            messengerName.textContent = option.getAttribute('data-name');
+            selectedMessengerInput.value = option.getAttribute('data-name');
+            messengerDropdown.style.display = 'none';
+        });
+    });
+
+
+  
+       // FAQ
+    function setupFAQ(faqSelector, initialQuestion) {
+        const questions = document.querySelectorAll(`${faqSelector} .faq__question`);
+        const items = document.querySelectorAll(`${faqSelector} .faq__item`);
+    
+        if (questions.length === 0 || items.length === 0) return; // Если элементов нет, выходим из функции
+    
+        questions.forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentNode;
+                items.forEach(i => i === item ? i.classList.add('open') : i.classList.remove('open'));
+            });
+        });
+    
+        const initialQuestionElement = document.querySelector(`${faqSelector} .faq__item .faq__question[data-question="${initialQuestion}"]`);
+        if (initialQuestionElement) {
+            initialQuestionElement.closest('.faq__item').classList.add('open');
+        }
+    }
+    
+    setupFAQ('.faq', 1);
+    setupFAQ('.faq-laser', 11);
+
+
+   // Получаем все элементы с классом catalog__item и кнопки с классом more-info
+    const equipmentItems = document.querySelectorAll('.equipment__catalog .catalog__item');
+    
+    equipmentItems.forEach(item => {
+        const moreInfoBtn = item.querySelector('.more-info');
+        const openModalBtn = item.querySelector('.item__button.open-modal');
+        
+        const handleMoreInfoClick = () => {
+            // Переключение состояния класса 'open'
+            const isOpen = item.classList.contains('open');
+            
+            if (isOpen) {
+                // Если item открыт, меняем текст кнопки на 'Оставить заявку'
+                moreInfoBtn.textContent = 'Оставить заявку';
+                // Добавляем обработчик для клика на кнопку 'Оставить заявку', который вызывает событие click на соответствующей кнопке
+                moreInfoBtn.addEventListener('click', handleOpenModalClick);
+            } else {
+                // Закрываем все items и открываем текущий
+                equipmentItems.forEach(i => {
+                    i.classList.remove('open');
+                    i.querySelector('.more-info').textContent = 'Подробнее'; // Сброс текста кнопки
+                    // Удаляем обработчик события для кнопки 'Оставить заявку'
+                    i.querySelector('.more-info').removeEventListener('click', handleOpenModalClick);
+                });
+                item.classList.add('open');
+                moreInfoBtn.textContent = 'Оставить заявку'; // Меняем текст на 'Оставить заявку'
+                // Добавляем обработчик для клика на кнопку 'Оставить заявку', который вызывает событие click на соответствующей кнопке
+                moreInfoBtn.addEventListener('click', handleOpenModalClick);
+            }
+        };
+
+        const handleOpenModalClick = () => {
+            openModalBtn.click();
+        };
+
+        moreInfoBtn.addEventListener('click', handleMoreInfoClick);
+    });
+    
+    
+
+    // отзывы
+    const items = document.querySelectorAll('.about-company__catalog .catalog__item');
+    const leftArrow = document.querySelector('.about-company .pagination__arrow--left');
+    const rightArrow = document.querySelector('.about-company .pagination__arrow--right');
+    const indicator = document.querySelector('.about-company .pagination__indicator');
+    const paginationLine = document.querySelector('.about-company .pagination__line');
+ 
+    let currentSlide = 0;
+    let itemsPerPage = getItemsPerPage();
+    let totalPages = Math.ceil(items.length / itemsPerPage);
+
+    // Function to determine items per page based on screen size
+    function getItemsPerPage() {
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            return 2;
+        }
+        return 4;
+    }
+// Function to update catalog display
+function updateCatalog() {
+    if (!items || items.length === 0) return;  // Проверка на существование элементов
+
+    itemsPerPage = getItemsPerPage();
+    totalPages = Math.ceil(items.length / itemsPerPage);
+    const start = currentSlide * itemsPerPage;
+    const end = start + itemsPerPage;
+    items.forEach((item, index) => {
+        item.style.display = (index >= start && index < end) ? '' : 'none';
+    });
+    if (updateIndicator) updateIndicator();  // Проверка на существование функции
+    if (updateArrows) updateArrows();  // Проверка на существование функции
+}
+
+// Function to update indicator position and width
+function updateIndicator() {
+    if (!paginationLine || !indicator) return;  // Проверка на существование элементов
+
+    const paginationLineWidth = paginationLine.offsetWidth;
+    const indicatorWidth = paginationLineWidth / totalPages;
+    indicator.style.width = `${indicatorWidth}px`;
+    indicator.style.left = `${currentSlide * indicatorWidth}px`;
+}
+
+// Function to update arrow states
+function updateArrows() {
+    if (!leftArrow || !rightArrow) return;  // Проверка на существование стрелок
+
+    if (currentSlide === 0) {
+        leftArrow.classList.add('arrow_disable');
+    } else {
+        leftArrow.classList.remove('arrow_disable');
+    }
+
+    if (currentSlide === totalPages - 1) {
+        rightArrow.classList.add('arrow_disable');
+    } else {
+        rightArrow.classList.remove('arrow_disable');
+    }
+}
+      // Проверка наличия элементов стрелок
+    if (leftArrow && rightArrow) {
+        // Event listener for left arrow click
+        leftArrow.addEventListener('click', function () {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateCatalog();
+            }
+        });
+    
+        // Event listener for right arrow click
+        rightArrow.addEventListener('click', function () {
+            if (currentSlide < totalPages - 1) {
+                currentSlide++;
+                updateCatalog();
+            }
+        });
+    }
+
+
+    // Initialize the catalog, indicator, and arrows
+    updateCatalog();
+
+    // Update the catalog, indicator, and arrows on resize
+    window.addEventListener('resize', function () {
+        currentSlide = 0;  // Reset to the first page on resize
+        updateCatalog();
+    });
+});

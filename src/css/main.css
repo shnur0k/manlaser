@@ -1,0 +1,14 @@
+/* Шрифты: Nunito (текст, кириллица) и Unbounded (заголовки, цифры), локально через Fontsource */
+@import '@fontsource-variable/nunito/index.css';
+@import '@fontsource-variable/unbounded/index.css';
+
+@import './tokens.css';
+@import './base.css';
+@import './components.css';
+@import './header.css';
+@import './chrome.css';
+@import './sections.css';
+@import './scene.css';
+@import './calc.css';
+@import './booking.css';
+@import './pages.css';

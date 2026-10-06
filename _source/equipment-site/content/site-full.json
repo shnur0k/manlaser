@@ -1,0 +1,95 @@
+{
+  "name": "manlaser",
+  "url": "https://manlaser.by",
+  "lang": "ru",
+  "tagline": "Лазерная очистка металла и антикоррозийная обработка автомобилей в Пружанах",
+  "bridge": "Мы продаём оборудование, которым работаем сами",
+  "about": "manlaser — официальный представитель в Беларуси производителя лазерного оборудования CNMLaser (Shandong Man Machinery Equipment Co., Ltd., работает с 2002 года). В Пружанах мы сами работаем на этом оборудовании: очищаем металл лазером и делаем антикоррозийную обработку автомобилей.",
+
+  "address": {
+    "region": "Брестская область",
+    "city": "Пружаны",
+    "street": "ул. Лазо, 5/5",
+    "postalCode": "[ИНДЕКС]",
+    "country": "BY",
+    "full": "Брестская обл., г. Пружаны, ул. Лазо, 5/5",
+    "mapQuery": "Пружаны, ул. Лазо 5/5",
+    "geo": { "lat": null, "lng": null }
+  },
+
+  "hours": {
+    "text": "Ежедневно с 9:00 до 19:00, без выходных",
+    "short": "9:00–19:00, без выходных",
+    "schema": ["Mo-Su 09:00-19:00"]
+  },
+
+  "email": "Inlazer@yandex.ru",
+  "responsePromise": "Ответим в течение 3 минут",
+  "requisites": "[РЕКВИЗИТЫ: наименование юрлица, УНП, банк, р/с]",
+
+  "contacts": {
+    "services": {
+      "label": "Запись на обработку",
+      "phone": "+375 (44) 768-76-77",
+      "tel": "+375447687677",
+      "telegram": "+375447687677",
+      "viber": "+375447687677",
+      "whatsapp": "375447687677"
+    },
+    "equipment": {
+      "label": "Оборудование и ремонт",
+      "phone": "+375 (29) 288-27-72",
+      "tel": "+375292882772",
+      "telegram": "manlaserby",
+      "viber": "+375447687677",
+      "whatsapp": "375447687677"
+    }
+  },
+
+  "cta": {
+    "services": { "label": "Записаться", "url": "/zapis/" },
+    "equipment": { "label": "Запросить цену", "url": "#zapros" }
+  },
+
+  "nav": [
+    {
+      "label": "Услуги",
+      "url": "/uslugi/",
+      "mega": true,
+      "section": "services",
+      "items": [
+        { "label": "Лазерная очистка металла", "url": "/uslugi/lazernaya-ochistka/", "text": "Ржавчина, окалина, краска, масло — без абразива и пыли", "media": "nav.cleaning" },
+        { "label": "Антикоррозийная обработка", "url": "/uslugi/antikor/", "text": "Днище, арки, пороги, скрытые полости. Dinitrol и Mercasol", "media": "nav.anticor" },
+        { "label": "Лазерная резка и сварка", "url": "/uslugi/rezka-i-svarka/", "text": "Резка и сварка металла на собственном оборудовании", "media": "nav.cutting" },
+        { "label": "Калькулятор стоимости", "url": "/uslugi/kalkulyator/", "text": "Предварительный расчёт за минуту", "media": "nav.calc" }
+      ],
+      "footer": { "label": "Записаться на обработку", "url": "/zapis/" }
+    },
+    { "label": "Работы", "url": "/raboty/" },
+    {
+      "label": "Оборудование",
+      "url": "/oborudovanie/",
+      "mega": true,
+      "section": "equipment",
+      "items": [
+        { "label": "Аппараты лазерной чистки", "url": "/oborudovanie/lazernaya-chistka/", "text": "MAN C01–C03, GS-CL, GS-P · от 12 500 BYN", "media": "nav.eq-cleaning" },
+        { "label": "Лазерная сварка 4 в 1", "url": "/oborudovanie/lazernaya-svarka/", "text": "Сварка, очистка, резка, зачистка шва", "media": "nav.eq-welding" },
+        { "label": "Станки лазерной резки", "url": "/oborudovanie/lazernaya-rezka/", "text": "Мощность 1,5–12 кВт", "media": "nav.eq-cutting" },
+        { "label": "Комплектующие и расходники", "url": "/oborudovanie/komplektuyushchie/", "text": "Лазерные источники Raycus и запчасти", "media": "nav.eq-parts" },
+        { "label": "Ремонт и обслуживание", "url": "/oborudovanie/remont/", "text": "Диагностика за 1–2 рабочих дня", "media": "nav.eq-repair" },
+        { "label": "Доставка и оплата", "url": "/oborudovanie/dostavka-i-oplata/", "text": "Бесплатно по Беларуси, лизинг, рассрочка", "media": "nav.eq-delivery" }
+      ],
+      "footer": { "label": "Запросить цену или демонстрацию", "url": "/oborudovanie/#zapros" }
+    },
+    { "label": "Блог", "url": "/blog/" },
+    {
+      "label": "О нас",
+      "url": "/o-nas/",
+      "items": [
+        { "label": "О компании", "url": "/o-nas/" },
+        { "label": "Контакты", "url": "/kontakty/" },
+        { "label": "Частые вопросы", "url": "/o-nas/#faq" }
+      ]
+    }
+  ]
+}

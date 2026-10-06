@@ -1,0 +1,80 @@
+:root {
+  /* Фирменные цвета */
+  --orange: #e85002; /* Branding Orange — главный акцент */
+  --black: #000000; /* Primary */
+  --white: #f9f9f9;
+  --gray-light: #a7a7a7;
+  --gray: #646464;
+  --gray-dark: #333333;
+  /* Цвета фирменного градиента */
+  --sand: #d9c3ab;
+  --orange-hot: #f16001;
+  --red: #c10801;
+
+  /* Фирменный градиент слева направо */
+  --grad-brand: linear-gradient(90deg, #d9c3ab 0%, #f16001 33%, #c10801 66%, #000 100%);
+  /* Тот же градиент без чёрного хвоста — для текста и линий на чёрном фоне */
+  --grad-heat: linear-gradient(90deg, #d9c3ab 0%, #f16001 45%, #c10801 100%);
+  --grad-beam: linear-gradient(90deg, transparent 0%, #c10801 18%, #f16001 40%, #fff3e6 50%, #f16001 60%, #c10801 82%, transparent 100%);
+
+  /* Поверхности (оттенки чёрного) */
+  --bg: var(--black);
+  --surface-1: #070707;
+  --surface-2: #0d0d0d;
+  --surface-3: #161616;
+  --line: rgba(249, 249, 249, 0.09);
+  --line-strong: rgba(249, 249, 249, 0.18);
+  --text: var(--white);
+  --muted: var(--gray-light);
+  --faint: var(--gray);
+
+  /* Свечение */
+  --glow-sm: 0 0 12px rgba(232, 80, 2, 0.6);
+  --glow: 0 0 24px rgba(232, 80, 2, 0.55), 0 0 72px rgba(232, 80, 2, 0.25);
+  --glow-btn: 0 12px 40px -12px rgba(232, 80, 2, 0.85);
+
+  /* Шрифты */
+  --font-body: 'Nunito Variable', 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Unbounded Variable', 'Unbounded', 'Arial Black', system-ui, sans-serif;
+
+  /* Размеры */
+  --container: 1440px;
+  --gutter: clamp(16px, 4vw, 56px);
+  --header-h: 84px;
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r: 20px;
+  --r-lg: 28px;
+  --r-xl: 36px;
+
+  /* Шкала текста */
+  --fs-display: clamp(2.25rem, 0.6rem + 5.6vw, 7rem);
+  --fs-h1: clamp(1.75rem, 1rem + 3.4vw, 4.75rem);
+  --fs-h2: clamp(1.6rem, 1.05rem + 2.3vw, 3.5rem);
+  --fs-h3: clamp(1.1rem, 1rem + 0.5vw, 1.45rem);
+  --fs-lead: clamp(1.05rem, 0.98rem + 0.32vw, 1.3rem);
+  --fs-body: 1.0625rem;
+  --fs-small: 0.875rem;
+
+  /* Движение */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --z-header: 100;
+  --z-mobile: 95;
+  --z-floating: 80;
+  --z-pt: 200;
+  --z-grain: 250;
+  --z-cursor: 300;
+
+  /* Узор «защитный слой» из брендбука: узлы и диагональные связи */
+  --lattice: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='64' viewBox='0 0 60 64'%3E%3Cg stroke='%23f9f9f9' stroke-width='1.2' fill='none'%3E%3Cpath d='M0 0 30 32 60 0M0 64 30 32 60 64'/%3E%3C/g%3E%3Cg fill='%23f9f9f9'%3E%3Ccircle cx='0' cy='0' r='3.4'/%3E%3Ccircle cx='60' cy='0' r='3.4'/%3E%3Ccircle cx='30' cy='32' r='3.4'/%3E%3Ccircle cx='0' cy='64' r='3.4'/%3E%3Ccircle cx='60' cy='64' r='3.4'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+@media (max-width: 767px) {
+  :root {
+    --header-h: 68px;
+    --r-lg: 22px;
+    --r-xl: 26px;
+  }
+}

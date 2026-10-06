@@ -1,0 +1,22 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const questions = document.querySelectorAll(".faq__question");
+
+  questions.forEach((question) => {
+    question.addEventListener("click", () => {
+      const isExpanded = question.getAttribute("aria-expanded") === "true";
+
+      // Закрываем все
+      questions.forEach((q) => {
+        q.setAttribute("aria-expanded", "false");
+        q.nextElementSibling.style.maxHeight = null;
+      });
+
+      // Открываем текущий, если был закрыт
+      if (!isExpanded) {
+        question.setAttribute("aria-expanded", "true");
+        const answer = question.nextElementSibling;
+        answer.style.maxHeight = answer.scrollHeight + "px";
+      }
+    });
+  });
+});
