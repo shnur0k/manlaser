@@ -57,7 +57,7 @@ export function initHeader() {
     const cta = site.cta[key];
     const floatingCta = document.querySelector('[data-floating-cta]');
     if (floatingCta && cta) {
-      floatingCta.href = cta.url;
+      floatingCta.href = import.meta.env.BASE_URL.replace(/\/$/, '') + cta.url; // base сайта (GitHub Pages)
       floatingCta.querySelector('[data-floating-label]').textContent = cta.label;
     }
     header.classList.remove('is-hidden');

@@ -46,7 +46,7 @@ export default function booking(container) {
       <div class="calc-result__head">
         <span class="calc-result__label">Ваш расчёт</span>
         <span class="calc-result__actions">
-          <a class="link-arrow" href="/uslugi/kalkulyator/?service=${esc(calc.service)}">Изменить</a>
+          <a class="link-arrow" href="${import.meta.env.BASE_URL.replace(/\/$/, '')}/uslugi/kalkulyator/?service=${esc(calc.service)}">Изменить</a>
           <button class="calc-result__remove" type="button" data-calc-remove aria-label="Убрать расчёт из заявки">×</button>
         </span>
       </div>

@@ -39,7 +39,7 @@ export function initFloating() {
         },
         { rootMargin: '0px 0px -60px 0px' },
       );
-      container.querySelectorAll('a[href^="/zapis/"]').forEach((a) => io.observe(a));
+      container.querySelectorAll('a[href*="/zapis/"]').forEach((a) => io.observe(a));
     },
   };
 }

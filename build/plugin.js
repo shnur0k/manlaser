@@ -11,16 +11,37 @@ import { renderPage, renderError } from '../src/templates/index.js';
  * build: каждая страница становится отдельным index.html в /dist.
  * Шаблоны импортируются из vite.config, поэтому при их правке dev-сервер перезапускается сам.
  */
+/** Базовый путь сайта из SITE_BASE: всегда с / в начале и в конце. */
+function siteBase() {
+  const raw = (process.env.SITE_BASE || '/').trim();
+  return `/${raw.replace(/^\/+|\/+$/g, '')}/`.replace(/^\/\/$/, '/');
+}
+
+/** Добавляет base к ссылкам вида href="/…", src="/…", url(/…), которые ещё не начинаются с base. */
+function prefixLinks(html, base) {
+  const head = base.slice(0, -1);
+  const fix = (path) => (path.startsWith(base) ? path : head + path);
+  return html
+    .replace(/(\s(?:href|src|action|poster)=")(\/(?!\/)[^"]*)"/g, (_, a, p) => `${a}${fix(p)}"`)
+    .replace(/url\((['"]?)(\/(?!\/)[^)'"]*)/g, (_, q, p) => `url(${q}${fix(p)}`);
+}
+
 export default function sitePlugin() {
   const pageFile = (url) => (url === '/404.html' ? '404.html' : `${url.replace(/^\//, '')}index.html`);
   const pages = new Map(); // абсолютный id .html → route (только для сборки)
   let content;
+  let baseOverride = {};
 
   return {
     name: 'manlaser-site',
     enforce: 'pre',
 
     config(_, { command }) {
+      // публикация в подпапку (GitHub Pages: /manlaser/) — SITE_BASE=/manlaser/ npm run build
+      // (для `vite preview` готовой сборки та же переменная нужна, чтобы он отдавал её с этого пути)
+      const base = siteBase();
+      if (base !== '/') baseOverride = { base };
+      if (command === 'preview' || (command === 'serve' && process.argv.includes('preview'))) return baseOverride;
       if (command !== 'build') return;
       content = loadContent();
       const routes = [...buildRoutes(content), notFoundRoute(content)];
@@ -30,7 +51,17 @@ export default function sitePlugin() {
         pages.set(id, route);
         input[route.url === '/' ? 'home' : route.url.replace(/[^a-z0-9]+/gi, '_').replace(/^_|_$/g, '')] = id;
       }
-      return { build: { rollupOptions: { input } } };
+      return { ...baseOverride, build: { rollupOptions: { input } } };
+    },
+
+    // шаблоны пишут ссылки от корня (/zapis/); Vite сам правит только свои ресурсы,
+    // поэтому остальные ссылки и url(/…) дополняем префиксом уже в собранной странице
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        const base = siteBase();
+        return base === '/' ? html : prefixLinks(html, base);
+      },
     },
 
     resolveId(id) {
