@@ -373,13 +373,6 @@ html.has-cursor select {
   place-items: center;
   transition: width 0.45s var(--ease-out), height 0.45s var(--ease-out), margin 0.45s var(--ease-out), background-color 0.35s, border-color 0.35s;
 }
-.cursor.is-hover .cursor__ring {
-  width: 64px;
-  height: 64px;
-  margin: -32px 0 0 -32px;
-  border-color: rgba(232, 80, 2, 0.8);
-  background: rgba(232, 80, 2, 0.12);
-}
 .cursor.has-label .cursor__ring {
   width: 96px;
   height: 96px;
