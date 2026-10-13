@@ -96,15 +96,6 @@ function baCard(ctx, o, i) {
   </article>`;
 }
 
-function compareTable(cmp) {
-  return `<div class="table-wrap" data-reveal>
-    <table class="compare-table">
-      <thead><tr><th scope="col">${esc(cmp.head[0])}</th><th scope="col" class="is-us">${esc(cmp.head[1])}</th><th scope="col">${esc(cmp.head[2])}</th></tr></thead>
-      <tbody>${each(cmp.rows, (r) => `<tr><th scope="row">${t(r.param)}</th><td class="is-us">${t(r.laser)}</td><td>${t(r.sand)}</td></tr>`)}</tbody>
-    </table>
-  </div>`;
-}
-
 export function serviceCleaning(ctx) {
   const { c } = ctx;
   const s = c.services.cleaning;
@@ -129,7 +120,6 @@ export function serviceCleaning(ctx) {
     ${section(`${sectionHead({ eyebrow: 'Что чистим', title: 'Для авто и производства', lead: s.objectsLead })}
       <div class="objects-grid" data-stagger>${each(s.objects, (o, i) => baCard(ctx, o, i))}</div>`)}
 
-    ${section(`${sectionHead({ eyebrow: 'Сравнение', title: s.compare.title, lead: s.compare.lead })}${compareTable(s.compare)}`)}
 
     ${section(`<div class="split">
       <div>${sectionHead({ eyebrow: 'Как работаем', title: 'Этапы' })}${priceBlock(s)}</div>
