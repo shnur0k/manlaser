@@ -122,16 +122,6 @@ export function buildPart({ quality, dot }) {
   const mesh = new THREE.Mesh(geo, material);
   group.add(mesh);
 
-  // крепление-подставка
-  const darkSteel = new THREE.MeshStandardMaterial({ color: 0x141416, roughness: 0.45, metalness: 0.8 });
-  const post = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.42, 0.12), darkSteel);
-  post.position.set(0, -0.55, -0.02);
-  const base = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.14, 0.5), darkSteel);
-  base.position.set(0, -0.8, 0);
-  const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.1, 0.24), darkSteel);
-  jaw.position.set(0, -0.38, 0);
-  group.add(post, base, jaw);
-
   // ---------- лазерная головка ----------
   const rig = new THREE.Group();
   const nozzle = new THREE.Group();
