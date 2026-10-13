@@ -129,7 +129,7 @@ content/blog/*.md┘                                                            
 - **`core/transitions.js`** — переходы `laser` (по умолчанию), `molecules`, `heat`, `fade` (`config.js → transition`).
 - **`ui/`** — `header.js` (скрытие при скролле, активный пункт, телефон), `megamenu.js`, `mobile-menu.js`, `floating.js` (одна кнопка записи — прячется, если в кадре другая ссылка на `/zapis/`; скрыта на `/zapis/`), `cursor.js`, `reveal.js`, `interactions.js` (магнит, наклон, аккордеоны, картинки, якоря, фильтр тегов, тост), `marquee.js` (бегущая строка на JS, работает даже при reduced motion, едет с постоянной скоростью и от скролла не зависит), `hours.js` («Сейчас открыто/закрыто» по `Europe/Minsk`).
 - **`lib/`** — `gsap.js` (регистрирует ScrollTrigger + SplitText), `contacts.js`, `nav.js`, `phone.js` (маска `+375 (XX) XXX-XX-XX`, проверка), `booking.js` (`composeMessage`, `sendBooking` — заглушка, пока `booking.send:false`).
-- **`fx/sparks.js`** — 2D-искры на canvas (переходы, экран успеха заявки).
+- **`fx/sparks.js`** — 2D-искры на canvas (только экран успеха заявки; в переходах между страницами искр нет).
 
 #### Атрибуты для анимаций (в шаблонах)
 

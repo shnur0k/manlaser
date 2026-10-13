@@ -1,5 +1,4 @@
 import { gsap } from '../lib/gsap.js';
-import { Sparks } from '../fx/sparks.js';
 
 /**
  * Переходы между страницами. Режим выбирается в config.js → transition.
@@ -12,13 +11,6 @@ export function createTransition(mode = 'laser') {
   const beam = el.querySelector('.pt__beam span');
   const canvas = el.querySelector('[data-pt-canvas]');
   el.dataset.mode = mode;
-
-  let sparks = null;
-  const getSparks = () => {
-    sparks ||= new Sparks(canvas);
-    sparks.resize();
-    return sparks;
-  };
 
   // откуда начинается «молекулярный» переход — последний клик
   const origin = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
@@ -33,9 +25,6 @@ export function createTransition(mode = 'laser') {
   const laser = {
     async cover() {
       activate();
-      const s = getSparks();
-      const W = window.innerWidth;
-      const y = window.innerHeight / 2;
       gsap.set(top, { yPercent: -101, clipPath: 'none' });
       gsap.set(bottom, { yPercent: 101 });
       gsap.set(beam, { scaleX: 0, scaleY: 1, opacity: 1 });
@@ -44,22 +33,12 @@ export function createTransition(mode = 'laser') {
         scaleX: 1,
         duration: 0.55,
         ease: 'power2.inOut',
-        onUpdate() {
-          const x = gsap.getProperty(beam, 'scaleX') * W;
-          s.emit(x, y, 3, { angle: -Math.PI / 2, spread: 1.3, speed: [180, 720], life: [0.3, 0.8] });
-        },
       }).to([top, bottom], { yPercent: 0, duration: 0.62, ease: 'expo.inOut' }, 0.28);
       await tl;
     },
     async reveal() {
-      const s = getSparks();
-      const W = window.innerWidth;
-      const y = window.innerHeight / 2;
       const tl = gsap.timeline({ onComplete: deactivate });
       tl.to(beam, { scaleY: 3.5, duration: 0.14, ease: 'power2.out' })
-        .add(() => {
-          for (let i = 0; i <= 14; i++) s.emit((W / 14) * i, y, 5, { spread: Math.PI, speed: [150, 600], life: [0.3, 0.7] });
-        }, 0.08)
         .to(top, { yPercent: -101, duration: 0.95, ease: 'expo.inOut' }, 0.06)
         .to(bottom, { yPercent: 101, duration: 0.95, ease: 'expo.inOut' }, 0.06)
         .to(beam, { opacity: 0, scaleY: 0, duration: 0.5, ease: 'power2.in' }, 0.22);
