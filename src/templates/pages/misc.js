@@ -61,7 +61,7 @@ export function blogList(ctx) {
   const p = c.pages.blog;
   const tags = [...new Set(c.posts.flatMap((x) => x.tags))];
   return `
-    ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead })}
+    ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading })}
     ${section(`
       ${tags.length ? `<div class="tag-filter" role="group" aria-label="Фильтр по темам" data-tag-filter>
         <button class="tag-filter__btn is-active" type="button" data-tag="*">Все</button>
