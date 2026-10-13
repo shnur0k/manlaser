@@ -95,23 +95,6 @@ export function home(ctx) {
   )}
 
   ${section(
-    `<div class="duo">
-      <div class="duo__item">
-        <span class="duo__num">01</span>
-        <h3 class="duo__title">Лазер снимает ржавчину</h3>
-        <p class="duo__text">${t(s.cleaning.benefits[4].text)}</p>
-      </div>
-      <div class="duo__arrow" aria-hidden="true"><span></span>${icon('arrow-right')}</div>
-      <div class="duo__item">
-        <span class="duo__num">02</span>
-        <h3 class="duo__title">Антикор защищает металл</h3>
-        <p class="duo__text">${t(s.anticor.highlights[3])}. Материалы Dinitrol и Mercasol.</p>
-      </div>
-    </div>`,
-    { extra: 'section--duo' },
-  )}
-
-  ${section(
     `<div class="facts-band">
       <div class="facts-band__head">
         <span class="facts-band__label">Антикор в цифрах</span>

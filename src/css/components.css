@@ -765,62 +765,6 @@ html.js .media img:not(.is-loaded) {
   text-shadow: var(--glow-sm);
 }
 
-/* ---------- «Сначала лазер, потом антикор» ---------- */
-.duo {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(20px, 4vw, 64px);
-  padding: clamp(28px, 4.5vw, 64px);
-  border: 1px solid var(--line);
-  border-radius: var(--r-xl);
-  background:
-    radial-gradient(60% 120% at 0% 50%, rgba(232, 80, 2, 0.12), transparent 60%),
-    radial-gradient(60% 120% at 100% 50%, rgba(193, 8, 1, 0.1), transparent 60%),
-    var(--surface-1);
-}
-.duo__item {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.duo__num {
-  font-family: var(--font-display);
-  font-size: 0.8125rem;
-  color: var(--orange-hot);
-}
-.duo__title {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(1.3rem, 1rem + 1.3vw, 2.2rem);
-  letter-spacing: -0.035em;
-  line-height: 1.1;
-}
-.duo__text {
-  color: var(--muted);
-}
-.duo__arrow {
-  display: flex;
-  align-items: center;
-  color: var(--orange-hot);
-}
-.duo__arrow span {
-  width: clamp(40px, 8vw, 140px);
-  height: 1px;
-  background: var(--grad-beam);
-  box-shadow: 0 0 12px rgba(241, 96, 1, 0.8);
-}
-@media (max-width: 799px) {
-  .duo {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .duo__arrow {
-    transform: rotate(90deg);
-    justify-self: start;
-    margin-left: 12px;
-  }
-}
-
 /* ---------- Баннер калькулятора ---------- */
 .calc-banner {
   display: grid;
