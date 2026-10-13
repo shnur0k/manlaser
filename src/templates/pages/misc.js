@@ -43,7 +43,7 @@ export function works(ctx) {
   const reviews = c.reviews.services;
   return `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading })}
-    ${section(`${sectionHead({ eyebrow: 'Галерея', title: 'Работы *до и после*', lead: 'Проведите курсором по карточке «до/после» — лазер «выжжет» загрязнение там, где вы проведёте. На телефоне — проведите пальцем, нажатие показывает результат целиком.' })}
+    ${section(`${sectionHead({ eyebrow: 'Галерея', title: 'Работы *до и после*', tight: true })}
       <div class="tag-filter" role="group" aria-label="Фильтр галереи" data-tag-filter>
         <button class="tag-filter__btn is-active" type="button" data-tag="*">Все</button>
         ${each(filters, (f) => `<button class="tag-filter__btn" type="button" data-tag="${esc(f)}">${esc(f)}</button>`)}
