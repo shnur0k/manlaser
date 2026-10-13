@@ -163,6 +163,11 @@
 .page-hero--solo .page-hero__title {
   max-width: 18ch;
 }
+/* длинный заголовок в две строки (переносом управляет текст), буквы чуть мельче */
+.page-hero--wide .page-hero__title {
+  max-width: none;
+  font-size: clamp(2rem, 0.6rem + 4.6vw, 5.6rem);
+}
 /* заголовок страницы и (если есть) кнопка справа от него в одной строке */
 .page-hero__row {
   display: flex;

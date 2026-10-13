@@ -60,7 +60,7 @@ export function pageHero(ctx, { eyebrow: eb, title, lead: leadText, actions = ''
         ${eb ? `<span class="page-hero__eyebrow">${t(eb)}</span>` : ''}
       </div>
       <div class="page-hero__row">
-        <h1 class="h1 page-hero__title" data-split>${rich(title)}</h1>
+        <h1 class="h1 page-hero__title" data-split>${rich(title).replace(/\n/g, '<br>')}</h1>
         ${actions && !lead ? `<div class="actions page-hero__actions" data-reveal>${actions}</div>` : ''}
       </div>
       ${lead ? `<div class="page-hero__bottom">
