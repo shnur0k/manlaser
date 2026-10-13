@@ -252,7 +252,7 @@ export function calculator(ctx) {
   const radio = (name, value, checked, body, cls = '') =>
     `<label class="choice ${cls}"><input type="radio" name="${name}" value="${esc(value)}"${checked ? ' checked' : ''}><span class="choice__body">${body}</span></label>`;
 
-  return `
+  const body = `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, variant: 'compact' })}
     <section class="section calc" data-calc>
       <div class="container calc__grid">
@@ -351,6 +351,7 @@ export function calculator(ctx) {
         </aside>
       </div>
     </section>`;
+  return { body, cta: false }; // свой призыв — «Записаться с этим расчётом»
 }
 
 export function booking(ctx) {
