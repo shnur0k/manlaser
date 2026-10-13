@@ -6,6 +6,7 @@ import { NOISE } from './glsl.js';
  *
  * opts.uniforms   — { name: { value } }
  * opts.varyings   — объявления varying (общие для вершинного и фрагментного шейдера)
+ * opts.vertexHead — объявления только для вершинного шейдера (например, свой attribute)
  * opts.vertex     — код после #include <begin_vertex> (доступны position, transformed)
  * opts.fragmentHead — объявления/функции фрагментного шейдера
  * opts.color      — код после <map_fragment>: можно менять diffuseColor
@@ -24,7 +25,7 @@ export function patchMaterial(material, opts) {
       .join('\n');
 
     shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', `#include <common>\n${uniformDecl}\n${varyings}`)
+      .replace('#include <common>', `#include <common>\n${uniformDecl}\n${varyings}\n${opts.vertexHead || ''}`)
       .replace('#include <begin_vertex>', `#include <begin_vertex>\n${vertex}`);
 
     let fs = shader.fragmentShader.replace(

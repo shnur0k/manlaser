@@ -111,11 +111,11 @@ export function buildPart({ quality, dot }) {
     `,
     emissive: /* glsl */ `
       float flick = 0.7 + 0.3 * ml_snoise(vec3(vLocal.xy * 34.0, uTime * 9.0));
-      totalEmissiveRadiance += vec3(1.0, 0.36, 0.06) * g_hot * 4.5 * flick;
-      totalEmissiveRadiance += vec3(1.0, 0.8, 0.55) * pow(g_hot, 5.0) * 5.0;
+      totalEmissiveRadiance += vec3(1.0, 0.36, 0.06) * g_hot * 3.0 * flick;
+      totalEmissiveRadiance += vec3(1.0, 0.8, 0.55) * pow(g_hot, 5.0) * 3.2;
       // тлеющие точки на ржавчине у самого фронта
       float ember = smoothstep(0.82, 0.98, g_n2) * exp(-pow((g_d + 0.035) / 0.03, 2.0)) * uActive;
-      totalEmissiveRadiance += vec3(1.0, 0.3, 0.05) * ember * 4.0;
+      totalEmissiveRadiance += vec3(1.0, 0.3, 0.05) * ember * 2.6;
     `,
   });
 
@@ -138,7 +138,7 @@ export function buildPart({ quality, dot }) {
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.06, 0.34, 24), new THREE.MeshStandardMaterial({ color: 0x1a1a1c, roughness: 0.35, metalness: 0.9 }));
   body.rotation.x = Math.PI / 2;
   body.position.z = -0.17; // корпус позади сопла (сопло смотрит на деталь по +Z)
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.038, 0.007, 10, 32), new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 1.1, 0.25), toneMapped: false }));
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.038, 0.007, 10, 32), new THREE.MeshBasicMaterial({ color: new THREE.Color(2, 0.75, 0.18), toneMapped: false }));
   nozzle.add(body, ring);
   rig.add(nozzle);
 
@@ -164,18 +164,18 @@ export function buildPart({ quality, dot }) {
   const lineGeo = new THREE.BufferGeometry();
   lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(12), 3));
   lineGeo.setIndex([0, 1, 2, 2, 1, 3]);
-  const lineMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(4, 1.6, 0.5), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, side: THREE.DoubleSide });
+  const lineMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 1.0, 0.3), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, side: THREE.DoubleSide });
   const scanLine = new THREE.Mesh(lineGeo, lineMat);
   scanLine.frustumCulled = false;
   rig.add(scanLine);
 
   // ядро луча до текущей точки
-  const core = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 1, 6, 1, true), new THREE.MeshBasicMaterial({ color: new THREE.Color(5, 2.2, 0.8), toneMapped: false, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 1, 6, 1, true), new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 1.3, 0.5), toneMapped: false, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
   core.frustumCulled = false;
   rig.add(core);
 
   // свечение в точке контакта
-  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: new THREE.Color(1.6, 0.6, 0.15), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: new THREE.Color(0.9, 0.34, 0.09), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
   glow.scale.setScalar(0.12);
   rig.add(glow);
 
@@ -266,7 +266,7 @@ export function buildPart({ quality, dot }) {
     const flicker = 0.75 + Math.random() * 0.25;
     glow.material.opacity = active * flicker;
     light.position.set(S.x, S.y, S.z + 0.12);
-    light.intensity = 1.6 * active * flicker;
+    light.intensity = 1.0 * active * flicker;
 
     worldS.copy(S).applyMatrix4(group.matrixWorld);
     normalMatrix.getNormalMatrix(group.matrixWorld);

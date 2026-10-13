@@ -33,7 +33,7 @@ const CAM = [
 ];
 
 export async function createScene(canvas, { quality = 'high', onReady } = {}) {
-  const stage = createStage(canvas, { quality, fov: 34, envIntensity: 0.32, exposure: 1.05, bloom: { strength: 0.62, radius: 0.45, threshold: 0.9 } });
+  const stage = createStage(canvas, { quality, fov: 34, envIntensity: 0.32, exposure: 0.98, bloom: { strength: 0.34, radius: 0.5, threshold: 0.93 } });
   const { scene, camera } = stage;
   const high = quality === 'high';
   const dot = softDot();
@@ -44,7 +44,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   scene.add(new THREE.HemisphereLight(0x1c2430, 0x070302, 0.35));
   const key = new THREE.DirectionalLight(0xfff0e0, 1.5);
   key.position.set(2.5, 3.5, 4);
-  const rim = new THREE.DirectionalLight(0xff5a14, 2.6);
+  const rim = new THREE.DirectionalLight(0xff5a14, 1.4);
   rim.position.set(-3.5, 1.6, -2.5);
   const cool = new THREE.DirectionalLight(0x6f8cff, 0.22);
   cool.position.set(3, -1, -2);
