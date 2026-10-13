@@ -106,9 +106,13 @@
 .page-hero {
   position: relative;
   padding-top: calc(var(--header-h) + clamp(28px, 5vw, 64px));
-  padding-bottom: clamp(48px, 7vw, 110px);
+  padding-bottom: var(--head-gap);
   overflow: hidden;
   isolation: isolate;
+}
+/* отступ от шапки страницы до содержимого задаёт сама шапка — одинаковый на всех страницах */
+.page-hero + .section {
+  padding-top: 0;
 }
 .page-hero__glow {
   position: absolute;
@@ -158,6 +162,14 @@
 }
 .page-hero--solo .page-hero__title {
   max-width: 18ch;
+}
+/* заголовок страницы и (если есть) кнопка справа от него в одной строке */
+.page-hero__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px 48px;
 }
 /* три колонки под заголовком */
 .page-hero__bottom {

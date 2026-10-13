@@ -512,7 +512,7 @@ html.js .media img:not(.is-loaded) {
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: clamp(16px, 2vw, 32px);
   row-gap: clamp(20px, 2.4vw, 36px);
-  margin-bottom: clamp(44px, 6vw, 96px);
+  margin-bottom: var(--head-gap);
 }
 /* тонкая линия между разделами вместо подписи «(01) …» */
 .section-head__rule {
@@ -539,6 +539,30 @@ html.js .media img:not(.is-loaded) {
 }
 .section-head__aside .lead {
   font-size: 1.05rem;
+}
+/* только кнопка (без описания): стоит справа в одной строке с заголовком, отступ до содержимого не растёт */
+.section-head__aside--action {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  justify-self: end;
+  align-self: center;
+  padding-top: 0;
+  border-top: 0;
+}
+.section-head--center .section-head__aside--action {
+  grid-column: 1 / -1;
+  width: auto;
+  max-width: none;
+}
+@media (max-width: 899px) {
+  .section-head__aside--action,
+  .section-head--center .section-head__aside--action {
+    grid-row: auto;
+    justify-self: start;
+  }
+  .section-head--center .section-head__aside--action {
+    justify-self: center;
+  }
 }
 .split .section-head__title,
 .split .section-head__aside {

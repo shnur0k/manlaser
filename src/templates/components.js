@@ -30,7 +30,7 @@ export function sectionHead({ eyebrow: eb, title, lead: leadText, align = 'cente
   return `<div class="section-head section-head--${align}"${id ? ` id="${esc(id)}"` : ''}>
     ${label ? '<div class="section-head__rule" data-reveal aria-hidden="true"></div>' : ''}
     <h${level} class="h2 section-head__title" data-split>${rich(title)}</h${level}>
-    ${lead || action ? `<div class="section-head__aside" data-reveal>${lead ? `<p class="lead">${t(lead)}</p>` : ''}${action}</div>` : ''}
+    ${lead || action ? `<div class="section-head__aside${lead ? '' : ' section-head__aside--action'}" data-reveal>${lead ? `<p class="lead">${t(lead)}</p>` : ''}${action}</div>` : ''}
   </div>`;
 }
 
@@ -59,8 +59,11 @@ export function pageHero(ctx, { eyebrow: eb, title, lead: leadText, actions = ''
         ${crumbs(ctx.route)}
         ${eb ? `<span class="page-hero__eyebrow">${t(eb)}</span>` : ''}
       </div>
-      <h1 class="h1 page-hero__title" data-split>${rich(title)}</h1>
-      ${lead || actions ? `<div class="page-hero__bottom">
+      <div class="page-hero__row">
+        <h1 class="h1 page-hero__title" data-split>${rich(title)}</h1>
+        ${actions && !lead ? `<div class="actions page-hero__actions" data-reveal>${actions}</div>` : ''}
+      </div>
+      ${lead ? `<div class="page-hero__bottom">
         <span aria-hidden="true"></span>
         ${lead ? `<p class="lead page-hero__lead" data-reveal>${t(lead)}</p>` : '<span></span>'}
         ${actions ? `<div class="actions page-hero__actions" data-reveal>${actions}</div>` : ''}
