@@ -109,7 +109,7 @@ content/blog/*.md┘                                                            
 - Шаблон страницы возвращает строку **или** `{ body, schema?: [], head?, noFooter?, cta? }`. Блок записи (`ctaBand`: заголовок, «Записаться», «Калькулятор», телефон, значки мессенджеров) рисует сам `layout.js` перед футером на каждой странице — вручную его в шаблоны не вставлять. Свой заголовок/текст — `cta: { title, text }`, скрыть (форма записи) — `cta: false`.
 - `layout.js` — `<html>`, meta/OG/canonical, JSON-LD, шапка, мобильное меню, `<main data-barba="container">` (контент + футер), плавающие кнопки, оверлеи. Шапка/меню/плавающие кнопки **вне** контейнера Barba (не перерисовываются при переходах).
 - `lib.js` — хелперы. **Всегда** экранируй данные: `esc()` — простой текст, `t()` — текст + подсветка `[плейсхолдеров]` и `⚠`, `rich()` — как `t()`, плюс `*слово*` → оранжевый акцент. `each(arr, fn)` — map+join.
-- `components.js` — переиспользуемые блоки: `button`, `eyebrow`, `sectionHead` (автономер «(01)», `align:'center'`, `label:false`), `pageHero` (варианты `compact`, `post`), `serviceFeature`, `serviceCard`, `marquee`, `equipmentNote`, `features`, `steps`, `faq`, `counters`, `reviewCard`, `messengerLinks`, `phoneLink`, `ctaBand`, `section`.
+- `components.js` — переиспользуемые блоки: `button`, `eyebrow`, `sectionHead` (тонкая линия-разделитель вместо подписи «(01) …», `align:'center'`, `label:false` — без линии), `pageHero` (варианты `compact`, `post`), `serviceFeature`, `serviceCard`, `marquee`, `equipmentNote`, `features`, `steps`, `faq`, `counters`, `reviewCard`, `messengerLinks`, `phoneLink`, `ctaBand`, `section`.
 - `media.js` — `media(map, key, opts)`: фото из `content/media.json`; если `src: null` — заглушка «Место для фото» с описанием, какой кадр нужен.
 - `schema.js` — Schema.org: `business` (LocalBusiness+AutoRepair на каждой странице), `breadcrumbs`, `service`, `faqPage` (пропускает ответы с плейсхолдерами), `article`, `graph`.
 - `partials/` — `header.js` (меню, мегаменю «Услуги», выпадающее «О нас»), `mobile-menu.js`, `footer.js`, `chrome.js` (плавающие кнопки, слой перехода, курсор, тост), `car-map.js` (SVG-силуэты авто для калькулятора: 4 типа, зоны `underbody|arches|sills|cavities`), `contact-blocks.js` (`hoursBlock`, `findUsBlock`, `requisitesBlock`).
@@ -191,7 +191,7 @@ content/blog/*.md┘                                                            
 - **Контурный текст** (`-webkit-text-stroke`) у Unbounded показывает внутренние линии шрифта → использовать `paint-order: stroke fill` + заливку цветом фона.
 - Не трогать глобальное правило `prefers-reduced-motion` в `base.css`: бегущая строка намеренно работает на JS, чтобы ехать и при reduced motion.
 - В сетках на мобильных — `minmax(0, 1fr)`, а не `1fr` (иначе длинные слова/кнопки раздувают колонку).
-- Раздел «Главная»: заголовки секций по центру (`align: 'center'`, `label: false`); на внутренних страницах — смещённые с подписью «(01) …».
+- Раздел «Главная»: заголовки секций по центру (`align: 'center'`, `label: false`); на внутренних страницах — по центру с тонкой линией сверху (подписи «(01) …» убраны по просьбе владельца; в блоках из двух колонок — `align: 'left'`).
 - На каждой странице на экране не больше одной кнопки «Записаться».
 
 ---

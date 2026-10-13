@@ -18,21 +18,13 @@ let headIndex = 0;
 export const resetSectionIndex = () => (headIndex = 0);
 
 /**
- * Заголовок секции в журнальной вёрстке: номер и подпись с линией, крупный заголовок
+ * Заголовок секции в журнальной вёрстке: тонкая линия-разделитель сверху, крупный заголовок
  * со сдвинутой первой строкой, описание отдельной колонкой. *слово* в заголовке — акцент.
  */
 export function sectionHead({ eyebrow: eb, title, lead, align = 'center', id, level = 2, action = '', label = true }) {
   headIndex += 1;
   return `<div class="section-head section-head--${align}"${id ? ` id="${esc(id)}"` : ''}>
-    ${
-      label
-        ? `<div class="section-head__label" data-reveal>
-      <span class="section-head__num">(${pad2(headIndex)})</span>
-      ${eb ? `<span class="section-head__eyebrow">${t(eb)}</span>` : ''}
-      <span class="section-head__line" aria-hidden="true"></span>
-    </div>`
-        : ''
-    }
+    ${label ? '<div class="section-head__rule" data-reveal aria-hidden="true"></div>' : ''}
     <h${level} class="h2 section-head__title" data-split>${rich(title)}</h${level}>
     ${lead || action ? `<div class="section-head__aside" data-reveal>${lead ? `<p class="lead">${t(lead)}</p>` : ''}${action}</div>` : ''}
   </div>`;
