@@ -1,6 +1,6 @@
 import { esc, t, rich, each, pad2 } from '../lib.js';
 import { icon } from '../icons.js';
-import { button, eyebrow, sectionHead, serviceFeature, counters, reviewCard, ctaBand, section, marquee } from '../components.js';
+import { button, eyebrow, sectionHead, serviceFeature, counters, reviewCard, section, marquee } from '../components.js';
 import { service } from '../schema.js';
 
 export function home(ctx) {
@@ -117,9 +117,7 @@ export function home(ctx) {
   ${section(
     `${sectionHead({ align: 'center', label: false, eyebrow: 'Отзывы', title: 'Что говорят *клиенты*', lead: `${c.reviews.stats.prefix}${c.reviews.stats.value}${c.reviews.stats.suffix} ${c.reviews.stats.label}.`, action: button({ label: 'Все отзывы', href: '/raboty/#otzyvy', variant: 'ghost', size: 'sm' }) })}
     <div class="reviews-grid" data-stagger>${each(c.reviews.services.slice(0, 3), reviewCard)}</div>`,
-  )}
-
-  ${ctaBand(ctx)}`;
+  )}`;
 
   return {
     body,

@@ -1,6 +1,6 @@
 import { esc, t, each, formatDate } from '../lib.js';
 import { icon } from '../icons.js';
-import { button, eyebrow, sectionHead, faq, counters, features, reviewCard, ctaBand, pageHero, section, messengerLinks, phoneLink, equipmentNote } from '../components.js';
+import { button, eyebrow, sectionHead, faq, counters, features, reviewCard, pageHero, section, messengerLinks, phoneLink, equipmentNote } from '../components.js';
 import { article, faqPage } from '../schema.js';
 import { hoursBlock, findUsBlock, requisitesBlock } from '../partials/contact-blocks.js';
 import { metalLayer, hasPhoto } from './services.js';
@@ -54,8 +54,7 @@ export function works(ctx) {
       <div class="reviews-more" data-reviews-more hidden>
         <p class="muted small" data-reviews-count></p>
         ${button({ label: 'Показать ещё', href: '', variant: 'ghost', iconName: 'chevron-down', attr: { 'data-reviews-button': true } })}
-      </div>`, { id: 'otzyvy' })}
-    ${ctaBand(ctx)}`;
+      </div>`, { id: 'otzyvy' })}`;
 }
 
 export function blogList(ctx) {
@@ -97,8 +96,7 @@ export function blogPost(ctx) {
         <div class="prose">${post.html}</div>
         <div class="article__back">${button({ label: 'Все статьи', href: '/blog/', variant: 'ghost', iconName: 'arrow-left' })}</div>
       </div>
-    </article>
-    ${ctaBand(ctx)}`,
+    </article>`,
     schema: [article(ctx, post)],
   };
 }
@@ -130,8 +128,7 @@ export function about(ctx) {
     ${equipmentNote(ctx, 'about-note')}`)}
 
     ${section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые *вопросы*', id: 'faq', lead: 'Про запись, лазерную очистку и антикоррозийную обработку.' })}
-      <div class="faq-groups">${each(allFaq, (g) => `<div class="faq-group"><h3 class="h3 faq-group__title">${esc(g.title)}</h3>${faq(g.items, { id: `faq-${g.id}` })}</div>`)}</div>`)}
-    ${ctaBand(ctx)}`,
+      <div class="faq-groups">${each(allFaq, (g) => `<div class="faq-group"><h3 class="h3 faq-group__title">${esc(g.title)}</h3>${faq(g.items, { id: `faq-${g.id}` })}</div>`)}</div>`)}`,
     schema: [faqPage(allFaq.flatMap((g) => g.items))],
   };
 }

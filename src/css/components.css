@@ -1258,7 +1258,17 @@ html.js .media img:not(.is-loaded) {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 20px;
+  gap: clamp(20px, 2.4vw, 28px);
+}
+/* телефон и значки мессенджеров — одной строкой под кнопками, отделены тонкой линией */
+.cta-band__contacts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px clamp(20px, 3vw, 36px);
+  width: 100%;
+  padding-top: clamp(20px, 2.4vw, 28px);
+  border-top: 1px solid var(--line);
 }
 @media (max-width: 899px) {
   .cta-band__inner {

@@ -1,6 +1,6 @@
 import { esc, t, each } from '../lib.js';
 import { icon } from '../icons.js';
-import { button, messengerLinks, phoneLink, equipmentNote } from '../components.js';
+import { equipmentNote } from '../components.js';
 
 export function footer(ctx) {
   const { site } = ctx;
@@ -9,21 +9,6 @@ export function footer(ctx) {
 
   return `<footer class="site-footer">
     <div class="container">
-      <div class="site-footer__top">
-        <div class="site-footer__claim">
-          <p class="site-footer__bridge" data-split>Лазерная очистка и <em class="accent">антикор</em> в Пружанах</p>
-          <div class="actions">
-            ${button({ label: 'Записаться на обработку', href: '/zapis/' })}
-            ${button({ label: 'Калькулятор', href: '/uslugi/kalkulyator/', variant: 'ghost', iconName: 'arrow-right' })}
-          </div>
-        </div>
-        <div class="site-footer__contacts">
-          ${phoneLink(site.contacts.services, { extra: 'phone-link--lg' })}
-          <a class="site-footer__mail" href="mailto:${esc(site.email)}">${icon('mail')}<span>${esc(site.email)}</span></a>
-          ${messengerLinks(ctx.contact, { variant: 'pill' })}
-        </div>
-      </div>
-
       <div class="site-footer__grid">
         <div class="site-footer__col">
           <h2 class="site-footer__h">Услуги</h2>
@@ -44,6 +29,7 @@ export function footer(ctx) {
           <h2 class="site-footer__h">Адрес</h2>
           <p class="site-footer__line">${icon('pin')}<span>${esc(site.address.full)}</span></p>
           <p class="site-footer__line">${icon('clock')}<span>${esc(site.hours.text)}</span></p>
+          <a class="site-footer__mail site-footer__line" href="mailto:${esc(site.email)}">${icon('mail')}<span>${esc(site.email)}</span></a>
           <a class="link-arrow" href="/kontakty/#map">Как проехать ${icon('arrow-right')}</a>
         </div>
       </div>

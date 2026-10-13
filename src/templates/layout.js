@@ -2,6 +2,7 @@ import { esc } from './lib.js';
 import { header } from './partials/header.js';
 import { mobileMenu } from './partials/mobile-menu.js';
 import { footer } from './partials/footer.js';
+import { ctaBand } from './components.js';
 import { floating, overlays } from './partials/chrome.js';
 import { business, breadcrumbs, graph } from './schema.js';
 
@@ -48,7 +49,7 @@ export function layout(ctx, page) {
   <div data-barba="wrapper">
     <main id="main" class="page page--${esc(route.namespace)}" data-barba="container" data-barba-namespace="${esc(route.namespace)}" data-section="${esc(ctx.sectionKey)}" data-url="${esc(route.url)}">
       ${page.body}
-      ${page.noFooter ? '' : footer(ctx)}
+      ${page.noFooter ? '' : `${page.cta === false ? '' : ctaBand(ctx, page.cta)}${footer(ctx)}`}
     </main>
   </div>
   ${floating(ctx)}

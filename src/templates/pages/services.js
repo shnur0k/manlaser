@@ -1,6 +1,6 @@
 import { esc, t, rich, each, pad2 } from '../lib.js';
 import { icon } from '../icons.js';
-import { button, sectionHead, serviceFeature, features, steps, faq, counters, reviewCard, ctaBand, pageHero, section, messengerLinks } from '../components.js';
+import { button, sectionHead, serviceFeature, features, steps, faq, counters, reviewCard, pageHero, section, messengerLinks } from '../components.js';
 import { service, faqPage } from '../schema.js';
 import { carMap, carIcon } from '../partials/car-map.js';
 
@@ -31,8 +31,7 @@ export function servicesHub(ctx) {
       <span class="calc-banner__icon">${icon('calc')}</span>
       <span class="calc-banner__text"><strong>Калькулятор стоимости</strong><small>Выберите тип авто и зоны обработки прямо на силуэте — получите предварительную цену.</small></span>
       <span class="calc-banner__arrow">${icon('arrow-up-right')}</span>
-    </a>`, { extra: 'section--tight' })}
-    ${ctaBand(ctx)}`,
+    </a>`, { extra: 'section--tight' })}`,
     schema: [service(ctx, s.cleaning), service(ctx, { ...s.anticor, title: 'Антикоррозийная обработка автомобиля' })],
   };
 }
@@ -137,8 +136,8 @@ export function serviceCleaning(ctx) {
       <div>${steps(s.steps)}</div>
     </div>`)}
 
-    ${section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые вопросы', id: 'faq' })}${faq(items, { id: 'faq-cleaning' })}`)}
-    ${ctaBand(ctx, { title: 'Привезите деталь — покажем результат' })}`,
+    ${section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые вопросы', id: 'faq' })}${faq(items, { id: 'faq-cleaning' })}`)}`,
+    cta: { title: 'Привезите деталь — покажем результат' },
     schema: [service(ctx, s, { serviceType: 'Лазерная очистка металла' }), faqPage(items)],
   };
 }
@@ -235,8 +234,8 @@ export function serviceAnticor(ctx) {
       </div>`)}
 
     ${section(`${sectionHead({ eyebrow: 'Отзывы', title: 'Отзывы об антикоре', lead: `${c.reviews.stats.prefix}${c.reviews.stats.value}${c.reviews.stats.suffix} ${c.reviews.stats.label}.`, action: button({ label: 'Все отзывы', href: '/raboty/#otzyvy', variant: 'ghost', size: 'sm' }) })}<div class="reviews-grid" data-stagger>${each(c.reviews.services.filter((r) => r.service === 'anticor').slice(0, 3), reviewCard)}</div>`)}
-    ${section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые вопросы', id: 'faq' })}${faq(items, { id: 'faq-anticor' })}`)}
-    ${ctaBand(ctx, { title: 'Узнайте стоимость за 10 минут', text: 'Бесплатная оценка без разбора пластиковых элементов. Мастер перезвонит и проконсультирует.' })}`,
+    ${section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые вопросы', id: 'faq' })}${faq(items, { id: 'faq-anticor' })}`)}`,
+    cta: { title: 'Узнайте стоимость за 10 минут', text: 'Бесплатная оценка без разбора пластиковых элементов. Мастер перезвонит и проконсультирует.' },
     schema: [service(ctx, s, { serviceType: 'Антикоррозийная обработка автомобиля' }), faqPage(items)],
   };
 }
@@ -366,6 +365,7 @@ export function booking(ctx) {
     `<div class="field" data-field="${id}"><label class="field__label" for="bk-${id}">${label}</label>${input}<p class="field__error" id="bk-${id}-error" aria-live="polite"></p>${hint ? `<p class="field__hint">${hint}</p>` : ''}</div>`;
 
   return {
+    cta: false, // форма записи сама и есть призыв
     body: `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, variant: 'compact' })}
     <section class="section booking" data-booking>

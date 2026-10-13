@@ -209,9 +209,14 @@ export function ctaBand(ctx, { title, text, primary, secondary } = {}) {
           <p class="lead">${t(text || 'Мастер перезвонит, уточнит детали и подскажет стоимость.')}</p>
         </div>
         <div class="cta-band__actions">
-          ${primary || button({ label: 'Записаться', href: '/zapis/' })}
-          ${secondary || phoneLink(contact)}
-          ${messengerLinks(contact, { variant: 'icon' })}
+          <div class="actions">
+            ${primary || button({ label: 'Записаться', href: '/zapis/' })}
+            ${secondary ?? (ctx.route.page === 'calculator' ? '' : button({ label: 'Калькулятор', href: '/uslugi/kalkulyator/', variant: 'ghost', iconName: 'arrow-right' }))}
+          </div>
+          <div class="cta-band__contacts">
+            ${phoneLink(contact, { extra: 'phone-link--lg' })}
+            ${messengerLinks(contact, { variant: 'icon' })}
+          </div>
         </div>
       </div>
     </div>

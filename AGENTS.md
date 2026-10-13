@@ -106,7 +106,7 @@ content/blog/*.md┘                                                            
 ### 3.3. Шаблоны (`src/templates/`)
 
 - `index.js` — `renderPage(route, content)`: создаёт `ctx` (`c` — весь контент, `site`, `route`, `contact`, `logo`, `logoWord`, `media()`), сбрасывает автонумерацию секций, вызывает шаблон, оборачивает в `layout`.
-- Шаблон страницы возвращает строку **или** `{ body, schema?: [], head?, noFooter? }`.
+- Шаблон страницы возвращает строку **или** `{ body, schema?: [], head?, noFooter?, cta? }`. Блок записи (`ctaBand`: заголовок, «Записаться», «Калькулятор», телефон, значки мессенджеров) рисует сам `layout.js` перед футером на каждой странице — вручную его в шаблоны не вставлять. Свой заголовок/текст — `cta: { title, text }`, скрыть (форма записи) — `cta: false`.
 - `layout.js` — `<html>`, meta/OG/canonical, JSON-LD, шапка, мобильное меню, `<main data-barba="container">` (контент + футер), плавающие кнопки, оверлеи. Шапка/меню/плавающие кнопки **вне** контейнера Barba (не перерисовываются при переходах).
 - `lib.js` — хелперы. **Всегда** экранируй данные: `esc()` — простой текст, `t()` — текст + подсветка `[плейсхолдеров]` и `⚠`, `rich()` — как `t()`, плюс `*слово*` → оранжевый акцент. `each(arr, fn)` — map+join.
 - `components.js` — переиспользуемые блоки: `button`, `eyebrow`, `sectionHead` (автономер «(01)», `align:'center'`, `label:false`), `pageHero` (варианты `compact`, `post`), `serviceFeature`, `serviceCard`, `marquee`, `equipmentNote`, `features`, `steps`, `faq`, `counters`, `reviewCard`, `messengerLinks`, `phoneLink`, `ctaBand`, `section`.
