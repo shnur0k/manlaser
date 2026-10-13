@@ -21,7 +21,7 @@ export const resetSectionIndex = () => (headIndex = 0);
  * Заголовок секции в журнальной вёрстке: номер и подпись с линией, крупный заголовок
  * со сдвинутой первой строкой, описание отдельной колонкой. *слово* в заголовке — акцент.
  */
-export function sectionHead({ eyebrow: eb, title, lead, align = 'left', id, level = 2, action = '', label = true }) {
+export function sectionHead({ eyebrow: eb, title, lead, align = 'center', id, level = 2, action = '', label = true }) {
   headIndex += 1;
   return `<div class="section-head section-head--${align}"${id ? ` id="${esc(id)}"` : ''}>
     ${
