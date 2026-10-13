@@ -339,11 +339,9 @@ export function buildCar({ quality }) {
   }
   car.add(new THREE.Mesh(glassGeo, [cabin, paint]));
 
-  // детали кузова: зеркала, световая полоса и выхлоп сзади, спойлер
-  const mirrorGeo = new RoundedBoxGeometry(0.16, 0.09, 0.1, 2, 0.025);
+  // детали кузова: световая полоса и выхлоп сзади, спойлер
   const ledMat = new THREE.MeshStandardMaterial({ color: 0x2a0707, roughness: 0.3, metalness: 0.2, emissive: 0x2a0000, emissiveIntensity: 0.5 });
   [-1, 1].forEach((side) => {
-    add(mirrorGeo, paint, 0.98, 1.14, side * 0.96).rotation.y = side * 0.2;
     add(new THREE.BoxGeometry(0.04, 0.08, 0.04), paint, -1.7, 1.4, side * 0.5); // стойки спойлера
     add(new THREE.CylinderGeometry(0.032, 0.032, 0.09, 14), steel, -2.17, 0.27, side * 0.52).rotation.z = Math.PI / 2; // выхлопные насадки
   });
