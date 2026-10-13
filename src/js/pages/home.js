@@ -9,6 +9,7 @@ export default function home(container) {
     load3d: () => import('../scenes/home/index.js'),
     length: 4.2,
     mobileLength: 3.4,
+    hold: 0.3, // подольше задержаться на кадре с логотипом
   });
   return {
     start: () => scene.start(),

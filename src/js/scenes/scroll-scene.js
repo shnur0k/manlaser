@@ -20,10 +20,11 @@ const hasWebGL = () => {
  *         и полосками прогресса [data-scene-bar data-from data-to].
  * name  — ключ сцены в config.js → scenes (режим '3d' | 'frames' | 'video').
  * load3d — () => import('./<scene>/index.js'): модуль 3D грузится только при необходимости.
+ * hold  — «выдержка» в конце: доля длины, на которую сцена остаётся на финальном кадре (0.3 = +30% скролла).
  *
  * Модуль 3D экспортирует createScene(canvas, { quality, onReady }) → { update(p, dt), resize(), setPointer(x, y), destroy() }.
  */
-export function createScrollScene(root, { name, load3d, length = 4, mobileLength = 3.2 }) {
+export function createScrollScene(root, { name, load3d, length = 4, mobileLength = 3.2, hold = 0 }) {
   const cfg = config.scenes?.[name] || { mode: '3d' };
   const canvas = root.querySelector('[data-scene-canvas]');
   const steps = [...root.querySelectorAll('[data-scene-step]')].map((el) => ({
@@ -160,7 +161,7 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
   if (mode === 'static') {
     makeStatic();
   } else {
-    const len = () => window.innerHeight * (env.mobile ? mobileLength : length);
+    const len = () => window.innerHeight * (env.mobile ? mobileLength : length) * (1 + hold);
     st = ScrollTrigger.create({
       trigger: root,
       start: 'top top',
@@ -170,7 +171,8 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
       anticipatePin: 1,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
-        target = self.progress;
+        // весь ход анимации укладывается в первую часть скролла, остаток — финальный кадр без изменений
+        target = Math.min(1, self.progress * (1 + hold));
       },
     });
     updateUi(0);
