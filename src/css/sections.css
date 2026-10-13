@@ -169,23 +169,6 @@
   padding-top: 24px;
   border-top: 1px solid var(--line);
 }
-.page-hero__mark {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-.page-hero__mark i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--orange);
-  box-shadow: var(--glow-sm);
-}
 .page-hero__lead {
   font-size: clamp(1.05rem, 0.98rem + 0.32vw, 1.25rem);
 }
@@ -202,9 +185,6 @@
 @media (max-width: 899px) {
   .page-hero__bottom {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .page-hero__mark {
-    display: none;
   }
   .page-hero__actions {
     justify-content: flex-start;

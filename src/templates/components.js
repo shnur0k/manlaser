@@ -64,7 +64,7 @@ export function pageHero(ctx, { eyebrow: eb, title, lead, actions = '', mediaKey
       </div>
       <h1 class="h1 page-hero__title" data-split>${rich(title)}</h1>
       <div class="page-hero__bottom">
-        <span class="page-hero__mark" aria-hidden="true"><i></i>manlaser · Пружаны</span>
+        <span aria-hidden="true"></span>
         ${lead ? `<p class="lead page-hero__lead" data-reveal>${t(lead)}</p>` : '<span></span>'}
         ${actions ? `<div class="actions page-hero__actions" data-reveal>${actions}</div>` : ''}
       </div>
