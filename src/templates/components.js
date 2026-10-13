@@ -13,6 +13,9 @@ export function button({ label, href = '#', variant = 'primary', size = '', icon
   </${tag}>`;
 }
 
+// Описания под заголовками (страниц и разделов) выключены по просьбе владельца; включить обратно — SHOW_LEADS = true
+const SHOW_LEADS = false;
+
 // Автонумерация заголовков секций на странице: (01), (02)… Сбрасывается перед рендером каждой страницы.
 let headIndex = 0;
 export const resetSectionIndex = () => (headIndex = 0);
@@ -21,8 +24,9 @@ export const resetSectionIndex = () => (headIndex = 0);
  * Заголовок секции в журнальной вёрстке: тонкая линия-разделитель сверху, крупный заголовок
  * со сдвинутой первой строкой, описание отдельной колонкой. *слово* в заголовке — акцент.
  */
-export function sectionHead({ eyebrow: eb, title, lead, align = 'center', id, level = 2, action = '', label = true }) {
+export function sectionHead({ eyebrow: eb, title, lead: leadText, align = 'center', id, level = 2, action = '', label = true }) {
   headIndex += 1;
+  const lead = SHOW_LEADS ? leadText : '';
   return `<div class="section-head section-head--${align}"${id ? ` id="${esc(id)}"` : ''}>
     ${label ? '<div class="section-head__rule" data-reveal aria-hidden="true"></div>' : ''}
     <h${level} class="h2 section-head__title" data-split>${rich(title)}</h${level}>
@@ -46,7 +50,8 @@ export function crumbs(route) {
  * Шапка внутренней страницы: огромный заголовок на всю ширину,
  * под ним три колонки (метка · описание · кнопки) и кинокадр 21:9.
  */
-export function pageHero(ctx, { eyebrow: eb, title, lead, actions = '', mediaKey, variant = '' }) {
+export function pageHero(ctx, { eyebrow: eb, title, lead: leadText, actions = '', mediaKey, variant = '' }) {
+  const lead = SHOW_LEADS ? leadText : '';
   return `<section class="${cls('page-hero', variant && `page-hero--${variant}`, !mediaKey && 'page-hero--solo')}">
     <div class="page-hero__glow" aria-hidden="true"></div>
     <div class="container">
