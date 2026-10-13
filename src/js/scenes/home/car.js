@@ -166,11 +166,11 @@ export function buildCar({ quality }) {
   const W = CAR.width;
 
   // ---------- материалы ----------
-  const paintOpts = { color: 0x0c0c0e, metalness: 0.2, roughness: 0.6, clearcoat: 0.12, clearcoatRoughness: 0.5 }; // чёрный матовый
-  const paint = new THREE.MeshPhysicalMaterial(paintOpts);
+  const paintOpts = { color: 0x0c0c0e, metalness: 0.2, roughness: 0.6 }; // чёрный матовый (без clearcoat — стандартный материал дешевле)
+  const paint = new THREE.MeshStandardMaterial(paintOpts);
   const f3 = (v) => v.toFixed(3);
   // кузов: швы дверей, чёрные пластиковые накладки на арках и порогах, глянцевые фары и решётка
-  const bodyPaint = patchMaterial(new THREE.MeshPhysicalMaterial(paintOpts), {
+  const bodyPaint = patchMaterial(new THREE.MeshStandardMaterial(paintOpts), {
     key: 'carbody',
     varyings: 'varying vec3 vP; varying vec3 vNo;',
     vertex: 'vP = position; vNo = normal;',
@@ -202,7 +202,7 @@ export function buildCar({ quality }) {
     roughness: 'roughnessFactor = mix(roughnessFactor, 0.85, b_plastic); roughnessFactor = mix(roughnessFactor, 0.12, b_gloss);',
   });
   // кабина: глянцевое стекло в матовых стойках (маска окон — атрибут aMask, считается на CPU)
-  const cabin = patchMaterial(new THREE.MeshPhysicalMaterial({ ...paintOpts, clearcoat: 0.5, clearcoatRoughness: 0.12 }), {
+  const cabin = patchMaterial(new THREE.MeshStandardMaterial(paintOpts), {
     key: 'carcabin',
     varyings: 'varying float vMask;',
     vertexHead: 'attribute float aMask;',
@@ -211,7 +211,7 @@ export function buildCar({ quality }) {
     roughness: 'roughnessFactor = mix(roughnessFactor, 0.07, vMask);',
     metalness: 'metalnessFactor = mix(metalnessFactor, 0.0, vMask);',
   });
-  const glass = new THREE.MeshPhysicalMaterial({ color: 0x030304, metalness: 0.1, roughness: 0.12, clearcoat: 0.6, clearcoatRoughness: 0.15 }); // фары, фонари
+  const glass = new THREE.MeshStandardMaterial({ color: 0x030304, metalness: 0.1, roughness: 0.12 }); // фары, фонари
   const rubber = new THREE.MeshStandardMaterial({ color: 0x0c0c0c, roughness: 0.85, metalness: 0 });
   const rim = new THREE.MeshStandardMaterial({ color: 0x151517, roughness: 0.45, metalness: 0.6 }); // чёрные литые диски
   const caliperMat = new THREE.MeshStandardMaterial({ color: 0x7a1511, roughness: 0.5, metalness: 0.3 });
@@ -226,7 +226,7 @@ export function buildCar({ quality }) {
   };
   const coat = patchMaterial(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, metalness: 0.3, envMapIntensity: 0.35, side: THREE.DoubleSide }), {
     key: 'coat',
-    octaves: high ? 4 : 3,
+    octaves: 3,
     uniforms: coatUniforms,
     varyings: 'varying vec3 vW;',
     vertex: 'vW = (modelMatrix * vec4(transformed, 1.0)).xyz;',

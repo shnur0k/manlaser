@@ -65,7 +65,7 @@ export function buildPart({ quality, dot }) {
 
   const material = patchMaterial(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, metalness: 0.2 }), {
     key: 'rust',
-    octaves: quality === 'high' ? 4 : 3,
+    octaves: 3,
     uniforms,
     varyings: 'varying vec3 vLocal;',
     vertex: 'vLocal = position;',

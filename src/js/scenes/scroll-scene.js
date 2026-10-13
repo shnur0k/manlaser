@@ -83,12 +83,19 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
   }
 
   // ---------- цикл отрисовки ----------
+  const IDLE_FRAME = 1 / 24; // когда не листаем и курсор неподвижен, хватает 24 кадров/с
+  let acc = 0;
+  let lastPointer = 0;
   function tick(_, deltaMs) {
     const dt = Math.min(deltaMs / 1000, 0.1);
     // сглаживание прогресса: камера «догоняет» скролл без рывков (в обе стороны)
     current += (target - current) * (1 - Math.exp(-dt * 7));
     if (Math.abs(target - current) < 0.00005) current = target;
-    renderer?.update(current, dt);
+    acc += dt;
+    const idle = current === target && performance.now() - lastPointer > 1500;
+    if (idle && acc < IDLE_FRAME) return;
+    renderer?.update(current, Math.min(acc, 0.1));
+    acc = 0;
     updateUi(current);
   }
   function start() {
@@ -115,6 +122,7 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
   window.addEventListener('resize', onResize);
   const onPointer = (e) => {
     if (e.pointerType === 'touch') return;
+    lastPointer = performance.now();
     renderer?.setPointer?.((e.clientX / window.innerWidth) * 2 - 1, (e.clientY / window.innerHeight) * 2 - 1);
   };
   window.addEventListener('pointermove', onPointer, { passive: true });

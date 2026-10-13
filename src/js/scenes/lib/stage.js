@@ -3,6 +3,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 /**
@@ -27,18 +29,22 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
   const camera = new THREE.PerspectiveCamera(fov, 1, 0.03, 120);
   const baseFov = fov;
 
-  const maxRatio = Math.min(window.devicePixelRatio || 1, high ? 1.6 : 1);
+  const maxRatio = Math.min(window.devicePixelRatio || 1, high ? 1.25 : 1);
   let ratio = maxRatio;
   let composer = null;
   let bloomPass = null;
+  let fxaaPass = null;
 
   if (high) {
-    const rt = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType, samples: 4 });
+    // без MSAA ×4 (дорого на высоком разрешении): сглаживание делает быстрый FXAA в конце цепочки
+    const rt = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType });
     composer = new EffectComposer(renderer, rt);
     composer.addPass(new RenderPass(scene, camera));
     bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), bloom.strength ?? 0.9, bloom.radius ?? 0.6, bloom.threshold ?? 0.85);
     composer.addPass(bloomPass);
     composer.addPass(new OutputPass());
+    fxaaPass = new ShaderPass(FXAAShader);
+    composer.addPass(fxaaPass);
   }
 
   let width = 1;
@@ -53,6 +59,7 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
     if (composer) {
       composer.setPixelRatio(ratio);
       composer.setSize(width, height);
+      fxaaPass?.material.uniforms.resolution.value.set(1 / (width * ratio), 1 / (height * ratio));
     }
   }
   resize();
