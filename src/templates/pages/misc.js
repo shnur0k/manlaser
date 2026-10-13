@@ -158,7 +158,7 @@ export function contacts(ctx) {
     ${section(findUsBlock(ctx), { extra: 'section--tight' })}
 
     ${section(`<div class="split">
-      <div>${sectionHead({ eyebrow: 'Реквизиты', title: 'Реквизиты' })}</div>
+      <div>${sectionHead({ eyebrow: 'Реквизиты', title: 'Реквизиты', align: 'left' })}</div>
       <div>${requisitesBlock(ctx)}</div>
     </div>`)}
 

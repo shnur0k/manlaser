@@ -122,7 +122,7 @@ export function serviceCleaning(ctx) {
 
 
     ${section(`<div class="split">
-      <div>${sectionHead({ eyebrow: 'Как работаем', title: 'Этапы' })}${priceBlock(s)}</div>
+      <div>${sectionHead({ eyebrow: 'Как работаем', title: 'Этапы', align: 'left' })}${priceBlock(s)}</div>
       <div>${steps(s.steps)}</div>
     </div>`)}
 
@@ -208,7 +208,7 @@ export function serviceAnticor(ctx) {
     ${section(`<ul class="highlights" data-stagger>${each(s.highlights, (h) => `<li>${icon('check')}<span>${t(h)}</span></li>`)}</ul>`, { extra: 'section--tight' })}
 
     ${section(`<div class="split">
-      <div>${sectionHead({ eyebrow: 'Технология', title: 'Как мы обрабатываем авто' })}${priceBlock(s)}</div>
+      <div>${sectionHead({ eyebrow: 'Технология', title: 'Как мы обрабатываем авто', align: 'left' })}${priceBlock(s)}</div>
       <div>${steps(s.steps)}</div>
     </div>`)}
 
