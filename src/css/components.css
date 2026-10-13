@@ -737,7 +737,7 @@ html.js .media img:not(.is-loaded) {
   border-block: 1px solid var(--line);
   background: #030303;
 }
-/* движение — в src/js/ui/marquee.js (ускоряется от прокрутки) */
+/* движение — в src/js/ui/marquee.js (постоянная скорость, от прокрутки не зависит) */
 .marquee__track {
   display: flex;
   align-items: center;
