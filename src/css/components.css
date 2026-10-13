@@ -514,10 +514,6 @@ html.js .media img:not(.is-loaded) {
   row-gap: clamp(20px, 2.4vw, 36px);
   margin-bottom: clamp(44px, 6vw, 96px);
 }
-/* заголовок без описания: ближе к содержимому секции */
-.section-head--tight {
-  margin-bottom: clamp(24px, 3vw, 44px);
-}
 /* тонкая линия между разделами вместо подписи «(01) …» */
 .section-head__rule {
   grid-column: 1 / -1;

@@ -43,12 +43,11 @@ export function works(ctx) {
   const reviews = c.reviews.services;
   return `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading })}
-    ${section(`${sectionHead({ eyebrow: 'Галерея', title: 'Работы *до и после*', tight: true })}
-      <div class="tag-filter" role="group" aria-label="Фильтр галереи" data-tag-filter>
+    ${section(`<div class="tag-filter" role="group" aria-label="Фильтр галереи" data-tag-filter>
         <button class="tag-filter__btn is-active" type="button" data-tag="*">Все</button>
         ${each(filters, (f) => `<button class="tag-filter__btn" type="button" data-tag="${esc(f)}">${esc(f)}</button>`)}
       </div>
-      <div class="works-gallery" data-post-grid>${each(items, (it) => workCard(ctx, it))}</div>`, { id: 'galereya' })}
+      <div class="works-gallery" data-post-grid>${each(items, (it) => workCard(ctx, it))}</div>`, { id: 'galereya', extra: 'section--tight' })}
     ${section(`${sectionHead({ eyebrow: 'Отзывы', title: 'Отзывы *клиентов*', lead: `${c.reviews.stats.prefix}${c.reviews.stats.value}${c.reviews.stats.suffix} ${c.reviews.stats.label}.` })}
       <div class="reviews-grid" data-stagger data-reviews data-visible="6">${each(reviews, reviewCard)}</div>
       <div class="reviews-more" data-reviews-more hidden>

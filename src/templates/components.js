@@ -21,9 +21,9 @@ export const resetSectionIndex = () => (headIndex = 0);
  * Заголовок секции в журнальной вёрстке: тонкая линия-разделитель сверху, крупный заголовок
  * со сдвинутой первой строкой, описание отдельной колонкой. *слово* в заголовке — акцент.
  */
-export function sectionHead({ eyebrow: eb, title, lead, align = 'center', id, level = 2, action = '', label = true, tight = false }) {
+export function sectionHead({ eyebrow: eb, title, lead, align = 'center', id, level = 2, action = '', label = true }) {
   headIndex += 1;
-  return `<div class="section-head section-head--${align}${tight ? ' section-head--tight' : ''}"${id ? ` id="${esc(id)}"` : ''}>
+  return `<div class="section-head section-head--${align}"${id ? ` id="${esc(id)}"` : ''}>
     ${label ? '<div class="section-head__rule" data-reveal aria-hidden="true"></div>' : ''}
     <h${level} class="h2 section-head__title" data-split>${rich(title)}</h${level}>
     ${lead || action ? `<div class="section-head__aside" data-reveal>${lead ? `<p class="lead">${t(lead)}</p>` : ''}${action}</div>` : ''}
