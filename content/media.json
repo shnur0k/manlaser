@@ -7,7 +7,7 @@
     "ratio": "4/3"
   },
   "nav.anticor": {
-    "src": "/images/works/anticor-underbody-after.png",
+    "src": "/images/works/anticor-underbody-after.jpg",
     "alt": "Днище автомобиля после антикоррозийной обработки",
     "want": "Днище после антикора",
     "ratio": "4/3"
@@ -43,7 +43,7 @@
     "ratio": "4/5"
   },
   "service.anticor": {
-    "src": "/images/works/anticor-underbody-after.png",
+    "src": "/images/works/anticor-underbody-after.jpg",
     "alt": "Антикоррозийная обработка днища в Пружанах",
     "want": "Днище после антикора",
     "ratio": "4/5"
@@ -79,7 +79,7 @@
     "ratio": "16/9"
   },
   "anticor.underbody": {
-    "src": "/images/works/anticor-underbody-after.png",
+    "src": "/images/works/anticor-underbody-after.jpg",
     "alt": "Днище после обработки",
     "want": "Днище после обработки",
     "ratio": "4/3"
@@ -91,7 +91,7 @@
     "ratio": "4/3"
   },
   "anticor.prep": {
-    "src": "/images/works/underbody-preparation.png",
+    "src": "/images/works/underbody-preparation.jpg",
     "alt": "Подготовка днища к антикору",
     "want": "Днище в процессе подготовки",
     "ratio": "4/3"

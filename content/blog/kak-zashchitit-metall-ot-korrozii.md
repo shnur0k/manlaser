@@ -3,7 +3,7 @@ title: "Как защитить металл от коррозии"
 description: "Зачем нужен антикор, какие зоны автомобиля защищать, как часто обновлять защиту и как проходит обработка."
 date: 2026-10-05
 tags: [Антикор, Советы]
-cover: /images/works/anticor-underbody-after.png
+cover: /images/works/anticor-underbody-after.jpg
 draft: true
 ---
 
