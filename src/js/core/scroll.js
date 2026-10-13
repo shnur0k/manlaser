@@ -76,6 +76,11 @@ export function scrollTo(target, { immediate = false, offset } = {}) {
   if (typeof target !== 'number' && !el) return;
   const off = offset ?? (typeof target === 'number' ? 0 : headerOffset());
   if (lenis) {
+    // Lenis может считать, что уже стоит в нужной точке (после смены страницы), и не двигать окно — ставим позицию сами
+    if (immediate) {
+      const y = typeof target === 'number' ? target : el.getBoundingClientRect().top + window.scrollY + off;
+      window.scrollTo(0, y);
+    }
     lenis.scrollTo(el || target, { offset: off, immediate, force: true, duration: immediate ? 0 : 1.3 });
     return;
   }

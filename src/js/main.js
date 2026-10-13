@@ -69,6 +69,8 @@ function initRouter() {
 
           const page = await mountPage(next);
           ScrollTrigger.refresh();
+          // пересчёт анимаций мог вернуть старую позицию — на новой странице всегда начинаем сверху (кроме «назад/вперёд» и якорей)
+          if (!isHistory && window.scrollY > 0) scrollTo(0, { immediate: true });
           const revealed = transition.reveal();
           page.start();
           await revealed;
