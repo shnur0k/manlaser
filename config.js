@@ -34,6 +34,7 @@ export default {
   scenes: {
     home: {
       mode: '3d',
+      mobileMode: 'static', // на телефоне (ширина < 768) 3D не грузится вообще — обычная вёрстка без сцены
       frames: { path: '/frames/home/', count: 240, pad: 4, ext: 'webp' },
       video: { src: '/video/home.mp4' },
     },
