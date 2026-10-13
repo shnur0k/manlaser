@@ -29,12 +29,11 @@ export function home(ctx) {
       <div class="scene__vignette"></div>
     </div>
 
-    <!-- «видоискатель лазера»: уголки рамки, адрес и счётчик сканирования -->
+    <!-- «видоискатель лазера»: уголки рамки, адрес -->
     <div class="scene__hud" aria-hidden="true">
       <span class="hud-corner hud-corner--tl"></span><span class="hud-corner hud-corner--tr"></span>
       <span class="hud-corner hud-corner--bl"></span><span class="hud-corner hud-corner--br"></span>
       <span class="hud-meta hud-meta--left"><i></i>${esc(c.site.address.city)} · ${esc(c.site.address.street)}</span>
-      <span class="hud-meta hud-meta--right">Скан <b data-scene-readout>000</b>%</span>
       <span class="hud-cross"></span>
     </div>
 
