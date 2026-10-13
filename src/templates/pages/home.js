@@ -12,7 +12,7 @@ export function home(ctx) {
   const ranges = [
     [0.07, 0.36],
     [0.46, 0.74],
-    [0.86, 1.01],
+    [0.86, 1.1], // финальный блок не гаснет в конце сцены: остаётся виден и кликабелен всю «выдержку»
   ];
   const secondary = button({ label: 'Рассчитать стоимость', href: '/uslugi/kalkulyator/', variant: 'ghost', iconName: 'arrow-right' });
   const works = button({ label: 'Наши работы', href: '/raboty/', variant: 'ghost', iconName: 'arrow-right' });
@@ -76,7 +76,7 @@ export function home(ctx) {
       </div>
 
       <ol class="scene__progress" aria-hidden="true">
-        ${each(p.scene, (st, i) => `<li data-scene-bar data-from="${i === 0 ? 0.06 : ranges[i][0] - 0.06}" data-to="${ranges[i][1] - (i === 2 ? 0.07 : 0)}"><span>${esc(st.label)}</span><i><b></b></i></li>`)}
+        ${each(p.scene, (st, i) => `<li data-scene-bar data-from="${i === 0 ? 0.06 : ranges[i][0] - 0.06}" data-to="${i === 2 ? 0.94 : ranges[i][1]}"><span>${esc(st.label)}</span><i><b></b></i></li>`)}
       </ol>
       <div class="hero__scroll scene__hint" aria-hidden="true"><span>Листайте</span><i></i></div>
     </div>
