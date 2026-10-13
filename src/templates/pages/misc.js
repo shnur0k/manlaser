@@ -42,7 +42,7 @@ export function works(ctx) {
   const filters = ['Лазерная очистка', 'Антикор', 'До/после', 'Фото'];
   const reviews = c.reviews.services;
   return `
-    ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, actions: `<a class="pill-link" href="#galereya">Галерея</a><a class="pill-link" href="#otzyvy">Отзывы</a>` })}
+    ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading })}
     ${section(`${sectionHead({ eyebrow: 'Галерея', title: 'Работы *до и после*', lead: 'Проведите курсором по карточке «до/после» — лазер «выжжет» загрязнение там, где вы проведёте. На телефоне — проведите пальцем, нажатие показывает результат целиком.' })}
       <div class="tag-filter" role="group" aria-label="Фильтр галереи" data-tag-filter>
         <button class="tag-filter__btn is-active" type="button" data-tag="*">Все</button>
