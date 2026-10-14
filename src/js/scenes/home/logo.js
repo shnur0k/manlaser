@@ -94,7 +94,7 @@ export function buildLogo(svgText, { quality, dot, width = 3.6 }) {
     colors.set([c.r, c.g, c.b], i * 3);
   }
   markGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  const markMat = dissolve(new THREE.MeshPhysicalMaterial({ vertexColors: true, metalness: 0.45, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08, emissive: 0x220800 }), 'logo-mark');
+  const markMat = dissolve(new THREE.MeshPhysicalMaterial({ vertexColors: true, metalness: 0.45, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08, emissive: 0x5a2208, fog: false }), 'logo-mark'); // fog: false — туман в финале не гасит логотип
   const mark = new THREE.Mesh(markGeo, markMat);
   group.add(mark);
 
@@ -104,7 +104,7 @@ export function buildLogo(svgText, { quality, dot, width = 3.6 }) {
     const center = new THREE.Vector3();
     g.boundingBox.getCenter(center);
     g.translate(-center.x, -center.y, -center.z);
-    const mat = dissolve(new THREE.MeshPhysicalMaterial({ color: 0xeeeeee, metalness: 0.25, roughness: 0.32, clearcoat: 0.6, clearcoatRoughness: 0.2 }), 'logo-letter');
+    const mat = dissolve(new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0.2, roughness: 0.34, clearcoat: 0.6, clearcoatRoughness: 0.2, emissive: 0x4a4a4a, fog: false }), 'logo-letter');
     const m = new THREE.Mesh(g, mat);
     const pivot = new THREE.Group();
     pivot.position.copy(center);
