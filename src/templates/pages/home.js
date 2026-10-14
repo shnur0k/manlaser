@@ -34,7 +34,6 @@ export function home(ctx) {
       <span class="hud-corner hud-corner--tl"></span><span class="hud-corner hud-corner--tr"></span>
       <span class="hud-corner hud-corner--bl"></span><span class="hud-corner hud-corner--br"></span>
       <span class="hud-meta hud-meta--left"><i></i>${esc(c.site.address.city)} · ${esc(c.site.address.street)}</span>
-      <span class="hud-cross"></span>
     </div>
 
     <div class="scene__ui">

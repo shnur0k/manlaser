@@ -105,23 +105,6 @@
 @keyframes hud-blink {
   50% { opacity: 0.2; }
 }
-/* перекрестие в центре кадра — прицел лазера */
-.hud-cross {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 22px;
-  height: 22px;
-  margin: -11px 0 0 -11px;
-  opacity: 0.35;
-  transition: opacity 0.6s;
-  background:
-    linear-gradient(var(--orange-hot), var(--orange-hot)) center / 1px 100% no-repeat,
-    linear-gradient(var(--orange-hot), var(--orange-hot)) center / 100% 1px no-repeat;
-}
-.scene.is-scrolled .hud-cross {
-  opacity: 0;
-}
 
 /* ---------- Слои подписей ---------- */
 .scene__ui {
@@ -433,8 +416,7 @@ html.js .scene:not(.is-static) .scene__step:not(.scene__step--intro) {
   font-size: clamp(5rem, 3rem + 8vw, 10rem);
 }
 .scene.is-static .scene__progress,
-.scene.is-static .scene__canvas,
-.scene.is-static .hud-cross {
+.scene.is-static .scene__canvas {
   display: none;
 }
 .scene.is-static .scene__stage,
