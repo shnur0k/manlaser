@@ -40,10 +40,8 @@ export function home(ctx) {
     <div class="scene__ui">
       <div class="scene__step scene__step--intro" data-scene-step data-from="-1" data-to="0.06">
         <div class="container intro">
-          <h1 class="intro__title display">
-            <span class="intro__line intro__line--a" data-split="chars">${t(p.hero.titleTop)}</span>
-            <span class="intro__line intro__line--b" data-split="chars">${t(p.hero.titleBottom)}</span>
-          </h1>
+          <!-- большие надписи «Снимаем ржавчину светом / Защищаем металл надолго» убраны с экрана; h1 оставлен скрытым для поисковиков и экранных дикторов -->
+          <h1 class="sr-only">${t(p.hero.titleTop)} ${t(p.hero.titleBottom)}</h1>
           <div class="intro__bottom" data-reveal>
             ${eyebrow(p.hero.eyebrow)}
             <p class="lead intro__lead">${t(p.hero.lead)}</p>
