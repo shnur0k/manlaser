@@ -54,11 +54,8 @@ function dissolve(material, key) {
  * Объёмный логотип (знак + буквы) одной геометрией — для «детали», которую чистит лазер.
  * Центрирован, ширина width; толще, чем финальный логотип, чтобы читался как металлическое литьё.
  */
-export function buildLogoGeometry(svgText, { width = 2.9, depthUnits = 30, quality = 'high' } = {}) {
+export function buildLogoGeometry(svgText, { width = 2.9, depthUnits = 30, quality = 'high', only = 'all' } = {}) {
   const data = new SVGLoader().parse(svgText);
-  const S = width / 740;
-  const cx = 1364;
-  const cy = 51;
   const opts = {
     depth: depthUnits,
     bevelEnabled: true,
@@ -70,16 +67,23 @@ export function buildLogoGeometry(svgText, { width = 2.9, depthUnits = 30, quali
   const geos = [];
   for (const path of data.paths) {
     const cls = path.userData?.node?.getAttribute?.('class') || '';
-    if (!cls.includes('logo__mark') && !cls.includes('logo__letter')) continue;
+    const isMark = cls.includes('logo__mark');
+    if (!isMark && !cls.includes('logo__letter')) continue;
+    if (only === 'mark' && !isMark) continue; // только знак, без надписи
     const shapes = SVGLoader.createShapes(path);
     if (!shapes.length) continue;
-    const g = new THREE.ExtrudeGeometry(shapes, opts);
-    g.translate(-cx, -cy, -depthUnits / 2);
-    g.scale(S, -S, -S); // SVG: ось Y вниз → переворачиваем (и Z, чтобы не вывернуть грани)
-    geos.push(g);
+    geos.push(new THREE.ExtrudeGeometry(shapes, opts));
   }
   if (!geos.length) throw new Error('В logo.svg не найдены знак и буквы');
   const merged = mergeGeometries(geos);
+  merged.computeBoundingBox();
+  const bb = merged.boundingBox;
+  // весь логотип: ширина viewBox 740 и фиксированный центр; только знак: по его собственной рамке
+  const S = only === 'mark' ? width / (bb.max.x - bb.min.x) : width / 740;
+  const cx = only === 'mark' ? (bb.min.x + bb.max.x) / 2 : 1364;
+  const cy = only === 'mark' ? (bb.min.y + bb.max.y) / 2 : 51;
+  merged.translate(-cx, -cy, -depthUnits / 2);
+  merged.scale(S, -S, -S); // SVG: ось Y вниз → переворачиваем (и Z, чтобы не вывернуть грани)
   merged.computeVertexNormals();
   return merged;
 }

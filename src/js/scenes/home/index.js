@@ -19,9 +19,9 @@ import logoSvg from '../../../../assets/logo.svg?raw';
 const CAM = [
   // деталь по центру кадра; камера лишь слегка следует за фронтом очистки
   { p: 0.0, pos: [0.0, 0.34, 4.0], look: [0.0, -0.02, 0], fov: 34 },
-  { p: 0.08, pos: [-0.45, 0.32, 3.1], look: [-0.35, -0.02, 0], fov: 34 },
-  { p: 0.22, pos: [0.05, 0.28, 2.9], look: [0.0, -0.02, 0], fov: 33 },
-  { p: 0.35, pos: [0.5, 0.2, 2.9], look: [0.35, -0.02, 0], fov: 33 },
+  { p: 0.08, pos: [-0.2, 0.32, 3.2], look: [-0.15, -0.02, 0], fov: 34 },
+  { p: 0.22, pos: [0.02, 0.28, 3.1], look: [0.0, -0.02, 0], fov: 33 },
+  { p: 0.35, pos: [0.2, 0.2, 3.1], look: [0.15, -0.02, 0], fov: 33 },
   { p: 0.4, pos: [1.35, 0.55, 0.4], look: [1.0, 0.7, -4.5], fov: 42 },
   // под машиной — между стойками подъёмника (стойки на z = -5.14 и -7.86)
   { p: 0.47, pos: [1.8, -0.42, -5.75], look: [0.85, 0.95, -6.55], fov: 50 },
@@ -53,7 +53,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   // ---------- объекты ----------
   const part = buildPart({ quality, dot, svg: logoSvg });
   part.group.rotation.set(-0.1, -0.3, 0.03);
-  part.group.scale.setScalar(0.72);
+  part.group.scale.setScalar(0.5);
   scene.add(part.group);
   part.group.updateMatrixWorld(true);
 

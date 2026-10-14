@@ -148,7 +148,7 @@ content/blog/*.md┘                                                            
 ### 3.5. 3D-сцена главной
 
 - `src/js/scenes/scroll-scene.js` — общий модуль закреплённой scroll-сцены: пин ScrollTrigger, сглаженный прогресс, подписи `[data-scene-step data-from data-to]`, полоски `[data-scene-bar]`, счётчик `[data-scene-readout]`, выбор режима по `config.js → scenes.<name>.mode`: `'3d' | 'frames' | 'video'`; при reduced motion / без WebGL / при ошибке → статичный режим (`.is-static`).
-- `src/js/scenes/home/` — Three.js-сцена (грузится динамически, ~170 КБ gzip): `part.js` (ржавый объёмный логотип manlaser + лазер, шейдер ржавчины; геометрия — `buildLogoGeometry` из `logo.js`), `car.js` (авто на подъёмнике, шейдер антикора), `logo.js` (3D-логотип из `assets/logo.svg`, сборка из частиц), `index.js` (камера по ключевым кадрам `CAM`, связка прогресса). Общее: `scenes/lib/` (`stage.js` — рендерер, bloom, адаптивное качество; `patch.js` — встраивание GLSL в PBR-материалы; `glsl.js` — шум; `particles.js`).
+- `src/js/scenes/home/` — Three.js-сцена (грузится динамически, ~170 КБ gzip): `part.js` (ржавый объёмный знак manlaser (без надписи) + лазер, шейдер ржавчины; геометрия — `buildLogoGeometry` из `logo.js`), `car.js` (авто на подъёмнике, шейдер антикора), `logo.js` (3D-логотип из `assets/logo.svg`, сборка из частиц), `index.js` (камера по ключевым кадрам `CAM`, связка прогресса). Общее: `scenes/lib/` (`stage.js` — рендерер, bloom, адаптивное качество; `patch.js` — встраивание GLSL в PBR-материалы; `glsl.js` — шум; `particles.js`).
 - Прогресс: 0–0.36 очистка детали → 0.36–0.46 пролёт → 0.46–0.76 антикор днища → 0.76–1 логотип. Подписи шагов — `content/pages.json → home.scene`.
 - 3D-объекты по центру кадра; на вертикальных экранах камера отъезжает.
 

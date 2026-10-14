@@ -3,13 +3,13 @@ import { patchMaterial } from '../lib/patch.js';
 import { buildLogoGeometry } from './logo.js';
 
 /**
- * Ржавый объёмный логотип manlaser («деталь» первой сцены) + лазерная головка.
- * uBeam 0→1 — фронт очистки проходит по логотипу: ржавчина сгорает, открывается металл.
+ * Ржавый объёмный знак manlaser («деталь» первой сцены) + лазерная головка.
+ * uBeam 0→1 — фронт очистки проходит по знаку: ржавчина сгорает, открывается металл.
  */
 export function buildPart({ quality, dot, svg }) {
   const group = new THREE.Group();
 
-  const geo = buildLogoGeometry(svg, { width: 2.9, depthUnits: 30, quality });
+  const geo = buildLogoGeometry(svg, { width: 2.4, depthUnits: 30, quality, only: 'mark' }); // на очистке — только знак, без надписи
   geo.center();
   geo.computeBoundingBox();
   const bb = geo.boundingBox;
@@ -64,8 +64,8 @@ export function buildPart({ quality, dot, svg }) {
     color: /* glsl */ `
       vec3 bp = (vLocal - uMin) / (uMax - uMin);
       float coord = bp.x * 0.82 + (1.0 - bp.y) * 0.18;
-      float n1 = ml_fbm(vLocal * 5.2);
-      g_n2 = ml_snoise(vLocal * 22.0);
+      float n1 = ml_fbm(vLocal * 4.0);
+      g_n2 = ml_snoise(vLocal * 17.0);
       float front = uBeam * 1.16 - 0.08;
       g_d = front - coord + n1 * 0.055;
       g_clean = smoothstep(0.0, 0.018, g_d);
