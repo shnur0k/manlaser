@@ -4,13 +4,34 @@ import { buildLogoGeometry, brandGradientGLSL } from './logo.js';
 
 /**
  * Объёмный знак manlaser («деталь» первой сцены) + лазерная головка.
- * Сначала знак чистый (в анфас), затем uRust 0→1 — его покрывает коррозия, затем uBeam 0→1 — лазер снимает ржавчину.
+ * Сначала знак чистый (в анфас), затем uRust 0→1 — его покрывает коррозия, затем uBeam 0→1 — лазер снимает ржавчину, оставляя чистую сталь.
  */
 export function buildPart({ quality, dot, svg }) {
   const group = new THREE.Group();
 
   const geo = buildLogoGeometry(svg, { width: 2.4, depthUnits: 30, quality, only: 'mark' }); // на очистке — только знак, без надписи
   geo.center();
+  // знак сдвигаем так, чтобы средний нижний кружок оказался строго по центру (x = 0): ищем кластеры вершин в нижней четверти
+  {
+    geo.computeBoundingBox();
+    const b0 = geo.boundingBox;
+    const yCut = b0.min.y + (b0.max.y - b0.min.y) * 0.25;
+    const xs = [];
+    const p0 = geo.attributes.position;
+    for (let i = 0; i < p0.count; i++) if (p0.getY(i) < yCut) xs.push(p0.getX(i));
+    xs.sort((a, b) => a - b);
+    const gap = (b0.max.x - b0.min.x) * 0.06;
+    const clusters = [];
+    for (const x of xs) {
+      const last = clusters[clusters.length - 1];
+      if (last && x - last.max < gap) last.max = x;
+      else clusters.push({ min: x, max: x });
+    }
+    if (clusters.length >= 3) {
+      const mid = clusters[Math.floor(clusters.length / 2)];
+      geo.translate(-(mid.min + mid.max) / 2, 0, 0);
+    }
+  }
   geo.computeBoundingBox();
   const bb = geo.boundingBox;
 
@@ -60,7 +81,7 @@ export function buildPart({ quality, dot, svg }) {
     varyings: 'varying vec3 vLocal;',
     vertex: 'vLocal = position;',
     fragmentHead: /* glsl */ `
-      float g_clean; float g_hot; float g_h; float g_n2; float g_rm; float g_rust; float g_d;
+      float g_clean; float g_hot; float g_h; float g_n2; float g_rm; float g_rust; float g_d; float g_brush;
       ${brandGradientGLSL()}
     `,
     color: /* glsl */ `
@@ -79,10 +100,14 @@ export function buildPart({ quality, dot, svg }) {
       g_rm = smoothstep(0.0, 0.12, uRust * 1.3 - seed);
       g_rust = g_rm * (1.0 - g_clean);
 
-      // исходный вид знака: фирменный градиент; за фронтом лазера — лёгкая побежалость
+      // исходный вид знака — фирменный градиент; после лазера — чистая шлифованная сталь с побежалостью за фронтом
       vec3 brand = ml_brand(bp.x);
+      g_brush = ml_snoise(vec3(vLocal.x * 1.5, vLocal.y * 90.0, vLocal.z * 90.0)) * 0.5 + 0.5;
+      vec3 steel = vec3(0.56, 0.57, 0.6) * (0.86 + g_brush * 0.22);
       float tint = smoothstep(0.0, 0.02, g_d) * exp(-g_d * 16.0);
-      brand = mix(brand, vec3(0.9, 0.5, 0.18), tint * 0.3);
+      steel = mix(steel, vec3(0.72, 0.5, 0.24), tint * 0.55);
+      steel = mix(steel, vec3(0.28, 0.32, 0.62), smoothstep(0.02, 0.05, g_d) * exp(-g_d * 26.0) * 0.4);
+      vec3 base = mix(brand, steel, g_clean);
 
       // ржавчина: тёмная окалина + рыжие хлопья
       float rm = smoothstep(-0.45, 0.6, n1 + g_n2 * 0.25);
@@ -90,15 +115,15 @@ export function buildPart({ quality, dot, svg }) {
       rust = mix(rust, vec3(0.55, 0.24, 0.07), smoothstep(0.5, 0.95, g_n2) * 0.55);
       rust *= 0.75 + 0.25 * smoothstep(-0.3, 0.3, ml_snoise(vLocal * 40.0));
 
-      diffuseColor.rgb = mix(brand, rust, g_rust);
+      diffuseColor.rgb = mix(base, rust, g_rust);
       // рельеф только там, где ржавчина: раковины и «хлопья»
       g_h = g_rust * (n1 * 0.7 + g_n2 * 0.3);
     `,
     roughness: /* glsl */ `
-      roughnessFactor = mix(0.26, 0.92 - g_n2 * 0.05, g_rust);
+      roughnessFactor = mix(mix(0.26, 0.2 + g_brush * 0.14, g_clean), 0.92 - g_n2 * 0.05, g_rust);
     `,
     metalness: /* glsl */ `
-      metalnessFactor = mix(0.42, 0.12, g_rust);
+      metalnessFactor = mix(mix(0.42, 1.0, g_clean), 0.12, g_rust);
     `,
     normal: /* glsl */ `
       normal = ml_bump(-vViewPosition, normal, g_h, 0.05);
