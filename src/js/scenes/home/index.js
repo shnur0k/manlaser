@@ -51,9 +51,9 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   scene.add(key, rim, cool);
 
   // ---------- объекты ----------
-  const part = buildPart({ quality, dot });
+  const part = buildPart({ quality, dot, svg: logoSvg });
   part.group.rotation.set(-0.1, -0.3, 0.03);
-  part.group.scale.setScalar(0.6);
+  part.group.scale.setScalar(0.72);
   scene.add(part.group);
   part.group.updateMatrixWorld(true);
 

@@ -1,59 +1,48 @@
 import * as THREE from 'three';
 import { patchMaterial } from '../lib/patch.js';
+import { buildLogoGeometry } from './logo.js';
 
 /**
- * Ржавая стальная деталь (тяга-«косточка» с отверстиями) + лазерная головка.
- * uBeam 0→1 — фронт очистки проходит по детали: ржавчина сгорает, открывается металл.
+ * Ржавый объёмный логотип manlaser («деталь» первой сцены) + лазерная головка.
+ * uBeam 0→1 — фронт очистки проходит по логотипу: ржавчина сгорает, открывается металл.
  */
-const R = 0.38; // радиус «головок»
-const C = 1.1; // центр головок по X
-const WAIST = 0.21; // половина высоты перемычки
-
-function partShape() {
-  const s = new THREE.Shape();
-  const x0 = C - Math.sqrt(R * R - WAIST * WAIST);
-  const a = Math.atan2(WAIST, -(C - x0)); // угол точки касания на правой головке
-  s.moveTo(-x0, WAIST);
-  s.lineTo(x0, WAIST);
-  s.absarc(C, 0, R, a, -a, true);
-  s.lineTo(-x0, -WAIST);
-  s.absarc(-C, 0, R, a - Math.PI, Math.PI - a, true);
-  s.closePath();
-
-  const hole = (x, y, r) => {
-    const h = new THREE.Path();
-    h.absarc(x, y, r, 0, Math.PI * 2, false);
-    s.holes.push(h);
-  };
-  hole(-C, 0, 0.14);
-  hole(C, 0, 0.14);
-  hole(-0.32, 0, 0.045);
-  hole(0.32, 0, 0.045);
-  return s;
-}
-
-/** Полувысота профиля детали в точке x (для обрезки линии сканирования). */
-export function profileHalfHeight(x) {
-  const ax = Math.abs(x);
-  if (ax > C + R) return 0;
-  const inHead = Math.sqrt(Math.max(0, R * R - (ax - C) * (ax - C)));
-  return Math.max(ax < C ? WAIST : 0, inHead);
-}
-
-export function buildPart({ quality, dot }) {
+export function buildPart({ quality, dot, svg }) {
   const group = new THREE.Group();
 
-  const geo = new THREE.ExtrudeGeometry(partShape(), {
-    depth: 0.14,
-    bevelEnabled: true,
-    bevelThickness: 0.026,
-    bevelSize: 0.02,
-    bevelSegments: quality === 'high' ? 4 : 2,
-    curveSegments: quality === 'high' ? 56 : 28,
-  });
+  const geo = buildLogoGeometry(svg, { width: 2.9, depthUnits: 30, quality });
   geo.center();
   geo.computeBoundingBox();
   const bb = geo.boundingBox;
+
+  // профиль логотипа по X: нижняя и верхняя кромка в каждом столбце — по ним линия сканирования не вылезает за буквы
+  const BINS = 240;
+  const lo = new Float32Array(BINS).fill(Infinity);
+  const hi = new Float32Array(BINS).fill(-Infinity);
+  const pa = geo.attributes.position;
+  for (let i = 0; i < pa.count; i++) {
+    const b = Math.min(BINS - 1, Math.max(0, Math.floor(((pa.getX(i) - bb.min.x) / (bb.max.x - bb.min.x)) * BINS)));
+    lo[b] = Math.min(lo[b], pa.getY(i));
+    hi[b] = Math.max(hi[b], pa.getY(i));
+  }
+  for (let i = 1; i < BINS; i++) if (lo[i] === Infinity) { lo[i] = lo[i - 1]; hi[i] = hi[i - 1]; } // пробелы между буквами — как у соседа слева
+  for (let i = BINS - 2; i >= 0; i--) if (lo[i] === Infinity) { lo[i] = lo[i + 1]; hi[i] = hi[i + 1]; }
+  const loS = new Float32Array(BINS);
+  const hiS = new Float32Array(BINS);
+  for (let i = 0; i < BINS; i++) {
+    let a = Infinity;
+    let b = -Infinity;
+    for (let k = Math.max(0, i - 3); k <= Math.min(BINS - 1, i + 3); k++) { a = Math.min(a, lo[k]); b = Math.max(b, hi[k]); }
+    loS[i] = a;
+    hiS[i] = b;
+  }
+  const profileRange = (x, out) => {
+    if (x < bb.min.x || x > bb.max.x) return false;
+    const i = Math.min(BINS - 1, Math.floor(((x - bb.min.x) / (bb.max.x - bb.min.x)) * BINS));
+    out[0] = loS[i];
+    out[1] = hiS[i];
+    return true;
+  };
+  const range = [0, 0];
 
   const uniforms = {
     uBeam: { value: 0 },
@@ -75,8 +64,8 @@ export function buildPart({ quality, dot }) {
     color: /* glsl */ `
       vec3 bp = (vLocal - uMin) / (uMax - uMin);
       float coord = bp.x * 0.82 + (1.0 - bp.y) * 0.18;
-      float n1 = ml_fbm(vLocal * 3.4);
-      g_n2 = ml_snoise(vLocal * 15.0);
+      float n1 = ml_fbm(vLocal * 5.2);
+      g_n2 = ml_snoise(vLocal * 22.0);
       float front = uBeam * 1.16 - 0.08;
       g_d = front - coord + n1 * 0.055;
       g_clean = smoothstep(0.0, 0.018, g_d);
@@ -209,11 +198,11 @@ export function buildPart({ quality, dot }) {
     const bxTop = front / 0.82; // при by = 1
     const bxBottom = (front - 0.18) / 0.82; // при by = 0
     const midX = bb.min.x + ((bxTop + bxBottom) / 2) * size.x;
-    const half = profileHalfHeight(midX);
-    const byMin = Math.max(0, (-half - bb.min.y) / size.y);
-    const byMax = Math.min(1, (half - bb.min.y) / size.y);
+    const inside = profileRange(midX, range);
+    const byMin = Math.max(0, (range[0] - bb.min.y) / size.y);
+    const byMax = Math.min(1, (range[1] - bb.min.y) / size.y);
     const lerpX = (by) => bxBottom + (bxTop - bxBottom) * by;
-    if (half <= 0.001 || byMax <= byMin) {
+    if (!inside || byMax <= byMin) {
       rig.visible = false;
       light.intensity = 0;
       return null;

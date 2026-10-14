@@ -50,6 +50,40 @@ function dissolve(material, key) {
   });
 }
 
+/**
+ * Объёмный логотип (знак + буквы) одной геометрией — для «детали», которую чистит лазер.
+ * Центрирован, ширина width; толще, чем финальный логотип, чтобы читался как металлическое литьё.
+ */
+export function buildLogoGeometry(svgText, { width = 2.9, depthUnits = 30, quality = 'high' } = {}) {
+  const data = new SVGLoader().parse(svgText);
+  const S = width / 740;
+  const cx = 1364;
+  const cy = 51;
+  const opts = {
+    depth: depthUnits,
+    bevelEnabled: true,
+    bevelThickness: 2.4,
+    bevelSize: 1.3,
+    bevelSegments: quality === 'high' ? 3 : 1,
+    curveSegments: quality === 'high' ? 12 : 5,
+  };
+  const geos = [];
+  for (const path of data.paths) {
+    const cls = path.userData?.node?.getAttribute?.('class') || '';
+    if (!cls.includes('logo__mark') && !cls.includes('logo__letter')) continue;
+    const shapes = SVGLoader.createShapes(path);
+    if (!shapes.length) continue;
+    const g = new THREE.ExtrudeGeometry(shapes, opts);
+    g.translate(-cx, -cy, -depthUnits / 2);
+    g.scale(S, -S, -S); // SVG: ось Y вниз → переворачиваем (и Z, чтобы не вывернуть грани)
+    geos.push(g);
+  }
+  if (!geos.length) throw new Error('В logo.svg не найдены знак и буквы');
+  const merged = mergeGeometries(geos);
+  merged.computeVertexNormals();
+  return merged;
+}
+
 export function buildLogo(svgText, { quality, dot, width = 3.6 }) {
   const data = new SVGLoader().parse(svgText);
   const S = width / 740; // ширина viewBox логотипа — 740
