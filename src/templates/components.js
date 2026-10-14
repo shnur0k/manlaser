@@ -18,7 +18,12 @@ const SHOW_LEADS = false;
 
 // Автонумерация заголовков секций на странице: (01), (02)… Сбрасывается перед рендером каждой страницы.
 let headIndex = 0;
-export const resetSectionIndex = () => (headIndex = 0);
+let glowIndex = 0;
+export const resetSectionIndex = () => {
+  headIndex = 0;
+  glowIndex = 0;
+};
+const GLOWS = ['br', 'l', 'r', 'bl', 'b'];
 
 /**
  * Заголовок секции в журнальной вёрстке: тонкая линия-разделитель сверху, крупный заголовок
@@ -52,7 +57,7 @@ export function crumbs(route) {
  */
 export function pageHero(ctx, { eyebrow: eb, title, lead: leadText, actions = '', mediaKey, variant = '' }) {
   const lead = SHOW_LEADS ? leadText : '';
-  return `<section class="${cls('page-hero', variant && `page-hero--${variant}`, !mediaKey && 'page-hero--solo')}">
+  return `<section class="${cls('page-hero', variant && `page-hero--${variant}`, !mediaKey && 'page-hero--solo')}" data-glow="tr">
     <div class="page-hero__glow" aria-hidden="true"></div>
     <div class="container">
       <div class="page-hero__top">
@@ -200,7 +205,7 @@ export function phoneLink(contact, { showLabel = true, extra = '' } = {}) {
 
 export function ctaBand(ctx, { title, text, primary, secondary } = {}) {
   const contact = ctx.contact;
-  return `<section class="cta-band" data-reveal>
+  return `<section class="cta-band" data-reveal data-glow="b">
     <div class="container">
       <div class="cta-band__inner">
         <div class="cta-band__beam" aria-hidden="true"></div>
@@ -223,7 +228,13 @@ export function ctaBand(ctx, { title, text, primary, secondary } = {}) {
   </section>`;
 }
 
-export const section = (inner, { id, extra = '', container = true } = {}) =>
-  `<section class="${cls('section', extra)}"${id ? ` id="${esc(id)}"` : ''}>${container ? `<div class="container">${inner}</div>` : inner}</section>`;
+/** Секция. glow — светящееся пятно у края (br, bl, b, l, r, tr, tl), false — без пятна; по умолчанию пятна идут через одну секцию. */
+export function section(inner, { id, extra = '', container = true, glow } = {}) {
+  const tight = /\btight\b/.test(extra); // «узкие» секции в счёт не идут и пятен не получают
+  const n = tight ? -1 : glowIndex++;
+  const auto = !tight && n % 2 === 0 ? GLOWS[(n / 2) % GLOWS.length] : undefined;
+  const g = glow === undefined ? auto : glow || undefined;
+  return `<section class="${cls('section', extra)}"${id ? ` id="${esc(id)}"` : ''}${g ? ` data-glow="${g}"` : ''}>${container ? `<div class="container">${inner}</div>` : inner}</section>`;
+}
 
 export { media, icon };
