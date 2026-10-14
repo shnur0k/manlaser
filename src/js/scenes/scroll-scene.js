@@ -79,6 +79,7 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
       b.el.classList.toggle('is-active', p >= b.from && p <= b.to + 0.02);
     }
     root.classList.toggle('is-scrolled', p > 0.01);
+    root.style.setProperty('--p', p.toFixed(4)); // прогресс для CSS (например, затухание фона вступления)
     if (readout) readout.textContent = String(Math.round(p * 100)).padStart(3, '0');
   }
 

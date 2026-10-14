@@ -27,6 +27,8 @@ export function home(ctx) {
       </div>
       <canvas class="scene__canvas" data-scene-canvas></canvas>
       <div class="scene__vignette"></div>
+      <!-- зернистый градиент с вертикальными полосами: тёплый свет сверху, вокруг знака пусто, при прокрутке гаснет (над виньеткой, чтобы она его не гасила) -->
+      <div class="scene__aurora"><i></i></div>
     </div>
 
     <!-- «видоискатель лазера»: уголки рамки, адрес -->
