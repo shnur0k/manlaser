@@ -17,6 +17,19 @@ const STOPS = [
 const MARK_X0 = 994.31;
 const MARK_X1 = 1175.73;
 
+/** GLSL-функция ml_brand(t): фирменный градиент знака (t = 0..1 слева направо) — для шейдера «детали» первой сцены. */
+export function brandGradientGLSL() {
+  const col = (hex) => {
+    const c = new THREE.Color(hex);
+    return `vec3(${c.r.toFixed(4)}, ${c.g.toFixed(4)}, ${c.b.toFixed(4)})`;
+  };
+  let body = `vec3 c = ${col(STOPS[0][1])};\n`;
+  for (let i = 0; i < STOPS.length - 1; i++) {
+    body += `  c = mix(c, ${col(STOPS[i + 1][1])}, clamp((t - ${STOPS[i][0].toFixed(3)}) / ${(STOPS[i + 1][0] - STOPS[i][0]).toFixed(3)}, 0.0, 1.0));\n`;
+  }
+  return `vec3 ml_brand(float t) {\n  t = clamp(t, 0.0, 1.0);\n  ${body}  return c;\n}`;
+}
+
 function gradientColor(t, out) {
   t = Math.max(0, Math.min(1, t));
   for (let i = 0; i < STOPS.length - 1; i++) {

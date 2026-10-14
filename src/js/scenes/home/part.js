@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { patchMaterial } from '../lib/patch.js';
-import { buildLogoGeometry } from './logo.js';
+import { buildLogoGeometry, brandGradientGLSL } from './logo.js';
 
 /**
- * Ржавый объёмный знак manlaser («деталь» первой сцены) + лазерная головка.
- * uBeam 0→1 — фронт очистки проходит по знаку: ржавчина сгорает, открывается металл.
+ * Объёмный знак manlaser («деталь» первой сцены) + лазерная головка.
+ * Сначала знак чистый (в анфас), затем uRust 0→1 — его покрывает коррозия, затем uBeam 0→1 — лазер снимает ржавчину.
  */
 export function buildPart({ quality, dot, svg }) {
   const group = new THREE.Group();
@@ -47,19 +47,21 @@ export function buildPart({ quality, dot, svg }) {
   const uniforms = {
     uBeam: { value: 0 },
     uActive: { value: 0 },
+    uRust: { value: 0 },
     uTime: { value: 0 },
     uMin: { value: bb.min.clone() },
     uMax: { value: bb.max.clone() },
   };
 
-  const material = patchMaterial(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, metalness: 0.2 }), {
+  const material = patchMaterial(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3, metalness: 0.4 }), {
     key: 'rust',
     octaves: 3,
     uniforms,
     varyings: 'varying vec3 vLocal;',
     vertex: 'vLocal = position;',
     fragmentHead: /* glsl */ `
-      float g_clean; float g_hot; float g_h; float g_n2; float g_brush; float g_d;
+      float g_clean; float g_hot; float g_h; float g_n2; float g_rm; float g_rust; float g_d;
+      ${brandGradientGLSL()}
     `,
     color: /* glsl */ `
       vec3 bp = (vLocal - uMin) / (uMax - uMin);
@@ -71,39 +73,42 @@ export function buildPart({ quality, dot, svg }) {
       g_clean = smoothstep(0.0, 0.018, g_d);
       g_hot = exp(-pow(g_d / 0.016, 2.0)) * uActive;
 
+      // коррозия расползается пятнами: порог по шуму растёт вместе с uRust (снизу вверх чуть раньше)
+      float rn = ml_fbm(vLocal * 3.0 + vec3(7.1)) * 0.5 + 0.5;
+      float seed = rn + (1.0 - bp.y) * 0.18;
+      g_rm = smoothstep(0.0, 0.12, uRust * 1.3 - seed);
+      g_rust = g_rm * (1.0 - g_clean);
+
+      // исходный вид знака: фирменный градиент; за фронтом лазера — лёгкая побежалость
+      vec3 brand = ml_brand(bp.x);
+      float tint = smoothstep(0.0, 0.02, g_d) * exp(-g_d * 16.0);
+      brand = mix(brand, vec3(0.9, 0.5, 0.18), tint * 0.3);
+
       // ржавчина: тёмная окалина + рыжие хлопья
       float rm = smoothstep(-0.45, 0.6, n1 + g_n2 * 0.25);
       vec3 rust = mix(vec3(0.075, 0.03, 0.014), vec3(0.36, 0.13, 0.04), rm);
       rust = mix(rust, vec3(0.55, 0.24, 0.07), smoothstep(0.5, 0.95, g_n2) * 0.55);
       rust *= 0.75 + 0.25 * smoothstep(-0.3, 0.3, ml_snoise(vLocal * 40.0));
 
-      // чистая сталь со шлифовкой вдоль детали
-      g_brush = ml_snoise(vec3(vLocal.x * 1.5, vLocal.y * 90.0, vLocal.z * 90.0)) * 0.5 + 0.5;
-      vec3 steel = vec3(0.56, 0.57, 0.6) * (0.86 + g_brush * 0.22);
-      // цвета побежалости сразу за фронтом
-      float tint = smoothstep(0.0, 0.02, g_d) * exp(-g_d * 16.0);
-      steel = mix(steel, vec3(0.72, 0.5, 0.24), tint * 0.55);
-      steel = mix(steel, vec3(0.28, 0.32, 0.62), smoothstep(0.02, 0.05, g_d) * exp(-g_d * 26.0) * 0.4);
-
-      diffuseColor.rgb = mix(rust, steel, g_clean);
-      // рельеф: ржавые раковины, на чистом металле — лёгкая «оспинка» после ржавчины
-      g_h = mix(n1 * 0.7 + g_n2 * 0.3, (1.0 - smoothstep(-0.25, 0.45, n1)) * 0.18 + g_n2 * 0.04, g_clean);
+      diffuseColor.rgb = mix(brand, rust, g_rust);
+      // рельеф только там, где ржавчина: раковины и «хлопья»
+      g_h = g_rust * (n1 * 0.7 + g_n2 * 0.3);
     `,
     roughness: /* glsl */ `
-      roughnessFactor = mix(0.92 - g_n2 * 0.05, 0.2 + g_brush * 0.14, g_clean);
+      roughnessFactor = mix(0.26, 0.92 - g_n2 * 0.05, g_rust);
     `,
     metalness: /* glsl */ `
-      metalnessFactor = mix(0.12, 1.0, g_clean);
+      metalnessFactor = mix(0.42, 0.12, g_rust);
     `,
     normal: /* glsl */ `
-      normal = ml_bump(-vViewPosition, normal, g_h, mix(0.05, 0.012, g_clean));
+      normal = ml_bump(-vViewPosition, normal, g_h, 0.05);
     `,
     emissive: /* glsl */ `
       float flick = 0.7 + 0.3 * ml_snoise(vec3(vLocal.xy * 34.0, uTime * 9.0));
-      totalEmissiveRadiance += vec3(1.0, 0.36, 0.06) * g_hot * 3.0 * flick;
-      totalEmissiveRadiance += vec3(1.0, 0.8, 0.55) * pow(g_hot, 5.0) * 3.2;
+      totalEmissiveRadiance += vec3(1.0, 0.36, 0.06) * g_hot * g_rm * 3.0 * flick;
+      totalEmissiveRadiance += vec3(1.0, 0.8, 0.55) * pow(g_hot, 5.0) * g_rm * 3.2;
       // тлеющие точки на ржавчине у самого фронта
-      float ember = smoothstep(0.82, 0.98, g_n2) * exp(-pow((g_d + 0.035) / 0.03, 2.0)) * uActive;
+      float ember = smoothstep(0.82, 0.98, g_n2) * exp(-pow((g_d + 0.035) / 0.03, 2.0)) * uActive * g_rm;
       totalEmissiveRadiance += vec3(1.0, 0.3, 0.05) * ember * 2.6;
     `,
   });
@@ -178,11 +183,12 @@ export function buildPart({ quality, dot, svg }) {
   const toLocal = (bx, by, out) => out.set(bb.min.x + bx * size.x, bb.min.y + by * size.y, frontZ);
 
   /**
-   * beam — 0..1 положение фронта, active — 0..1 включён ли лазер.
+   * beam — 0..1 положение фронта, active — 0..1 включён ли лазер, rust — 0..1 насколько знак покрыт коррозией.
    * Возвращает точку контакта и нормаль в мировых координатах (для искр) или null.
    */
-  function update(beam, active, time) {
+  function update(beam, active, time, rust = 0) {
     uniforms.uBeam.value = beam;
+    uniforms.uRust.value = rust;
     uniforms.uActive.value = active;
     uniforms.uTime.value = time;
 

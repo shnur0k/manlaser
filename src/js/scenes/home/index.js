@@ -8,7 +8,9 @@ import logoSvg from '../../../../assets/logo.svg?raw';
 
 /**
  * 3D-сцена главной (Three.js). Прогресс скролла p:
- *   0.00–0.36  ржавая деталь, лазер проходит по ней, ржавчина сгорает, летят искры;
+ *   0.00–0.05  чистый знак логотипа в анфас по центру;
+ *   0.05–0.17  знак покрывается коррозией;
+ *   0.17–0.36  лазер проходит по знаку, ржавчина сгорает, летят искры;
  *   0.36–0.46  пролёт камеры под автомобиль на подъёмнике;
  *   0.46–0.76  днище покрывается антикором;
  *   0.76–1.00  камера отъезжает, из искр собирается логотип.
@@ -18,9 +20,10 @@ import logoSvg from '../../../../assets/logo.svg?raw';
 // Ключевые кадры камеры: позиция, точка взгляда, угол обзора
 const CAM = [
   // деталь по центру кадра; камера лишь слегка следует за фронтом очистки
-  { p: 0.0, pos: [0.0, 0.34, 4.0], look: [0.0, -0.02, 0], fov: 34 },
-  { p: 0.08, pos: [-0.2, 0.32, 3.2], look: [-0.15, -0.02, 0], fov: 34 },
-  { p: 0.22, pos: [0.02, 0.28, 3.1], look: [0.0, -0.02, 0], fov: 33 },
+  // вход на сайт: знак строго по центру, в анфас; затем камера чуть сближается и уходит вбок за лазером
+  { p: 0.0, pos: [0.0, 0.0, 3.7], look: [0.0, 0.0, 0], fov: 34 },
+  { p: 0.16, pos: [0.0, 0.12, 3.3], look: [0.0, -0.01, 0], fov: 34 },
+  { p: 0.24, pos: [0.0, 0.28, 3.1], look: [0.0, -0.02, 0], fov: 33 },
   { p: 0.35, pos: [0.2, 0.2, 3.1], look: [0.15, -0.02, 0], fov: 33 },
   { p: 0.4, pos: [1.35, 0.55, 0.4], look: [1.0, 0.7, -4.5], fov: 42 },
   // под машиной — между стойками подъёмника (стойки на z = -5.14 и -7.86)
@@ -52,8 +55,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
 
   // ---------- объекты ----------
   const part = buildPart({ quality, dot, svg: logoSvg });
-  part.group.rotation.set(-0.1, -0.3, 0.03);
-  part.group.scale.setScalar(0.5);
+    part.group.scale.setScalar(0.6);
   scene.add(part.group);
   part.group.updateMatrixWorld(true);
 
@@ -121,10 +123,14 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
     lastP = p;
 
     // 1. лазерная очистка
-    const beam = smoothstep(0.06, 0.34, p);
-    const laserOn = smoothstep(0.05, 0.075, p) * (1 - smoothstep(0.34, 0.37, p));
+    const rust = smoothstep(0.05, 0.17, p);
+    const beam = smoothstep(0.18, 0.34, p);
+    const laserOn = smoothstep(0.17, 0.19, p) * (1 - smoothstep(0.34, 0.37, p));
+    // вход — строго анфас с лёгким «дыханием»; по мере очистки знак поворачивается, и виден объём
+    const turn = smoothstep(0.06, 0.3, p);
+    part.group.rotation.set(-0.1 * turn, -0.3 * turn + Math.sin(time * 0.5) * 0.03 * (1 - turn), 0.03 * turn);
     part.group.visible = p < 0.86;
-    const contact = part.update(beam, laserOn, time);
+    const contact = part.update(beam, laserOn, time, rust);
     if (contact && laserOn > 0.2) {
       const rate = (high ? 160 : 60) + Math.min(speed * 900, high ? 520 : 160);
       const n = Math.floor(rate * dt + Math.random());
