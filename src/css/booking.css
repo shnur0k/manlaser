@@ -63,8 +63,10 @@ p.field__label {
   color: var(--faint);
   font-weight: 500;
 }
-.input:hover {
-  border-color: rgba(249, 249, 249, 0.3);
+@media (hover: hover) {
+  .input:hover {
+    border-color: rgba(249, 249, 249, 0.3);
+  }
 }
 .input:focus {
   outline: none;
@@ -264,9 +266,11 @@ input[type='date'].input {
   line-height: 1;
   transition: background-color 0.3s, color 0.3s;
 }
-.calc-result__remove:hover {
-  background: var(--orange);
-  color: #fff;
+@media (hover: hover) {
+  .calc-result__remove:hover {
+    background: var(--orange);
+    color: #fff;
+  }
 }
 .booking-next,
 .booking-contacts {

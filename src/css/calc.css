@@ -84,7 +84,7 @@
   border-radius: var(--r);
   border: 1px solid var(--line-strong);
   background: var(--surface-1);
-  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.4s, transform 0.4s var(--ease-out);
+  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.4s, transform 0.4s var(--ease-out), scale 0.18s var(--ease-out);
 }
 .choice__body strong {
   font-family: var(--font-display);
@@ -105,8 +105,10 @@
   margin-bottom: 6px;
   transition: color 0.3s;
 }
-.choice:hover .choice__body {
-  border-color: rgba(249, 249, 249, 0.32);
+@media (hover: hover) {
+  .choice:hover .choice__body {
+    border-color: rgba(249, 249, 249, 0.32);
+  }
 }
 .choice input:checked + .choice__body {
   border-color: var(--orange);
@@ -299,8 +301,10 @@
   opacity: 0.25;
   transition: opacity 0.3s;
 }
-.chip-check:hover span {
-  border-color: rgba(232, 80, 2, 0.6);
+@media (hover: hover) {
+  .chip-check:hover span {
+    border-color: rgba(232, 80, 2, 0.6);
+  }
 }
 .chip-check input:checked + span {
   background: var(--orange);
@@ -410,9 +414,11 @@
   font-weight: 700;
   transition: background-color 0.3s, color 0.3s;
 }
-.stepper__btn:hover {
-  background: var(--orange);
-  color: #fff;
+@media (hover: hover) {
+  .stepper__btn:hover {
+    background: var(--orange);
+    color: #fff;
+  }
 }
 .stepper__input {
   width: 44px;
@@ -627,8 +633,10 @@
   height: 18px;
   color: var(--orange);
 }
-.summary__phone:hover {
-  color: var(--orange-hot);
+@media (hover: hover) {
+  .summary__phone:hover {
+    color: var(--orange-hot);
+  }
 }
 
 /* расчёт на странице записи */

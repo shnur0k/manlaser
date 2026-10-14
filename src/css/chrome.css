@@ -32,6 +32,7 @@
   width: 52px;
   height: 52px;
   background: rgba(14, 14, 14, 0.9);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   opacity: 0;
   transform: translateY(16px) scale(0.8);
@@ -53,11 +54,14 @@
   border-radius: 50%;
   border: 1px solid var(--line-strong);
   background: rgba(14, 14, 14, 0.85);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  transition: background-color 0.3s, border-color 0.3s;
+  transition: background-color 0.3s, border-color 0.3s, scale 0.18s var(--ease-out);
 }
-.floating__toggle:hover {
-  border-color: var(--orange);
+@media (hover: hover) {
+  .floating__toggle:hover {
+    border-color: var(--orange);
+  }
 }
 .floating__toggle > span {
   position: absolute;
@@ -148,8 +152,10 @@
   height: 20px;
   color: var(--orange);
 }
-.site-footer__mail:hover {
-  color: var(--orange-hot);
+@media (hover: hover) {
+  .site-footer__mail:hover {
+    color: var(--orange-hot);
+  }
 }
 .cta-band + .site-footer {
   padding-top: clamp(8px, 2vw, 24px);
@@ -189,8 +195,10 @@
   font-weight: 600;
   transition: color 0.3s;
 }
-.site-footer__col a:hover {
-  color: var(--orange-hot);
+@media (hover: hover) {
+  .site-footer__col a:hover {
+    color: var(--orange-hot);
+  }
 }
 .site-footer__line {
   display: flex;
@@ -220,9 +228,11 @@
   stroke-width: 0.6;
   transition: fill 0.8s var(--ease-out), stroke 0.8s;
 }
-.site-footer__giant:hover .logo__letter {
-  fill: rgba(232, 80, 2, 0.12);
-  stroke: rgba(241, 96, 1, 0.6);
+@media (hover: hover) {
+  .site-footer__giant:hover .logo__letter {
+    fill: rgba(232, 80, 2, 0.12);
+    stroke: rgba(241, 96, 1, 0.6);
+  }
 }
 .site-footer__bottom {
   display: flex;
@@ -396,6 +406,7 @@ html.has-cursor select {
   border-radius: 16px;
   border: 1px solid rgba(232, 80, 2, 0.5);
   background: rgba(10, 10, 10, 0.95);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   box-shadow: 0 20px 60px -20px rgba(232, 80, 2, 0.6);
   font-weight: 650;

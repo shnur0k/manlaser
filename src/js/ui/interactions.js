@@ -55,9 +55,9 @@ export function initTilt(root) {
       ry((px - 0.5) * max * 2);
       rx(-(py - 0.5) * max * 2);
     };
+    // курсор унёс инерцию — карточка возвращается с лёгким пружинным откатом (демпфирование ~0.8)
     const leave = () => {
-      rx(0);
-      ry(0);
+      gsap.to(el, { rotationX: 0, rotationY: 0, duration: 0.9, ease: 'elastic.out(1, 0.6)', overwrite: 'auto' });
     };
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', leave);

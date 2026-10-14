@@ -118,10 +118,12 @@
   border: 1px solid var(--line-strong);
   font-weight: 700;
   font-size: 0.9375rem;
-  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s, scale 0.18s var(--ease-out);
 }
-.tag-filter__btn:hover {
-  border-color: var(--orange);
+@media (hover: hover) {
+  .tag-filter__btn:hover {
+    border-color: var(--orange);
+  }
 }
 .tag-filter__btn.is-active {
   background: var(--orange);

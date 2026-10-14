@@ -1,0 +1,60 @@
+/* ---------- Отклик на касание ---------- */
+
+/* на сенсорных экранах без задержки тапа и без двойного зума по кнопкам и ссылкам (классы с touch-action: pan-y сильнее) */
+a,
+button,
+input,
+select,
+textarea,
+label,
+summary,
+[role='button'] {
+  touch-action: manipulation;
+}
+
+/* реакция в момент нажатия, а не после отпускания: лёгкое «вдавливание».
+   Плавный возврат — scale добавлен в transition самих элементов (см. components.css, pages.css и др.) */
+.btn:active,
+.pill-link:active,
+.tag-filter__btn:active,
+.burger:active,
+.floating__toggle:active,
+.messenger:active,
+.choice:active .choice__body {
+  scale: 0.97;
+}
+
+/* на телефоне и сенсорных экранах область нажатия не меньше 44 px (рекомендация Apple) */
+@media (pointer: coarse), (max-width: 767px) {
+  .pill-link,
+  .tag-filter__btn,
+  .messenger,
+  .link-arrow,
+  .summary__phone,
+  .site-footer a:not(.btn) {
+    min-height: 44px;
+  }
+  .messengers .messenger {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .phone-link,
+  .chip-check span {
+    min-height: 44px;
+  }
+  .crumbs a {
+    padding-block: 12px;
+    margin-block: -12px;
+  }
+  .link-arrow,
+  .summary__phone,
+  .site-footer a:not(.btn) {
+    display: inline-flex;
+    align-items: center;
+  }
+  /* логотип в шапке: нажимаемая область больше картинки, раскладка не меняется */
+  .logo {
+    padding-block: 12px;
+    margin-block: -12px;
+  }
+}
