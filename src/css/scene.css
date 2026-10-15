@@ -484,6 +484,34 @@ html.js .scene:not(.is-static) .scene__step:not(.scene__step--intro) {
   .scene.is-static .scene__step--caption {
     display: none;
   }
+  /* первый экран — только знак: текст и кнопки убраны */
+  .scene.is-static .intro__bottom {
+    display: none;
+  }
+  /* знак закреплён, а финальный блок при прокрутке выезжает на него снизу */
+  .scene.is-static {
+    overflow: clip;
+  }
+  .scene.is-static .scene__stage {
+    position: sticky;
+    inset: auto;
+    top: 0;
+    margin-bottom: -100svh;
+  }
+  .scene.is-static .scene__step--final {
+    margin-top: -4svh;
+    border-top: 0;
+    background: linear-gradient(180deg, transparent 0, rgba(0, 0, 0, 0.9) 72px, #000 140px);
+  }
+  .scene.is-static .final {
+    padding-top: 120px;
+  }
+  .scene.is-static .final .scene__num {
+    display: none;
+  }
+  .scene.is-static .final .actions {
+    justify-content: center;
+  }
 }
 /* пятно на статичном экране не обрывается по низу кадра, а плавно гаснет */
 .scene.is-static .scene__aurora {
