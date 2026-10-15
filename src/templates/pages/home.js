@@ -21,9 +21,10 @@ export function home(ctx) {
   <section class="scene scene--home" data-scene-root="home" aria-label="Лазерная очистка и антикор: от ржавчины до защиты">
     <div class="scene__stage" aria-hidden="true">
       <div class="scene__poster">
-        <div class="hero__beam"></div>
-        <div class="hero__glow"></div>
-        ${c.media['home.hero-fallback']?.src ? ctx.media('home.hero-fallback', { cls: 'scene__poster-media', eager: true }) : ''}
+        <!-- постер = первый кадр 3D-сцены (знак в анфас): виден сразу, 3D догружается и плавно его сменяет -->
+        ${c.media['home.hero-fallback']?.src
+          ? ctx.media('home.hero-fallback', { cls: 'scene__poster-media', eager: true })
+          : '<div class="hero__beam"></div><div class="hero__glow"></div>'}
       </div>
       <canvas class="scene__canvas" data-scene-canvas></canvas>
       <div class="scene__vignette"></div>

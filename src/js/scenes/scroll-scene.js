@@ -129,8 +129,21 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
   window.addEventListener('pointermove', onPointer, { passive: true });
 
   // ---------- рендерер по режиму ----------
+  /** Пока виден постер (кадр сцены), 3D не грузим: ждём загрузки страницы и свободного момента браузера. */
+  function whenIdle() {
+    return new Promise((resolve) => {
+      const go = () => (window.requestIdleCallback ? window.requestIdleCallback(() => resolve(), { timeout: 1800 }) : setTimeout(resolve, 600));
+      if (document.readyState === 'complete') setTimeout(go, 250);
+      else window.addEventListener('load', () => setTimeout(go, 250), { once: true });
+    });
+  }
+
   async function createRenderer() {
     try {
+      if (mode === '3d') {
+        await whenIdle();
+        if (destroyed) return;
+      }
       if (mode === '3d') {
         const mod = await load3d();
         if (destroyed) return;

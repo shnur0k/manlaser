@@ -1,50 +1,17 @@
 /* Доступность материалов: полупрозрачные панели с размытием становятся плотными.
-   Список селекторов собран из правил с backdrop-filter; при добавлении нового размытия — добавьте его сюда. */
+   Размытие фона (backdrop-filter) оставлено только у шапки и плашки меню — всё остальное сделано плотным фоном (быстрее на телефонах).
+   Если добавляете новое размытие — добавьте селектор сюда. */
 @media (prefers-reduced-transparency: reduce) {
-  .ba__hint,
-  .ba__ill,
-  .ba__tag,
-  .btn--ghost,
-  .burger,
-  .burn__hint,
-  .burn__ill,
-  .burn__tag,
-  .drop,
-  .floating__list .messenger,
-  .floating__toggle,
-  .mega-backdrop,
-  .mega__inner,
   .nav__list,
-  .plate__note,
-  .plate__tag,
-  .site-header.is-scrolled .site-header__bar,
-  .slab__note,
-  .toast {
+  .site-header.is-scrolled .site-header__bar {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     background: rgba(10, 10, 10, 0.97);
   }
 }
 @media (prefers-contrast: more) {
-  .ba__hint,
-  .ba__ill,
-  .ba__tag,
-  .btn--ghost,
-  .burger,
-  .burn__hint,
-  .burn__ill,
-  .burn__tag,
-  .drop,
-  .floating__list .messenger,
-  .floating__toggle,
-  .mega-backdrop,
-  .mega__inner,
   .nav__list,
-  .plate__note,
-  .plate__tag,
-  .site-header.is-scrolled .site-header__bar,
-  .slab__note,
-  .toast {
+  .site-header.is-scrolled .site-header__bar {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     background: rgba(10, 10, 10, 0.98);

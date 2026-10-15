@@ -893,10 +893,8 @@
   position: absolute;
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.62);
+  background: rgba(0, 0, 0, 0.82);
   border: 1px solid var(--line-strong);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -1305,10 +1303,8 @@
   z-index: 4;
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.62);
+  background: rgba(0, 0, 0, 0.82);
   border: 1px solid var(--line-strong);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -1570,10 +1566,8 @@
   z-index: 5;
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.62);
+  background: rgba(0, 0, 0, 0.82);
   border: 1px solid var(--line-strong);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.12em;
