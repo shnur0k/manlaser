@@ -473,3 +473,22 @@ html.js .scene:not(.is-static) .scene__step:not(.scene__step--intro) {
   inset: calc(var(--header-h) + 8px) clamp(12px, 2.4vw, 32px) auto;
   height: calc(100svh - var(--header-h) - 36px);
 }
+
+/* ---------- Телефон: статичная главная ---------- */
+@media (max-width: 767px) {
+  /* подложка постера чёрная: иначе поля вокруг знака (object-fit: contain) серее самого кадра и видны резкие горизонтальные края */
+  .scene__poster-media.media {
+    background: #000;
+  }
+  /* подписи «01 / 03 Очистка» и «02 / 03 Антикор» дублируют блок «Услуги» ниже — на телефоне их нет */
+  .scene.is-static .scene__step--caption {
+    display: none;
+  }
+}
+/* пятно на статичном экране не обрывается по низу кадра, а плавно гаснет */
+.scene.is-static .scene__aurora {
+  -webkit-mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%), linear-gradient(180deg, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%), linear-gradient(180deg, #000 62%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
