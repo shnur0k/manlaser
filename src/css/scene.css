@@ -514,10 +514,12 @@ html.js .scene:not(.is-static) .scene__step:not(.scene__step--intro) {
     justify-content: center;
   }
 }
-/* пятно на статичном экране не обрывается по низу кадра, а плавно гаснет */
-.scene.is-static .scene__aurora {
-  -webkit-mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%), linear-gradient(180deg, #000 62%, transparent 100%);
-  mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%), linear-gradient(180deg, #000 62%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
+/* пятно на статичном экране телефона не обрывается по низу кадра, а плавно гаснет */
+@media (max-width: 767px) {
+  .scene.is-static .scene__aurora {
+    -webkit-mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%), linear-gradient(180deg, #000 62%, transparent 100%);
+    mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%), linear-gradient(180deg, #000 62%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
 }
