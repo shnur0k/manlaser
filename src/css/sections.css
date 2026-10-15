@@ -102,6 +102,11 @@
   }
 }
 
+/* первая секция страницы без шапки (например, «Частые вопросы») */
+.section--first {
+  padding-top: calc(var(--header-h) + clamp(28px, 5vw, 64px));
+}
+
 /* ---------- Шапка внутренних страниц ---------- */
 .page-hero {
   position: relative;

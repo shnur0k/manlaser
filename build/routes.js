@@ -44,6 +44,7 @@ export function buildRoutes(c, { dev = false } = {}) {
 
   // О НАС
   add({ url: '/o-nas/', page: 'about', namespace: 'about', seo: c.pages.about, crumbs: [about] });
+  add({ url: '/voprosy/', page: 'faqHub', namespace: 'faq', seo: c.pages.faq, crumbs: [about, { name: 'Частые вопросы', url: '/voprosy/' }] });
   add({ url: '/kontakty/', page: 'contacts', namespace: 'contacts', seo: c.pages.contacts, crumbs: [about, { name: 'Контакты', url: '/kontakty/' }] });
 
   if (dev) {

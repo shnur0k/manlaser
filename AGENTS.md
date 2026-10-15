@@ -97,6 +97,7 @@ content/blog/*.md┘                                                            
 | `/raboty/` | `works` (misc.js) | `works` |
 | `/blog/`, `/blog/<slug>/` | `blogList`, `blogPost` | `blog`, `post` |
 | `/o-nas/` | `about` | `about` |
+| `/voprosy/` | `faqHub` (без шапки страницы, секция `.section--first`) | `faq` |
 | `/kontakty/` | `contacts` | `contacts` |
 | `/_photos/` (только dev) | `photos` | `photos` |
 | 404 | `notFound` | `not-found` |
@@ -122,7 +123,7 @@ content/blog/*.md┘                                                            
 
 - **Порядок:** env → Lenis → шапка, мегаменю, мобильное меню, плавающие кнопки, курсор, магнитные кнопки → `boot()`: `syncChrome` → ждём шрифты → `mountPage(container)` → `page.start()` → `initRouter()` (Barba).
 - **Barba** (`@barba/core`): переходы без перезагрузки. В dev `cacheIgnore` и `prefetchIgnore` включены (иначе после правок видна старая версия). `leave`: закрыть меню → `transition.cover()` → `unmountPage()`. `enter`: обновить `<head>` (`core/head.js`), `syncChrome`, прокрутка (позиция для «назад/вперёд» или якорь из ссылки), `mountPage`, `transition.reveal()`.
-- **Якоря при переходе** (`/o-nas/#faq`): Barba теряет хэш — берём его из `data.trigger.hash` и сами прокручиваем.
+- **Якоря при переходе** (например, `/uslugi/#section`): Barba теряет хэш — берём его из `data.trigger.hash` и сами прокручиваем.
 - **`core/page.js`** — жизненный цикл контейнера. `mountPage` запускает общие модули (появления, магнитные кнопки, наклон карточек, аккордеоны, картинки, фильтр тегов, бегущая строка, статус работы) и **модуль страницы** `src/js/pages/<namespace>.js` (через `import.meta.glob`, грузится только на своей странице). Контракт модуля: `export default (container) => ({ start?, destroy? }) | cleanupFn | null`. `unmountPage` вызывает все cleanup и убивает ScrollTrigger'ы внутри контейнера. **Любые слушатели/таймеры/тикеры обязаны убираться в cleanup.**
 - **`core/scroll.js`** — Lenis с собственным циклом (`autoRaf`), синхронизирован с ScrollTrigger. Если браузер рисует < 30 кадров/с — Lenis отключается (иначе колесо мыши «залипает»). `scrollTo(target, {immediate, offset})` — использовать вместо `window.scrollTo`.
 - **`core/env.js`** — `reducedMotion` (с учётом `?motion`), `touch`, `lowEnd`, `mobile`.

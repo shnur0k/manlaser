@@ -21,7 +21,7 @@ export function footer(ctx) {
           <ul>
             <li><a href="/raboty/">Работы и отзывы</a></li>
             <li><a href="/o-nas/">О компании</a></li>
-            <li><a href="/o-nas/#faq">Частые вопросы</a></li>
+            <li><a href="/voprosy/">Частые вопросы</a></li>
             <li><a href="/blog/">Блог</a></li>
           </ul>
         </div>

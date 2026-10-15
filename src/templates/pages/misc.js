@@ -104,7 +104,6 @@ export function about(ctx) {
   const { c } = ctx;
   const p = c.pages.about;
   const a = c.services.anticor;
-  const allFaq = c.faq.groups;
   return {
     body: `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, mediaKey: 'about.company' })}
@@ -124,10 +123,16 @@ export function about(ctx) {
       ${ctx.media('about.service', { cls: 'about-photos__item' })}
       ${ctx.media('home.team', { cls: 'about-photos__item about-photos__item--wide' })}
     </div>
-    ${equipmentNote(ctx, 'about-note')}`)}
+    ${equipmentNote(ctx, 'about-note')}`)}`,
+  };
+}
 
-    ${section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые *вопросы*', id: 'faq', lead: 'Про запись, лазерную очистку и антикоррозийную обработку.' })}
-      <div class="faq-groups">${each(allFaq, (g) => `<div class="faq-group"><h3 class="h3 faq-group__title">${esc(g.title)}</h3>${faq(g.items, { id: `faq-${g.id}` })}</div>`)}</div>`)}`,
+/** Страница «Частые вопросы»: без шапки страницы, сразу заголовок раздела и вопросы. */
+export function faqHub(ctx) {
+  const allFaq = ctx.c.faq.groups;
+  return {
+    body: section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые *вопросы*', id: 'faq', lead: 'Про запись, лазерную очистку и антикоррозийную обработку.' })}
+      <div class="faq-groups">${each(allFaq, (g) => `<div class="faq-group"><h3 class="h3 faq-group__title">${esc(g.title)}</h3>${faq(g.items, { id: `faq-${g.id}` })}</div>`)}</div>`, { extra: 'section--first' }),
     schema: [faqPage(allFaq.flatMap((g) => g.items))],
   };
 }
