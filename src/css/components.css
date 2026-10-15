@@ -646,9 +646,6 @@ html.js .media img:not(.is-loaded) {
   gap: clamp(24px, 4vw, 64px);
   align-items: start;
 }
-.svc-grid > :nth-child(2) {
-  margin-top: clamp(0px, 9vw, 160px);
-}
 .svc {
   position: relative;
   display: flex;
@@ -765,9 +762,6 @@ html.js .media img:not(.is-loaded) {
 @media (max-width: 799px) {
   .svc-grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .svc-grid > :nth-child(2) {
-    margin-top: 0;
   }
 }
 
