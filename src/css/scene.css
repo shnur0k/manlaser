@@ -87,6 +87,9 @@
   mask-size: 220px;
   opacity: 0.72;
 }
+html.no-aurora .scene__aurora {
+  display: none; /* ?aurora=0 — для проверки нагрузки */
+}
 .scene__vignette {
   position: absolute;
   inset: 0;

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { debug } from '../../core/debug.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -13,12 +14,14 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
  */
 export function createStage(canvas, { quality = 'high', fov = 35, envIntensity = 0.35, exposure = 1, bloom = {} } = {}) {
   const high = quality === 'high';
+  const useComposer = high && debug.bloom !== false; // ?bloom=0 — без свечения
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: !high, powerPreference: 'high-performance', alpha: false, stencil: false });
   renderer.setClearColor(0x000000, 1);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = exposure;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
+  renderer.info.autoReset = false; // считаем вызовы за весь кадр, включая постобработку (для счётчика ?perf=1)
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -29,13 +32,13 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
   const camera = new THREE.PerspectiveCamera(fov, 1, 0.03, 120);
   const baseFov = fov;
 
-  const maxRatio = Math.min(window.devicePixelRatio || 1, high ? 1.25 : 1);
+  const maxRatio = Math.min(window.devicePixelRatio || 1, debug.dpr ?? (high ? 1.25 : 1));
   let ratio = maxRatio;
   let composer = null;
   let bloomPass = null;
   let fxaaPass = null;
 
-  if (high) {
+  if (useComposer) {
     // без MSAA ×4 (дорого на высоком разрешении): сглаживание делает быстрый FXAA в конце цепочки
     const rt = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType });
     composer = new EffectComposer(renderer, rt);
@@ -69,10 +72,10 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
   function adapt(dt) {
     if (dt > 0.022 && dt < 0.25) slowFrames++;
     else slowFrames = Math.max(0, slowFrames - 2);
-    if (slowFrames > 90) {
+    if (slowFrames > 40) {
       slowFrames = 0;
-      if (ratio > 1.01) {
-        ratio = Math.max(1, ratio - 0.25);
+      if (ratio > 0.76) {
+        ratio = Math.max(0.75, ratio - 0.25);
         resize();
       } else if (composer) {
         composer.dispose();
@@ -82,6 +85,7 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
   }
 
   function render(dt = 0.016) {
+    renderer.info.reset();
     adapt(dt);
     if (composer) composer.render(dt);
     else renderer.render(scene, camera);
@@ -123,6 +127,11 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
     dispose,
     get size() {
       return { width, height };
+    },
+    /** Сведения для счётчика ?perf=1. */
+    info() {
+      const i = renderer.info;
+      return { width: Math.round(width * ratio), height: Math.round(height * ratio), ratio: +ratio.toFixed(2), quality, bloom: Boolean(composer), calls: i.render.calls, tris: i.render.triangles, geometries: i.memory.geometries, textures: i.memory.textures };
     },
   };
 }

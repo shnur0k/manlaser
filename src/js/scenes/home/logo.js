@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mergeGeometries, toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
 import { patchMaterial } from '../lib/patch.js';
 
 // Фирменный градиент знака (из assets/logo.svg); последний цвет чуть светлее чёрного, чтобы «хвост» читался в 3D
@@ -74,8 +74,8 @@ export function buildLogoGeometry(svgText, { width = 2.9, depthUnits = 30, quali
     bevelEnabled: true,
     bevelThickness: 2.4,
     bevelSize: 1.3,
-    bevelSegments: quality === 'high' ? 3 : 1,
-    curveSegments: quality === 'high' ? 12 : 5,
+    bevelSegments: quality === 'high' ? 2 : 1,
+    curveSegments: quality === 'high' ? 6 : 4, // мало сегментов: гладкость даёт сглаживание нормалей (toCreasedNormals), а не число треугольников
   };
   const geos = [];
   for (const path of data.paths) {
@@ -97,8 +97,7 @@ export function buildLogoGeometry(svgText, { width = 2.9, depthUnits = 30, quali
   const cy = only === 'mark' ? (bb.min.y + bb.max.y) / 2 : 51;
   merged.translate(-cx, -cy, -depthUnits / 2);
   merged.scale(S, -S, -S); // SVG: ось Y вниз → переворачиваем (и Z, чтобы не вывернуть грани)
-  merged.computeVertexNormals();
-  return merged;
+  return toCreasedNormals(merged, Math.PI / 5); // гладкие борта и скругления, чёткие рёбра
 }
 
 export function buildLogo(svgText, { quality, dot, width = 3.6 }) {
@@ -112,14 +111,13 @@ export function buildLogo(svgText, { quality, dot, width = 3.6 }) {
     bevelEnabled: true,
     bevelThickness: 1.6,
     bevelSize: 0.8,
-    bevelSegments: quality === 'high' ? 3 : 1,
-    curveSegments: quality === 'high' ? 8 : 4,
+    bevelSegments: quality === 'high' ? 2 : 1,
+    curveSegments: quality === 'high' ? 5 : 3,
   };
   const prep = (geo) => {
     geo.translate(-cx, -cy, -depth / 2);
     geo.scale(S, -S, -S); // SVG: ось Y вниз → переворачиваем (и Z, чтобы не вывернуть грани)
-    geo.computeVertexNormals();
-    return geo;
+    return toCreasedNormals(geo, Math.PI / 5); // гладкие борта при малом числе треугольников
   };
 
   const group = new THREE.Group();

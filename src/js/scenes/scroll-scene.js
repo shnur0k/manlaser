@@ -1,6 +1,7 @@
 import config from '../../../config.js';
 import { gsap, ScrollTrigger } from '../lib/gsap.js';
 import { env } from '../core/env.js';
+import { debug } from '../core/debug.js';
 import { createFramesPlayer } from './frames-player.js';
 import { createVideoPlayer } from './video-player.js';
 
@@ -41,7 +42,7 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
   if (env.reducedMotion) mode = 'static';
   if (mode === '3d' && !hasWebGL()) mode = 'static';
 
-  const quality = env.lowEnd || env.mobile ? 'low' : 'high';
+  const quality = debug.quality || (env.lowEnd || env.mobile ? 'low' : 'high');
   let renderer = null;
   let st = null;
   let target = 0;
@@ -85,6 +86,7 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
 
   // ---------- цикл отрисовки ----------
   const IDLE_FRAME = 1 / 24; // когда не листаем и курсор неподвижен, хватает 24 кадров/с
+  const CAP_FRAME = debug.cap ? 1 / debug.cap : 0; // ?cap=30 — потолок частоты кадров для проверки
   let acc = 0;
   let lastPointer = 0;
   function tick(_, deltaMs) {
@@ -95,7 +97,15 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
     acc += dt;
     const idle = current === target && performance.now() - lastPointer > 1500;
     if (idle && acc < IDLE_FRAME) return;
+    if (CAP_FRAME && acc < CAP_FRAME) return;
+    const t0 = debug.perf ? performance.now() : 0;
     renderer?.update(current, Math.min(acc, 0.1));
+    if (debug.perf) {
+      const p = (window.__mlPerf ||= {});
+      p.scene = renderer;
+      p.update = (p.update ?? 0) * 0.9 + (performance.now() - t0) * 0.1;
+      p.rendered = (p.rendered || 0) + 1;
+    }
     acc = 0;
     updateUi(current);
   }

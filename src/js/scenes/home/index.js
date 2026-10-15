@@ -151,6 +151,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
     mist.update(dt, CAR.position.y + 0.02);
 
     // 3. логотип; машина уходит в темноту
+    logo.group.visible = p > 0.76; // финальный логотип (десятки тысяч треугольников) рисуем только когда он собирается
     logo.update(smoothstep(0.78, 0.98, p), time, dt);
     scene.fog.density = 0.055 + smoothstep(0.78, 0.95, p) * 0.075;
 
@@ -182,6 +183,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   return {
     update,
     resize,
+    info: () => stage.info(),
     setPointer(x, y) {
       pointer.set(x, y);
       logo.setPointer(x, y);
