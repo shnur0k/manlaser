@@ -175,8 +175,13 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  justify-content: space-between;
+  justify-content: center;
   gap: 24px 48px;
+}
+/* большой заголовок страницы по центру */
+.page-hero__title {
+  margin-inline: auto;
+  text-align: center;
 }
 /* три колонки под заголовком */
 .page-hero__bottom {
