@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createStage, softDot, keyframes, smoothstep } from '../lib/stage.js';
+import { createStage, softDot, smoothstep } from '../lib/stage.js';
 import { Sparks3D, Mist, createDust } from '../lib/particles.js';
 import { buildPart } from './part.js';
 import { buildCar, CAR } from './car.js';
@@ -26,15 +26,68 @@ const CAM = [
   { p: 0.16, pos: [0.0, -0.04, 3.3], look: [0.0, -0.12, 0], fov: 34 },
   { p: 0.24, pos: [0.0, 0.28, 3.1], look: [0.0, -0.02, 0], fov: 33 },
   { p: 0.35, pos: [0.2, 0.2, 3.1], look: [0.15, -0.02, 0], fov: 33 },
-  { p: 0.4, pos: [1.35, 0.55, 0.4], look: [1.0, 0.7, -4.5], fov: 42 },
+  // от знака к машине — почти по прямой: камера плавно ныряет вперёд и сразу разворачивается к днищу
+  { p: 0.41, pos: [1.75, -0.05, -1.2], look: [0.75, 0.5, -3.3], fov: 42 },
   // под машиной — между стойками подъёмника (стойки на z = -5.14 и -7.86)
   { p: 0.47, pos: [1.8, -0.42, -5.75], look: [0.85, 0.95, -6.55], fov: 50 },
   { p: 0.62, pos: [0.55, -0.48, -5.85], look: [-0.25, 0.95, -6.55], fov: 52 },
   { p: 0.76, pos: [-0.75, -0.42, -5.8], look: [-1.5, 0.95, -6.55], fov: 50 },
-  { p: 0.86, pos: [0.0, 1.35, 3.4], look: [0.0, 1.25, -3.0], fov: 40 },
+  // от машины к финальному логотипу — тоже по прямой: выезд из-под машины в сторону и назад к центру
+  { p: 0.81, pos: [-0.37, 0.46, -1.2], look: [-0.75, 1.1, -4.8], fov: 45 },
+  { p: 0.88, pos: [0.0, 1.35, 3.4], look: [0.0, 1.25, -3.0], fov: 40 },
   // логотип выше центра кадра — снизу место для подписи и кнопок
   { p: 1.0, pos: [0.0, 1.62, 4.9], look: [0.0, 1.55, 0.2], fov: 36 },
 ];
+
+/**
+ * Монотонная кубическая интерполяция (PCHIP): гладкая (скорость непрерывна), без заносов за ключевые значения.
+ * Раньше между ключевыми кадрами камера замедлялась до нуля и снова разгонялась — переходы выглядели «рывками».
+ */
+function pchip(xs, ys) {
+  const n = xs.length;
+  const h = [];
+  const d = [];
+  for (let i = 0; i < n - 1; i++) {
+    h[i] = xs[i + 1] - xs[i];
+    d[i] = (ys[i + 1] - ys[i]) / h[i];
+  }
+  const m = new Array(n).fill(0);
+  if (n === 2) m[0] = m[1] = d[0];
+  else {
+    for (let i = 1; i < n - 1; i++) {
+      if (d[i - 1] * d[i] <= 0) m[i] = 0;
+      else {
+        const w1 = 2 * h[i] + h[i - 1];
+        const w2 = h[i] + 2 * h[i - 1];
+        m[i] = (w1 + w2) / (w1 / d[i - 1] + w2 / d[i]);
+      }
+    }
+    const end = (h0, h1, d0, d1) => {
+      let v = ((2 * h0 + h1) * d0 - h0 * d1) / (h0 + h1);
+      if (Math.sign(v) !== Math.sign(d0)) v = 0;
+      else if (Math.sign(d0) !== Math.sign(d1) && Math.abs(v) > 3 * Math.abs(d0)) v = 3 * d0;
+      return v;
+    };
+    m[0] = end(h[0], h[1], d[0], d[1]);
+    m[n - 1] = end(h[n - 2], h[n - 3], d[n - 2], d[n - 3]);
+  }
+  return (x) => {
+    if (x <= xs[0]) return ys[0];
+    if (x >= xs[n - 1]) return ys[n - 1];
+    let i = 0;
+    while (x > xs[i + 1]) i++;
+    const t = (x - xs[i]) / h[i];
+    const t2 = t * t;
+    const t3 = t2 * t;
+    return (2 * t3 - 3 * t2 + 1) * ys[i] + (t3 - 2 * t2 + t) * h[i] * m[i] + (-2 * t3 + 3 * t2) * ys[i + 1] + (t3 - t2) * h[i] * m[i + 1];
+  };
+}
+const camXs = CAM.map((k) => k.p);
+const camFns = {
+  pos: [0, 1, 2].map((c) => pchip(camXs, CAM.map((k) => k.pos[c]))),
+  look: [0, 1, 2].map((c) => pchip(camXs, CAM.map((k) => k.look[c]))),
+  fov: pchip(camXs, CAM.map((k) => k.fov)),
+};
 
 export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   const stage = createStage(canvas, { quality, fov: 34, envIntensity: 0.32, exposure: 0.98, bloom: { strength: 0.34, radius: 0.5, threshold: 0.93 } });
@@ -84,16 +137,9 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   let time = 0;
 
   function placeCamera(p, dt) {
-    const { a, b, t } = keyframes(CAM, p);
-    if (!b) {
-      camPos.fromArray(a.pos);
-      camLook.fromArray(a.look);
-      camera.fov = stage.fitFov(a.fov);
-    } else {
-      camPos.lerpVectors(va.fromArray(a.pos), vb.fromArray(b.pos), t);
-      camLook.lerpVectors(va.fromArray(a.look), vb.fromArray(b.look), t);
-      camera.fov = stage.fitFov(THREE.MathUtils.lerp(a.fov, b.fov, t));
-    }
+    camPos.set(camFns.pos[0](p), camFns.pos[1](p), camFns.pos[2](p));
+    camLook.set(camFns.look[0](p), camFns.look[1](p), camFns.look[2](p));
+    camera.fov = stage.fitFov(camFns.fov(p));
     // вертикальный экран (телефон): отъезжаем, чтобы деталь и логотип помещались целиком
     const aspect = stage.size.width / stage.size.height;
     if (aspect < 1.2) {
@@ -130,7 +176,9 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
     // вход — строго анфас с лёгким «дыханием»; по мере очистки знак поворачивается, и виден объём
     const turn = smoothstep(0.06, 0.3, p);
     part.group.rotation.set(-0.1 * turn, -0.3 * turn + Math.sin(time * 0.5) * 0.03 * (1 - turn), 0.03 * turn);
-    part.group.visible = p < 0.86;
+    // когда камера ныряет к машине, очищенный знак плавно «схлопывается» (а не пролетает вплотную к объективу)
+    part.group.scale.setScalar(0.6 * (1 - smoothstep(0.355, 0.392, p)) + 0.0001);
+    part.group.visible = p < 0.4;
     const contact = part.update(beam, laserOn, time, rust);
     if (contact && laserOn > 0.2) {
       const rate = (high ? 160 : 60) + Math.min(speed * 900, high ? 520 : 160);
