@@ -199,13 +199,7 @@ export function serviceAnticor(ctx) {
       mediaKey: s.media,
     })}
 
-    ${section(counters(s.facts), { extra: 'section--tight' })}
-
     ${layersScene(ctx, s)}
-
-    ${section(`${sectionHead({ eyebrow: 'Зоны обработки', title: s.zonesTitle, lead: s.zonesLead })}${zoneMap(ctx, s)}`)}
-
-    ${section(`<ul class="highlights" data-stagger>${each(s.highlights, (h) => `<li>${icon('check')}<span>${t(h)}</span></li>`)}</ul>`, { extra: 'section--tight' })}
 
     ${section(`<div class="split">
       <div>${sectionHead({ eyebrow: 'Технология', title: 'Как мы обрабатываем авто', align: 'left' })}${priceBlock(s)}</div>
