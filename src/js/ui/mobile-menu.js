@@ -21,6 +21,8 @@ export function initMobileMenu(header) {
   function open() {
     if (isOpen) return;
     isOpen = true;
+    // меню ещё видно, если открываем посреди закрытия — тогда продолжаем с текущего кадра, а не сбрасываем
+    const stillVisible = menu.classList.contains('is-open');
     menu.classList.add('is-open');
     menu.removeAttribute('inert');
     menu.setAttribute('aria-hidden', 'false');
@@ -34,11 +36,17 @@ export function initMobileMenu(header) {
       gsap.set(menu, { clipPath: `circle(150% at ${at})` });
       return;
     }
+    if (!stillVisible) {
+      gsap.set(menu, { clipPath: `circle(0% at ${at})` });
+      gsap.set(links, { y: 36, opacity: 0 });
+      gsap.set(footer, { y: 20, opacity: 0 });
+    }
+    // пункты едут к финальному положению с текущих значений — и при прерванном закрытии, и при прерванном открытии
     tl = gsap
       .timeline()
-      .fromTo(menu, { clipPath: `circle(0% at ${at})` }, { clipPath: `circle(150% at ${at})`, duration: 0.9, ease: 'expo.inOut' })
-      .fromTo(links, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'expo.out', stagger: 0.06 }, 0.3)
-      .fromTo(footer, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'expo.out' }, 0.5);
+      .to(menu, { clipPath: `circle(150% at ${at})`, duration: 0.5, ease: 'power3.out' })
+      .to(links, { y: 0, opacity: 1, duration: 0.45, ease: 'power3.out', stagger: 0.035 }, 0.1)
+      .to(footer, { y: 0, opacity: 1, duration: 0.4, ease: 'power3.out' }, 0.2);
   }
 
   function close({ instant = false } = {}) {
@@ -59,7 +67,8 @@ export function initMobileMenu(header) {
       done();
       return;
     }
-    tl = gsap.timeline({ onComplete: done }).to(menu, { clipPath: `circle(0% at ${origin()})`, duration: 0.7, ease: 'expo.inOut' });
+    // закрываем с текущего размера круга: если меню ещё раскрывалось, оно плавно идёт обратно
+    tl = gsap.timeline({ onComplete: done }).to(menu, { clipPath: `circle(0% at ${origin()})`, duration: 0.4, ease: 'power3.inOut' });
   }
 
   burger.addEventListener('click', () => (isOpen ? close() : open()));

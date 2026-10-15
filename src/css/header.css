@@ -561,7 +561,7 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 40px;
-  padding: calc(var(--header-h) + 28px) var(--gutter) max(28px, env(safe-area-inset-bottom));
+  padding: calc(var(--header-h) + 28px) max(var(--gutter), env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(var(--gutter), env(safe-area-inset-left));
 }
 .mm-list {
   display: flex;

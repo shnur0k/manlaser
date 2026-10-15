@@ -1,6 +1,7 @@
 import prices from '../../../content/prices.json';
 import { gsap } from '../lib/gsap.js';
 import { env } from '../core/env.js';
+import { scrollTo } from '../core/scroll.js';
 
 /**
  * Калькулятор стоимости. Все цены и коэффициенты — content/prices.json.
@@ -24,6 +25,9 @@ export default function calculator(container) {
   const linesEl = root.querySelector('[data-calc-lines]');
   const submit = root.querySelector('[data-calc-submit]');
   const areaOut = root.querySelector('[data-area-out]');
+  const bar = root.querySelector('[data-calc-bar]');
+  const barTotal = root.querySelector('[data-calc-bar-total]');
+  const summaryEl = root.querySelector('[data-calc-summary]');
   const shown = { value: 0 };
   let current = null;
 
@@ -107,7 +111,10 @@ export default function calculator(container) {
       duration: env.reducedMotion ? 0 : 0.9,
       ease: 'power3.out',
       overwrite: true,
-      onUpdate: () => (totalEl.textContent = fmt(shown.value)),
+      onUpdate: () => {
+        totalEl.textContent = fmt(shown.value);
+        if (barTotal) barTotal.textContent = current.empty ? '—' : fmt(shown.value);
+      },
     });
     if (!env.reducedMotion) gsap.fromTo(totalEl, { color: '#ffb27a' }, { color: '#f9f9f9', duration: 0.8, overwrite: 'auto' });
 
@@ -208,11 +215,26 @@ export default function calculator(container) {
   };
   submit.addEventListener('click', onSubmit);
 
+  // полоска с ценой прячется, когда итоговая карточка уже на экране
+  let barRaf = 0;
+  const syncBar = () => {
+    barRaf = 0;
+    if (!bar || !summaryEl) return;
+    const r = summaryEl.getBoundingClientRect();
+    bar.classList.toggle('is-hidden', r.top < window.innerHeight - 90);
+  };
+  const queueBar = () => (barRaf ||= requestAnimationFrame(syncBar));
+  const onBarGo = () => scrollTo(summaryEl, { offset: -16 });
+  window.addEventListener('scroll', queueBar, { passive: true });
+  window.addEventListener('resize', queueBar);
+  bar?.querySelector('[data-calc-bar-go]')?.addEventListener('click', onBarGo);
+
   const area = form.querySelector('input[name="area"]');
   if (area) area.style.setProperty('--fill', `${((area.value - area.min) / (area.max - area.min)) * 100}%`);
   syncBranches(false);
   syncMap();
   render();
+  syncBar();
 
   return () => {
     map?.removeEventListener('click', onMapClick);
@@ -221,6 +243,10 @@ export default function calculator(container) {
     form.removeEventListener('input', onInput);
     form.removeEventListener('change', onInput);
     submit.removeEventListener('click', onSubmit);
+    window.removeEventListener('scroll', queueBar);
+    window.removeEventListener('resize', queueBar);
+    bar?.querySelector('[data-calc-bar-go]')?.removeEventListener('click', onBarGo);
+    cancelAnimationFrame(barRaf);
     gsap.killTweensOf(shown);
   };
 }

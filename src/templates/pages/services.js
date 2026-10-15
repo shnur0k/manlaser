@@ -334,6 +334,11 @@ export function calculator(ctx) {
           </div>
         </aside>
       </div>
+      <!-- закреплённая полоска с ценой: на телефоне итог виден, пока выбираешь параметры -->
+      <div class="calc-bar is-hidden" data-calc-bar>
+        <span class="calc-bar__sum"><small>Предварительно</small><b><span data-calc-bar-total>—</span> ${esc(pr.currency)}</b></span>
+        <button class="btn btn--primary btn--sm calc-bar__btn" type="button" data-calc-bar-go><span class="btn__label">К расчёту</span></button>
+      </div>
     </section>`;
   return { body, cta: false }; // свой призыв — «Записаться с этим расчётом»
 }

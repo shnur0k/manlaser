@@ -1,0 +1,32 @@
+/* ---------- Телефон ---------- */
+@media (max-width: 767px) {
+  :root {
+    /* мелкий серый текст на чёрном читался плохо (контраст ~3,5:1) — подтягиваем до 5,9:1 */
+    --faint: #8c8c8c;
+  }
+  /* заголовки не переносим по слогам («очист-ка»): слово целиком уходит на следующую строку */
+  .page-hero__title,
+  .h1,
+  .h2,
+  .display-2 {
+    hyphens: manual;
+  }
+  /* футер: ссылки в один столбец, строки одной высоты */
+  .site-footer__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .site-footer__col--wide {
+    grid-column: auto;
+  }
+  .site-footer__col ul {
+    gap: 0;
+  }
+  /* почта и «Как проехать» — каждое в своей строке (touch.css делал ссылки строчными) */
+  .site-footer a.site-footer__line {
+    display: flex;
+  }
+  .site-footer .link-arrow {
+    margin-top: 4px;
+  }
+}

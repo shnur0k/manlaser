@@ -4,7 +4,7 @@ import { gsap } from '../lib/gsap.js';
  * Переходы между страницами. Режим выбирается в config.js → transition.
  * Каждый режим — пара async-функций: cover() закрывает экран, reveal() открывает новую страницу.
  */
-export function createTransition(mode = 'laser') {
+export function createTransition(mode = 'laser', { fast = false } = {}) {
   const el = document.querySelector('[data-pt]');
   const top = el.querySelector('.pt__half--top');
   const bottom = el.querySelector('.pt__half--bottom');
@@ -61,10 +61,10 @@ export function createTransition(mode = 'laser') {
     async cover() {
       activate();
       gsap.set(top, { yPercent: 0, clipPath: 'none', height: '100%', opacity: 0 });
-      await gsap.to(top, { opacity: 1, duration: 0.3, ease: 'power1.out' });
+      await gsap.to(top, { opacity: 1, duration: fast ? 0.16 : 0.3, ease: 'power1.out' });
     },
     async reveal() {
-      await gsap.to(top, { opacity: 0, duration: 0.4, ease: 'power1.in', onComplete: deactivate });
+      await gsap.to(top, { opacity: 0, duration: fast ? 0.26 : 0.4, ease: 'power1.in', onComplete: deactivate });
       gsap.set(top, { clearProps: 'height,opacity' });
     },
   };
