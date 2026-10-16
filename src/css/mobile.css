@@ -1,9 +1,12 @@
-/* ---------- Телефон ---------- */
+/* Два режима сайта: полный (компьютер, с анимацией) и лёгкий (телефон и планшет, html.is-lite — см. core/env.js).
+   Всё, что про вид и поведение сенсорных устройств, привязано к .is-lite; что про узкую раскладку — к ширине окна. */
+html.is-lite {
+  /* мелкий серый текст на чёрном читался плохо (контраст ~3,5:1) — подтягиваем до 5,9:1 */
+  --faint: #8c8c8c;
+}
+
+/* ---------- Узкая раскладка (телефон) ---------- */
 @media (max-width: 767px) {
-  :root {
-    /* мелкий серый текст на чёрном читался плохо (контраст ~3,5:1) — подтягиваем до 5,9:1 */
-    --faint: #8c8c8c;
-  }
   /* заголовки не переносим по слогам («очист-ка»): слово целиком уходит на следующую строку */
   .page-hero__title,
   .h1,
@@ -31,52 +34,51 @@
   }
 }
 
-@media (max-width: 767px) {
-  /* белый текст на фирменном оранжевом (#e85002) даёт контраст 3,6:1 — для сплошных заливок берём чуть темнее (4,7:1) */
-  :root {
-    --orange-fill: #c74300;
-  }
-  .btn--primary,
-  .skip-link,
-  .tag-filter__btn.is-active,
-  .chip-check input:checked + span {
-    background: var(--orange-fill);
-  }
-  .tag-filter__btn.is-active,
-  .chip-check input:checked + span {
-    border-color: var(--orange-fill);
-  }
-  /* плавающие кнопки не закрывают нижнюю строку футера (реквизиты) */
-  .site-footer {
-    padding-bottom: calc(84px + env(safe-area-inset-bottom));
-  }
-  /* на странице записи кнопка чата не должна лежать поверх полей формы (контакты есть на самой странице) */
-  .floating.is-booking .floating__chat {
-    display: none;
-  }
+/* белый текст на фирменном оранжевом (#e85002) даёт контраст 3,6:1 — для сплошных заливок берём чуть темнее (4,7:1) */
+html.is-lite {
+  --orange-fill: #c74300;
+}
+html.is-lite .btn--primary,
+html.is-lite .skip-link,
+html.is-lite .tag-filter__btn.is-active,
+html.is-lite .chip-check input:checked + span {
+  background: var(--orange-fill);
+}
+html.is-lite .tag-filter__btn.is-active,
+html.is-lite .chip-check input:checked + span {
+  border-color: var(--orange-fill);
+}
+/* плавающие кнопки не закрывают нижнюю строку футера (реквизиты) */
+html.is-lite .site-footer {
+  padding-bottom: calc(84px + env(safe-area-inset-bottom));
+}
+/* на странице записи кнопка чата не должна лежать поверх полей формы (контакты есть на самой странице) */
+html.is-lite .floating.is-booking .floating__chat {
+  display: none;
+}
+
+/* мелкие подписи на фото и схемах — не меньше 12 px */
+html.is-lite .media__ph-label,
+html.is-lite .media__ph-meta,
+html.is-lite .summary__demo,
+html.is-lite .header-phone small,
+html.is-lite .find-us__label,
+html.is-lite .hud-meta,
+html.is-lite .plate__tag,
+html.is-lite .ba__tag,
+html.is-lite .ba__hint,
+html.is-lite .ba__ill,
+html.is-lite .plate__note,
+html.is-lite .slab__note,
+html.is-lite .burn__tag,
+html.is-lite .burn__hint,
+html.is-lite .burn__ill,
+html.is-lite .plate-scene__meter,
+html.is-lite .layers-scene__meter {
+  font-size: 0.75rem;
 }
 
 @media (max-width: 767px) {
-  /* мелкие подписи на фото и схемах — не меньше 12 px */
-  .media__ph-label,
-  .media__ph-meta,
-  .summary__demo,
-  .header-phone small,
-  .find-us__label,
-  .hud-meta,
-  .plate__tag,
-  .ba__tag,
-  .ba__hint,
-  .ba__ill,
-  .plate__note,
-  .slab__note,
-  .burn__tag,
-  .burn__hint,
-  .burn__ill,
-  .plate-scene__meter,
-  .layers-scene__meter {
-    font-size: 0.75rem;
-  }
   /* логотип: область нажатия ровно 44 px по высоте */
   .logo {
     padding-block: 13px;
@@ -114,20 +116,6 @@ label,
     --section-pad: 48px; /* отступ секции сверху и снизу: между соседними блоками ~72 px вместо 96 */
     --section-pad-tight: 32px;
   }
-  body {
-    line-height: 1.5; /* длинные тексты статей (.prose) держат свои 1.75 */
-  }
-  /* короткие описания в 2–3 строки — плотнее */
-  .feature__text,
-  .counter__label,
-  .card__text,
-  .svc__text,
-  .step__text,
-  .zone__text,
-  .object__text,
-  .cta-band__text {
-    line-height: 1.4;
-  }
   .feature {
     padding: 20px 0 24px;
     gap: 10px;
@@ -151,9 +139,51 @@ label,
   }
 }
 
+/* межстрочные интервалы: тексты на телефоне и планшете плотнее (длинные статьи .prose держат свои 1.75) */
+html.is-lite body {
+  line-height: 1.5;
+}
+html.is-lite .feature__text,
+html.is-lite .counter__label,
+html.is-lite .card__text,
+html.is-lite .svc__text,
+html.is-lite .step__text,
+html.is-lite .zone__text,
+html.is-lite .object__text,
+html.is-lite .cta-band__text {
+  line-height: 1.4;
+}
+
 /* огромная надпись manlaser в футере — на всю ширину и по центру
    (общее правило для ссылок футера на телефоне делало её строчной и «сжимало» влево) */
 .site-footer a.site-footer__giant {
   display: block;
   min-height: 0;
+}
+
+/* ---------- Планшет (600–1099 px): аккуратнее сетки, без «дыр» ---------- */
+@media (min-width: 600px) and (max-width: 1099px) {
+  /* цифры: 2×2 вместо «3 + 1» */
+  .counters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* фото на главной: 2×2, без пустой клетки справа внизу */
+  .works-teaser {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .works-teaser__item--tall {
+    grid-row: auto;
+  }
+  .works-teaser__item--tall.media {
+    aspect-ratio: 4 / 3;
+  }
+  /* нечётная последняя карточка отзыва — на всю ширину, а не одна в углу */
+  .reviews-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 900px) and (max-width: 1099px) {
+  .counters {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }

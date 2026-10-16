@@ -145,7 +145,7 @@ function initLayersScene(root) {
     }
   }
 
-  const len = () => window.innerHeight * (env.mobile ? 2.8 : 3.4);
+  const len = () => window.innerHeight * (env.lite ? 2.8 : 3.4);
   const st = ScrollTrigger.create({
     trigger: root,
     start: 'top top',

@@ -30,8 +30,8 @@ initMagnetic(document.querySelector('[data-floating]'));
 initImages(document.querySelector('[data-header]'));
 initAnchors();
 
-// на телефоне — короткое затухание: красивый, но долгий (~2 с) переход мешал бы каждому нажатию
-const transition = env.reducedMotion || env.mobile ? createTransition('fade', { fast: env.mobile }) : createTransition(config.transition);
+// на телефоне и планшете — короткое затухание: красивый, но долгий (~2 с) переход мешал бы каждому нажатию
+const transition = env.reducedMotion || env.lite ? createTransition('fade', { fast: env.lite }) : createTransition(config.transition);
 const scrollPositions = new Map();
 
 /** Привести «постоянные» элементы (шапка, плавающие кнопки) в соответствие странице. */

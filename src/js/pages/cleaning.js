@@ -117,7 +117,7 @@ function initPlateScene(root) {
     }
   }
 
-  const len = () => window.innerHeight * (env.mobile ? 2.2 : 2.6);
+  const len = () => window.innerHeight * (env.lite ? 2.2 : 2.6);
   const st = ScrollTrigger.create({
     trigger: root,
     start: 'top top',

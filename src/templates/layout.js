@@ -42,7 +42,7 @@ export function layout(ctx, page) {
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
-  <script>document.documentElement.classList.replace('no-js','js');setTimeout(function(){if(!window.__mlReady)document.documentElement.classList.add('reveal-off')},4000)</script>  <link rel="stylesheet" href="/src/css/main.css">
+  <script>document.documentElement.classList.replace('no-js','js');try{var q=new URLSearchParams(location.search).get('lite');if(q!==null)sessionStorage.setItem('ml-lite',q);q=sessionStorage.getItem('ml-lite');if(q==='1'||(q!=='0'&&matchMedia('(hover: none), (pointer: coarse)').matches))document.documentElement.classList.add('is-lite')}catch(e){};setTimeout(function(){if(!window.__mlReady)document.documentElement.classList.add('reveal-off')},4000)</script>  <link rel="stylesheet" href="/src/css/main.css">
   <script type="module" src="/src/js/main.js"></script>
   <script type="application/ld+json" data-schema>${schema}</script>
   ${page.head || ''}

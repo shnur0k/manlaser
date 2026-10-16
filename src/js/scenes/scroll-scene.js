@@ -38,11 +38,11 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
   const bars = [...root.querySelectorAll('[data-scene-bar]')].map((el) => ({ el, from: parseFloat(el.dataset.from), to: parseFloat(el.dataset.to) }));
 
   let mode = cfg.mode || '3d';
-  if (env.mobile && cfg.mobileMode) mode = cfg.mobileMode;
+  if (env.lite && cfg.mobileMode) mode = cfg.mobileMode;
   if (env.reducedMotion) mode = 'static';
   if (mode === '3d' && !hasWebGL()) mode = 'static';
 
-  const quality = debug.quality || (env.lowEnd || env.mobile ? 'low' : 'high');
+  const quality = debug.quality || (env.lowEnd || env.lite ? 'low' : 'high');
   let renderer = null;
   let st = null;
   let target = 0;
@@ -193,7 +193,7 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
   if (mode === 'static') {
     makeStatic();
   } else {
-    const len = () => window.innerHeight * (env.mobile ? mobileLength : length) * (1 + hold);
+    const len = () => window.innerHeight * (env.lite ? mobileLength : length) * (1 + hold);
     st = ScrollTrigger.create({
       trigger: root,
       start: 'top top',
