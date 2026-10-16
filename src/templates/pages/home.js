@@ -96,7 +96,6 @@ export function home(ctx) {
   ${section(
     `<div class="facts-band">
       <div class="facts-band__head">
-        <span class="facts-band__label">Антикор в цифрах</span>
         <h2 class="h2" data-split>${rich('Защита, которой *можно доверять*')}</h2>
       </div>
       ${counters(s.anticor.facts)}
