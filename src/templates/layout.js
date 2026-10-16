@@ -33,9 +33,15 @@ export function layout(ctx, page) {
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(description)}">
   <meta property="og:url" content="${esc(canonical)}">
+  <meta property="og:image" content="${esc(site.url)}/images/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#000000">
   <meta name="format-detection" content="telephone=no">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <script>document.documentElement.classList.replace('no-js','js');setTimeout(function(){if(!window.__mlReady)document.documentElement.classList.add('reveal-off')},4000)</script>  <link rel="stylesheet" href="/src/css/main.css">
   <script type="module" src="/src/js/main.js"></script>
   <script type="application/ld+json" data-schema>${schema}</script>

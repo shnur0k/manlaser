@@ -23,7 +23,8 @@ export function servicesHub(ctx) {
   return {
     body: `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, variant: 'wide' })}
-    ${section(`<div class="svc-grid">
+    ${section(`<h2 class="sr-only">Наши услуги</h2>
+    <div class="svc-grid">
       ${serviceFeature(ctx, { title: s.cleaning.title, text: s.cleaning.short, url: s.cleaning.url, mediaKey: s.cleaning.media, index: 1, tag: 'Без абразива и химии', list: s.cleaning.removes.slice(0, 4) })}
       ${serviceFeature(ctx, { title: 'Антикоррозийная обработка', text: s.anticor.short, url: s.anticor.url, mediaKey: s.anticor.media, index: 2, tag: 'Dinitrol · Mercasol', list: s.anticor.zones.map((z) => z.title) })}
     </div>`)}

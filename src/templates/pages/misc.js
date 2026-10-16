@@ -43,7 +43,8 @@ export function works(ctx) {
   const reviews = c.reviews.services;
   return `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading })}
-    ${section(`<div class="tag-filter" role="group" aria-label="Фильтр галереи" data-tag-filter>
+    ${section(`<h2 class="sr-only">Галерея работ</h2>
+      <div class="tag-filter" role="group" aria-label="Фильтр галереи" data-tag-filter>
         <button class="tag-filter__btn is-active" type="button" data-tag="*">Все</button>
         ${each(filters, (f) => `<button class="tag-filter__btn" type="button" data-tag="${esc(f)}">${esc(f)}</button>`)}
       </div>
@@ -132,7 +133,7 @@ export function faqHub(ctx) {
   const allFaq = ctx.c.faq.groups;
   return {
     body: section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые *вопросы*', id: 'faq', level: 1, lead: 'Про запись, лазерную очистку и антикоррозийную обработку.' })}
-      <div class="faq-groups">${each(allFaq, (g) => `<div class="faq-group"><h3 class="h3 faq-group__title">${esc(g.title)}</h3>${faq(g.items, { id: `faq-${g.id}` })}</div>`)}</div>`, { extra: 'section--first' }),
+      <div class="faq-groups">${each(allFaq, (g) => `<div class="faq-group"><h2 class="h3 faq-group__title">${esc(g.title)}</h2>${faq(g.items, { id: `faq-${g.id}` })}</div>`)}</div>`, { extra: 'section--first' }),
     schema: [faqPage(allFaq.flatMap((g) => g.items))],
   };
 }

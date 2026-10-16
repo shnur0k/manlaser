@@ -55,3 +55,46 @@
     display: none;
   }
 }
+
+@media (max-width: 767px) {
+  /* мелкие подписи на фото и схемах — не меньше 12 px */
+  .media__ph-label,
+  .media__ph-meta,
+  .summary__demo,
+  .header-phone small,
+  .find-us__label,
+  .hud-meta,
+  .plate__tag,
+  .ba__tag,
+  .ba__hint,
+  .ba__ill,
+  .plate__note,
+  .slab__note,
+  .burn__tag,
+  .burn__hint,
+  .burn__ill,
+  .plate-scene__meter,
+  .layers-scene__meter {
+    font-size: 0.75rem;
+  }
+  /* логотип: область нажатия ровно 44 px по высоте */
+  .logo {
+    padding-block: 13px;
+    margin-block: -13px;
+  }
+  /* ссылки внутри абзацев: вёрстка не меняется, а область нажатия по высоте больше строки */
+  p a:not(.btn):not(.link-arrow),
+  .prose a,
+  .equipment-note a {
+    padding-block: 10px;
+    margin-block: -10px;
+  }
+}
+
+@media (max-width: 767px) {
+  /* короткие слова («Блог», «Услуги») в футере и крошках — область нажатия не уже 44 px */
+  .site-footer__col a,
+  .crumbs a {
+    min-width: 44px;
+  }
+}

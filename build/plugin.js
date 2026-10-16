@@ -58,9 +58,20 @@ export default function sitePlugin() {
     // поэтому остальные ссылки и url(/…) дополняем префиксом уже в собранной странице
     transformIndexHtml: {
       order: 'post',
-      handler(html) {
+      handler(html, ctx) {
         const base = siteBase();
-        return base === '/' ? html : prefixLinks(html, base);
+        const out = base === '/' ? html : prefixLinks(html, base);
+        // в сборке заранее грузим кириллические шрифты (текст и заголовки), чтобы строка не «мигала» при подмене шрифта
+        const fonts = Object.keys(ctx?.bundle || {}).filter((f) => /(nunito|unbounded)-cyrillic-wght-normal-[\w-]+\.woff2$/.test(f));
+        if (!fonts.length) return out;
+        return {
+          html: out,
+          tags: fonts.map((f) => ({
+            tag: 'link',
+            attrs: { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: '', href: `${base}${f}` },
+            injectTo: 'head-prepend',
+          })),
+        };
       },
     },
 
