@@ -205,10 +205,10 @@ table {
 
 .section {
   position: relative;
-  padding-block: clamp(72px, 9vw, 150px);
+  padding-block: var(--section-pad, clamp(72px, 9vw, 150px));
 }
 .section--tight {
-  padding-block: clamp(40px, 5vw, 72px);
+  padding-block: var(--section-pad-tight, clamp(40px, 5vw, 72px));
 }
 .section + .section:not(.section--tight) {
   padding-top: clamp(24px, 4vw, 72px);

@@ -97,3 +97,56 @@
     min-width: 44px;
   }
 }
+
+/* реакцию на нажатие рисуем сами (scale), поэтому серую вспышку iOS отключаем */
+a,
+button,
+summary,
+label,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- Телефон: плотнее вертикальный ритм и межстрочные интервалы ---------- */
+@media (max-width: 767px) {
+  :root {
+    --head-gap: 32px; /* заголовок раздела → содержимое */
+    --section-pad: 48px; /* отступ секции сверху и снизу: между соседними блоками ~72 px вместо 96 */
+    --section-pad-tight: 32px;
+  }
+  body {
+    line-height: 1.5; /* длинные тексты статей (.prose) держат свои 1.75 */
+  }
+  /* короткие описания в 2–3 строки — плотнее */
+  .feature__text,
+  .counter__label,
+  .card__text,
+  .svc__text,
+  .step__text,
+  .zone__text,
+  .object__text,
+  .cta-band__text {
+    line-height: 1.4;
+  }
+  .feature {
+    padding: 20px 0 24px;
+    gap: 10px;
+  }
+  .counters {
+    gap: 20px;
+  }
+  .counter {
+    padding-top: 16px;
+    gap: 8px;
+  }
+  /* футер: 16 px, тонкие разделители между ссылками (область нажатия остаётся 44 px) */
+  .site-footer__col a {
+    font-size: 1rem;
+  }
+  .site-footer__col li + li {
+    border-top: 1px solid var(--line);
+  }
+  .site-footer__line {
+    line-height: 1.45;
+  }
+}
