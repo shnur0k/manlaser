@@ -69,39 +69,6 @@ function initBeforeAfter(el, { initial = 0 } = {}) {
   };
 }
 
-/**
- * Телефон: без жестов. Пока карточка на экране, «до» и «после» сменяют друг друга сами:
- * луч проходит слева направо и открывает «после», оно держится пару секунд и плавно гаснет обратно в «до».
- */
-function initAutoBeforeAfter(el) {
-  const after = el.querySelector('.ba__layer--after');
-  const state = { v: 0 };
-  const apply = () => el.style.setProperty('--x', `${state.v.toFixed(2)}%`);
-  el.classList.add('is-auto');
-  apply();
-
-  const tl = gsap.timeline({ repeat: -1, paused: true });
-  tl.call(() => {
-    gsap.set(after, { opacity: 1 });
-    el.classList.add('is-on');
-  })
-    .to(state, { v: 100, duration: 1.1, ease: 'power2.inOut', onUpdate: apply })
-    .call(() => el.classList.remove('is-on'))
-    .to(after, { opacity: 0, duration: 0.7, ease: 'power1.inOut' }, '+=2.4')
-    .set(state, { v: 0, onComplete: apply })
-    .to({}, { duration: 1.6 }); // пауза на «до»
-
-  const io = new IntersectionObserver(([e]) => (e.isIntersecting ? tl.play() : tl.pause()), { threshold: 0.55 });
-  io.observe(el);
-
-  return () => {
-    io.disconnect();
-    tl.kill();
-    gsap.set(after, { clearProps: 'opacity' });
-    el.classList.remove('is-auto', 'is-on');
-  };
-}
-
 /** Закреплённая сцена: луч лазера идёт по ржавой пластине и оставляет за собой чистый металл. */
 function initPlateScene(root) {
   const plate = root.querySelector('[data-plate]');
@@ -178,9 +145,7 @@ export default function cleaning(container) {
 
   const plateRoot = container.querySelector('[data-plate-scene]');
   if (plateRoot) cleanups.push(initPlateScene(plateRoot));
-  // на телефоне (нет наведения) «до/после» сменяются сами, на компьютере — следуют за курсором
-  const auto = window.matchMedia('(hover: none)').matches && !env.reducedMotion;
-  container.querySelectorAll('.object [data-ba]').forEach((card) => cleanups.push(auto ? initAutoBeforeAfter(card) : initBeforeAfter(card)));
+  container.querySelectorAll('.object [data-ba]').forEach((card) => cleanups.push(initBeforeAfter(card)));
 
   return () => cleanups.forEach((fn) => fn?.());
 }
