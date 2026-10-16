@@ -1,13 +1,14 @@
 {
   "_help": "Места под фото. Чтобы добавить фото: положите файл в /public/images/... и впишите путь в src (например \"/images/works/my-photo.webp\"). Пока src = null, на сайте показывается заглушка с описанием из want. Список всех мест: http://localhost:5173/_photos/",
   "nav.cleaning": {
-    "src": "/images/works/laser-cleaning-underbody.jpg",
+    "src": "/images/works/laser-cleaning-underbody.webp",
     "alt": "Лазерная очистка днища автомобиля",
     "want": "Луч лазера снимает ржавчину, видны искры",
     "ratio": "4/3"
   },
   "nav.anticor": {
-    "src": "/images/works/anticor-underbody-after.jpg",
+    "src": "/images/works/anticor-underbody-after.webp",
+    "srcset": "/images/works/anticor-underbody-after-480.webp 480w, /images/works/anticor-underbody-after-800.webp 800w, /images/works/anticor-underbody-after.webp 1205w",
     "alt": "Днище автомобиля после антикоррозийной обработки",
     "want": "Днище после антикора",
     "ratio": "4/3"
@@ -37,13 +38,14 @@
     "ratio": "16/9"
   },
   "service.cleaning": {
-    "src": "/images/works/laser-cleaning-underbody.jpg",
+    "src": "/images/works/laser-cleaning-underbody.webp",
     "alt": "Лазерная очистка металла в Пружанах",
     "want": "Лазерная очистка в процессе",
     "ratio": "4/5"
   },
   "service.anticor": {
-    "src": "/images/works/anticor-underbody-after.jpg",
+    "src": "/images/works/anticor-underbody-after.webp",
+    "srcset": "/images/works/anticor-underbody-after-480.webp 480w, /images/works/anticor-underbody-after-800.webp 800w, /images/works/anticor-underbody-after.webp 1205w",
     "alt": "Антикоррозийная обработка днища в Пружанах",
     "want": "Днище после антикора",
     "ratio": "4/5"
@@ -79,7 +81,8 @@
     "ratio": "16/9"
   },
   "anticor.underbody": {
-    "src": "/images/works/anticor-underbody-after.jpg",
+    "src": "/images/works/anticor-underbody-after.webp",
+    "srcset": "/images/works/anticor-underbody-after-480.webp 480w, /images/works/anticor-underbody-after-800.webp 800w, /images/works/anticor-underbody-after.webp 1205w",
     "alt": "Днище после обработки",
     "want": "Днище после обработки",
     "ratio": "4/3"
@@ -91,7 +94,8 @@
     "ratio": "4/3"
   },
   "anticor.prep": {
-    "src": "/images/works/underbody-preparation.jpg",
+    "src": "/images/works/underbody-preparation.webp",
+    "srcset": "/images/works/underbody-preparation-480.webp 480w, /images/works/underbody-preparation-800.webp 800w, /images/works/underbody-preparation.webp 900w",
     "alt": "Подготовка днища к антикору",
     "want": "Днище в процессе подготовки",
     "ratio": "4/3"

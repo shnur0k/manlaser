@@ -30,3 +30,28 @@
     margin-top: 4px;
   }
 }
+
+@media (max-width: 767px) {
+  /* белый текст на фирменном оранжевом (#e85002) даёт контраст 3,6:1 — для сплошных заливок берём чуть темнее (4,7:1) */
+  :root {
+    --orange-fill: #c74300;
+  }
+  .btn--primary,
+  .skip-link,
+  .tag-filter__btn.is-active,
+  .chip-check input:checked + span {
+    background: var(--orange-fill);
+  }
+  .tag-filter__btn.is-active,
+  .chip-check input:checked + span {
+    border-color: var(--orange-fill);
+  }
+  /* плавающие кнопки не закрывают нижнюю строку футера (реквизиты) */
+  .site-footer {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+  /* на странице записи кнопка чата не должна лежать поверх полей формы (контакты есть на самой странице) */
+  .floating.is-booking .floating__chat {
+    display: none;
+  }
+}

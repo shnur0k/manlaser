@@ -173,7 +173,7 @@ content/blog/*.md┘                                                            
 | `faq.json` | группы `general`, `anticor`, `cleaning` |
 | `reviews.json` | только реальные отзывы (Яндекс.Карты) + статистика |
 | `prices.json` | цены и коэффициенты калькулятора, `demo` |
-| `media.json` | места под фото: `src` (null = заглушка), `alt`, `want` (что снять), `ratio` |
+| `media.json` | места под фото: `src` (null = заглушка), необязательный `srcset` (лёгкие версии «файл 480w, файл 800w» — телефон берёт их), `alt`, `want` (что снять), `ratio`. Фото кладём в `public/images` сразу в WebP (JPG на 300–400 КБ — слишком тяжело для телефона) |
 | `blog/*.md` | статьи (front matter: `title`, `description`, `date`, `tags`, `cover`, `draft`) |
 | `gallery.json` | галерея на «Работах»: `type` `ba` (пара до/после) или `photo`, `service` `cleaning`/`anticor` |
 

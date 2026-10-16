@@ -4,6 +4,7 @@ import { icon } from './icons.js';
 /**
  * Фото по ключу из content/media.json.
  * Если src пустой — выводится заглушка «Место для фото» с описанием, какое фото нужно.
+ * Необязательное поле srcset (строка «файл 480w, файл 800w, …») — тогда телефон скачивает лёгкую версию.
  */
 export function media(map, key, { cls = '', eager = false, ratio, sizes, alt } = {}) {
   const m = map[key] || { src: null, alt: '', want: `Нет записи «${key}» в content/media.json`, ratio: '4/3' };
@@ -12,7 +13,7 @@ export function media(map, key, { cls = '', eager = false, ratio, sizes, alt } =
 
   if (m.src) {
     return `<figure class="media ${cls}" style="${style}">
-      <img src="${esc(m.src)}" alt="${esc(alt ?? m.alt)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async"${
+      <img src="${esc(m.src)}"${m.srcset ? ` srcset="${esc(m.srcset)}"` : ''} alt="${esc(alt ?? m.alt)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async"${
         eager ? ' fetchpriority="high"' : ''
       }${sizes ? ` sizes="${esc(sizes)}"` : ''}>
     </figure>`;

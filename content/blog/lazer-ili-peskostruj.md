@@ -3,7 +3,7 @@ title: "Лазер или пескоструй: чем чистить метал
 description: "Чем лазерная очистка отличается от пескоструйной: абразив, пыль, отходы, расходные материалы и труднодоступные места."
 date: 2026-10-06
 tags: [Лазерная очистка, Сравнение]
-cover: /images/works/laser-cleaning-underbody.jpg
+cover: /images/works/laser-cleaning-underbody.webp
 draft: true
 ---
 

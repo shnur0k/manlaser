@@ -131,7 +131,7 @@ export function about(ctx) {
 export function faqHub(ctx) {
   const allFaq = ctx.c.faq.groups;
   return {
-    body: section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые *вопросы*', id: 'faq', lead: 'Про запись, лазерную очистку и антикоррозийную обработку.' })}
+    body: section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые *вопросы*', id: 'faq', level: 1, lead: 'Про запись, лазерную очистку и антикоррозийную обработку.' })}
       <div class="faq-groups">${each(allFaq, (g) => `<div class="faq-group"><h3 class="h3 faq-group__title">${esc(g.title)}</h3>${faq(g.items, { id: `faq-${g.id}` })}</div>`)}</div>`, { extra: 'section--first' }),
     schema: [faqPage(allFaq.flatMap((g) => g.items))],
   };
