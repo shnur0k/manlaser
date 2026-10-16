@@ -39,18 +39,6 @@ export function sectionHead({ eyebrow: eb, title, lead: leadText, align = 'cente
   </div>`;
 }
 
-export function crumbs(route) {
-  if (!route.crumbs?.length) return '';
-  const all = [{ name: 'Главная', url: '/' }, ...route.crumbs];
-  return `<nav class="crumbs" aria-label="Хлебные крошки"><ol>
-    ${each(all, (c, i) =>
-      i === all.length - 1
-        ? `<li aria-current="page"><span>${esc(c.name)}</span></li>`
-        : `<li><a href="${esc(c.url)}">${esc(c.name)}</a></li>`,
-    )}
-  </ol></nav>`;
-}
-
 /**
  * Шапка внутренней страницы: огромный заголовок на всю ширину,
  * под ним три колонки (метка · описание · кнопки) и кинокадр 21:9.
@@ -60,10 +48,7 @@ export function pageHero(ctx, { eyebrow: eb, title, lead: leadText, actions = ''
   return `<section class="${cls('page-hero', variant && `page-hero--${variant}`, !mediaKey && 'page-hero--solo')}" data-glow="tr">
     <div class="page-hero__glow" aria-hidden="true"></div>
     <div class="container">
-      <div class="page-hero__top">
-        ${crumbs(ctx.route)}
-        ${eb ? `<span class="page-hero__eyebrow">${t(eb)}</span>` : ''}
-      </div>
+      ${eb ? `<div class="page-hero__top"><span class="page-hero__eyebrow">${t(eb)}</span></div>` : ''}
       <div class="page-hero__row">
         <h1 class="h1 page-hero__title" data-split>${rich(title).replace(/\n/g, '<br>')}</h1>
         ${actions && !lead ? `<div class="actions page-hero__actions" data-reveal>${actions}</div>` : ''}

@@ -42,10 +42,6 @@ summary,
   .chip-check span {
     min-height: 44px;
   }
-  .crumbs a {
-    padding-block: 12px;
-    margin-block: -12px;
-  }
   .link-arrow,
   .summary__phone,
   .site-footer a:not(.btn) {

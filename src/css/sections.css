@@ -136,17 +136,14 @@
 .page-hero--calm .page-hero__glow {
   opacity: 0.45;
 }
-/* верхняя строка: хлебные крошки слева, метка справа */
+/* верхняя строка: метка раздела справа */
 .page-hero__top {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px 24px;
   margin-bottom: clamp(28px, 5vw, 72px);
-}
-.page-hero__top .crumbs {
-  margin: 0;
 }
 .page-hero__eyebrow {
   font-size: 0.75rem;
@@ -216,42 +213,6 @@
   .page-hero__media .media {
     --ratio: 16 / 10 !important;
   }
-}
-
-.crumbs {
-  margin-bottom: clamp(20px, 3vw, 40px);
-}
-.crumbs ol {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8125rem;
-  font-weight: 650;
-  color: var(--faint);
-}
-.crumbs li {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.crumbs li + li::before {
-  content: '';
-  width: 14px;
-  height: 1px;
-  background: var(--gray);
-}
-.crumbs a {
-  color: var(--muted);
-  transition: color 0.3s;
-}
-@media (hover: hover) {
-  .crumbs a:hover {
-    color: var(--orange-hot);
-  }
-}
-.crumbs [aria-current] span {
-  color: var(--text);
 }
 
 /* ---------- Сетки карточек ---------- */
