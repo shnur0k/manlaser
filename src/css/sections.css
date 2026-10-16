@@ -283,24 +283,17 @@
 }
 
 /* ---------- Цифры антикора ---------- */
+/* заголовок по центру, под ним цифры в ряд (так же, как цифры на «О нас») */
 .facts-band {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: 40px clamp(32px, 6vw, 96px);
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--head-gap);
 }
 .facts-band__head {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-}
-.facts-band .counters {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-@media (max-width: 899px) {
-  .facts-band {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  align-items: center;
+  text-align: center;
 }
 
 /* ---------- «Продаём то, чем работаем» ---------- */
