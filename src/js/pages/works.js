@@ -1,6 +1,7 @@
 import { gsap } from '../lib/gsap.js';
 import { Sparks } from '../fx/sparks.js';
 import { paintQueue } from '../fx/metal-texture.js';
+import { env } from '../core/env.js';
 
 /** Рисует источник (canvas или img) в ctx так, чтобы он закрыл всю область (как object-fit: cover). */
 function drawCover(ctx, src, w, h) {
@@ -204,6 +205,41 @@ function initBurn(el) {
   };
 }
 
+/**
+ * Телефон: без жестов. Пока карточка на экране, «до» и «после» сменяют друг друга сами:
+ * по картинке проходит луч и открывает «после», держится пару секунд и плавно возвращается к «до».
+ */
+function initAuto(el) {
+  el.classList.add('is-auto');
+  const HOLD_BEFORE = 1700;
+  const HOLD_AFTER = 2800;
+  let timer;
+  let visible = false;
+
+  const step = () => {
+    const on = el.classList.toggle('is-revealed');
+    timer = setTimeout(step, on ? HOLD_AFTER : HOLD_BEFORE);
+  };
+  const play = () => {
+    if (visible) return;
+    visible = true;
+    // чтобы все карточки на экране не мигали одновременно
+    timer = setTimeout(step, 500 + Math.random() * 900);
+  };
+  const pause = () => {
+    visible = false;
+    clearTimeout(timer);
+  };
+
+  const io = new IntersectionObserver(([e]) => (e.isIntersecting ? play() : pause()), { threshold: 0.55 });
+  io.observe(el);
+  return () => {
+    io.disconnect();
+    pause();
+    el.classList.remove('is-auto', 'is-revealed');
+  };
+}
+
 /** Отзывы: сначала первые несколько, остальные — по кнопке «Показать ещё». */
 function initReviews(container) {
   const grid = container.querySelector('[data-reviews]');
@@ -239,7 +275,9 @@ function initReviews(container) {
 export default function works(container) {
   const cleanups = [];
   cleanups.push(paintQueue(container.querySelectorAll('canvas[data-tex]')));
-  container.querySelectorAll('[data-burn]').forEach((el) => cleanups.push(initBurn(el)));
+  // на телефоне (нет наведения) «до/после» сменяются сами, на компьютере — «выжигание» курсором
+  const auto = window.matchMedia('(hover: none)').matches && !env.reducedMotion;
+  container.querySelectorAll('[data-burn]').forEach((el) => cleanups.push(auto ? initAuto(el) : initBurn(el)));
   cleanups.push(initReviews(container));
   return () => cleanups.forEach((fn) => fn?.());
 }
