@@ -16,6 +16,27 @@ export function loadJSON(name) {
   }
 }
 
+/**
+ * Таблицы из markdown: оборачиваем в прокручиваемый блок и подписываем ячейки названиями столбцов
+ * (на телефоне строка таблицы превращается в карточку: «Лазерная очистка: …», «Пескоструй: …»).
+ */
+function wrapTables(html) {
+  return html.replace(/<table>([\s\S]*?)<\/table>/g, (_, inner) => {
+    const heads = [...inner.matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map((m) => m[1].replace(/<[^>]+>/g, '').trim());
+    const body = inner.replace(/<tbody>([\s\S]*?)<\/tbody>/, (__, rows) =>
+      `<tbody>${rows.replace(/<tr>([\s\S]*?)<\/tr>/g, (___, cells) => {
+        let i = -1;
+        // подпись нужна всем ячейкам, кроме первой (она сама — заголовок строки)
+        return `<tr>${cells.replace(/<td([^>]*)>/g, (m, attrs) => {
+          i += 1;
+          return i > 0 && heads[i] ? `<td${attrs} data-label="${heads[i].replace(/"/g, '&quot;')}">` : m;
+        })}</tr>`;
+      })}</tbody>`,
+    );
+    return `<div class="table-wrap table-wrap--prose"><table>${body}</table></div>`;
+  });
+}
+
 const slugify = (s) =>
   s
     .toLowerCase()
@@ -43,7 +64,7 @@ export function loadPosts() {
         cover: data.cover || null,
         draft: Boolean(data.draft),
         readingMinutes: Math.max(1, Math.round(words / 180)),
-        html: marked.parse(content),
+        html: wrapTables(marked.parse(content)),
       };
     })
     .sort((a, b) => (b.date?.getTime() || 0) - (a.date?.getTime() || 0));
