@@ -1,6 +1,6 @@
 import { esc, t, rich, each, pad2 } from '../lib.js';
 import { icon } from '../icons.js';
-import { button, sectionHead, serviceFeature, features, steps, faq, counters, reviewCard, pageHero, section, messengerLinks } from '../components.js';
+import { ruleLine, button, sectionHead, serviceFeature, features, steps, faq, counters, reviewCard, pageHero, section, messengerLinks } from '../components.js';
 import { service, faqPage } from '../schema.js';
 import { carMap, carIcon } from '../partials/car-map.js';
 
@@ -56,6 +56,7 @@ function plateScene(ctx, sc) {
   return `<section class="scene-section plate-scene" data-plate-scene aria-label="Лазерная очистка: до и после">
     <div class="container plate-scene__inner">
       <div class="plate-scene__head">
+        ${ruleLine}
         <h2 class="h2">${rich(sc.title)}</h2>
       </div>
       <div class="plate" data-plate>
@@ -141,7 +142,7 @@ function layersScene(ctx, s) {
   const stack = [...s.layers].reverse();
   return `<section class="scene-section layers-scene" data-layers-scene aria-label="Слои антикоррозийной защиты">
     <div class="container layers-scene__inner">
-      <div class="layers-scene__head"><h2 class="h2">${rich(sc.title)}</h2></div>
+      <div class="layers-scene__head">${ruleLine}<h2 class="h2">${rich(sc.title)}</h2></div>
       <div class="layers-scene__grid">
         <ol class="layer-caps">
           ${each(s.layers, (l, i) => `<li class="layer-cap" data-layer-cap="${i}"><span class="layer-cap__num">${pad2(i + 1)}</span><div><h3 class="layer-cap__title">${t(l.title)}</h3><p>${t(l.text)}</p></div></li>`)}
@@ -240,6 +241,7 @@ export function calculator(ctx) {
   const body = `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, variant: 'compact' })}
     <section class="section calc" data-calc>
+      <div class="container">${ruleLine}</div>
       <div class="container calc__grid">
         <form class="calc__form" data-calc-form novalidate>
           ${step(
@@ -360,6 +362,7 @@ export function booking(ctx) {
     body: `
     ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, variant: 'compact' })}
     <section class="section booking" data-booking>
+      <div class="container">${ruleLine}</div>
       <div class="container booking__grid">
         <div class="booking__main">
           <form class="booking-form" data-booking-form novalidate>

@@ -214,12 +214,15 @@ export function ctaBand(ctx, { title, text, primary, secondary } = {}) {
 }
 
 /** Секция. glow — светящееся пятно у края (br, bl, b, l, r, tr, tl), false — без пятна; по умолчанию пятна идут через одну секцию. */
-export function section(inner, { id, extra = '', container = true, glow } = {}) {
+/** Тонкая линия-разделитель между информационными блоками (как над заголовками разделов). */
+export const ruleLine = '<div class="section-rule" aria-hidden="true"></div>';
+
+export function section(inner, { id, extra = '', container = true, glow, rule = true } = {}) {
   const tight = /\btight\b/.test(extra); // «узкие» секции в счёт не идут и пятен не получают
   const n = tight ? -1 : glowIndex++;
   const auto = !tight && n % 2 === 0 ? GLOWS[(n / 2) % GLOWS.length] : undefined;
   const g = glow === undefined ? auto : glow || undefined;
-  return `<section class="${cls('section', extra)}"${id ? ` id="${esc(id)}"` : ''}${g ? ` data-glow="${g}"` : ''}>${container ? `<div class="container">${inner}</div>` : inner}</section>`;
+  return `<section class="${cls('section', extra)}"${id ? ` id="${esc(id)}"` : ''}${g ? ` data-glow="${g}"` : ''}>${container ? `<div class="container">${rule && !inner.includes('section-head__rule') ? ruleLine : ''}${inner}</div>` : inner}</section>`;
 }
 
 export { media, icon };

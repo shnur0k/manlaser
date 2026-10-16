@@ -85,7 +85,7 @@ export function home(ctx) {
   ${marquee(p.marquee)}
 
   ${section(
-    `${sectionHead({ align: 'center', label: false, eyebrow: 'Услуги', title: 'Очищаем и *защищаем* металл', lead: 'Лазерная очистка металла и антикоррозийная обработка автомобилей. Перед антикором удаляем очаги ржавчины лазером.' })}
+    `${sectionHead({ align: 'center', eyebrow: 'Услуги', title: 'Очищаем и *защищаем* металл', lead: 'Лазерная очистка металла и антикоррозийная обработка автомобилей. Перед антикором удаляем очаги ржавчины лазером.' })}
     <div class="svc-grid">
       ${serviceFeature(ctx, { title: s.cleaning.title, text: s.cleaning.short, url: s.cleaning.url, mediaKey: s.cleaning.media, index: 1, tag: 'Без абразива и химии', list: s.cleaning.removes.slice(0, 4) })}
       ${serviceFeature(ctx, { title: 'Антикоррозийная обработка', text: s.anticor.short, url: s.anticor.url, mediaKey: s.anticor.media, index: 2, tag: 'Dinitrol · Mercasol', list: s.anticor.zones.map((z) => z.title) })}
@@ -104,7 +104,7 @@ export function home(ctx) {
   )}
 
   ${section(
-    `${sectionHead({ align: 'center', label: false, eyebrow: 'Работы', title: 'Как это выглядит *вживую*', lead: 'Фото из нашего бокса в Пружанах.', action: button({ label: 'Все работы', href: '/raboty/', variant: 'ghost', size: 'sm' }) })}
+    `${sectionHead({ align: 'center', eyebrow: 'Работы', title: 'Как это выглядит *вживую*', lead: 'Фото из нашего бокса в Пружанах.', action: button({ label: 'Все работы', href: '/raboty/', variant: 'ghost', size: 'sm' }) })}
     <div class="works-teaser" data-stagger>
       ${ctx.media('anticor.prep', { cls: 'works-teaser__item' })}
       ${ctx.media('service.cleaning', { cls: 'works-teaser__item works-teaser__item--tall', ratio: '4/5' })}
@@ -114,7 +114,7 @@ export function home(ctx) {
   )}
 
   ${section(
-    `${sectionHead({ align: 'center', label: false, eyebrow: 'Отзывы', title: 'Что говорят *клиенты*', lead: `${c.reviews.stats.prefix}${c.reviews.stats.value}${c.reviews.stats.suffix} ${c.reviews.stats.label}.`, action: button({ label: 'Все отзывы', href: '/raboty/#otzyvy', variant: 'ghost', size: 'sm' }) })}
+    `${sectionHead({ align: 'center', eyebrow: 'Отзывы', title: 'Что говорят *клиенты*', lead: `${c.reviews.stats.prefix}${c.reviews.stats.value}${c.reviews.stats.suffix} ${c.reviews.stats.label}.`, action: button({ label: 'Все отзывы', href: '/raboty/#otzyvy', variant: 'ghost', size: 'sm' }) })}
     <div class="reviews-grid" data-stagger>${each(c.reviews.services.slice(0, 3), reviewCard)}</div>`,
   )}`;
 

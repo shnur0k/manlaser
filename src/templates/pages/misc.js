@@ -1,6 +1,6 @@
 import { esc, t, each, formatDate } from '../lib.js';
 import { icon } from '../icons.js';
-import { button, eyebrow, sectionHead, faq, counters, features, reviewCard, pageHero, section, messengerLinks, phoneLink, equipmentNote } from '../components.js';
+import { ruleLine, button, eyebrow, sectionHead, faq, counters, features, reviewCard, pageHero, section, messengerLinks, phoneLink, equipmentNote } from '../components.js';
 import { article, faqPage } from '../schema.js';
 import { hoursBlock, findUsBlock, requisitesBlock } from '../partials/contact-blocks.js';
 import { metalLayer, hasPhoto } from './services.js';
@@ -92,6 +92,7 @@ export function blogPost(ctx) {
     ${pageHero(ctx, { eyebrow: post.tags[0] || 'Блог', title: post.title, lead: post.description, variant: 'post' })}
     <article class="section article">
       <div class="container container--narrow">
+        ${ruleLine}
         <p class="article__meta">${esc(formatDate(post.date))} · ${post.readingMinutes} мин чтения${post.draft ? ' · <span class="tag tag--warn">ЧЕРНОВИК — проверить</span>' : ''}</p>
         <div class="prose">${post.html}</div>
         <div class="article__back">${button({ label: 'Все статьи', href: '/blog/', variant: 'ghost', iconName: 'arrow-left' })}</div>

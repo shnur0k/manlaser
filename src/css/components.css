@@ -548,6 +548,17 @@ html.js .media img:not(.is-loaded) {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--line-strong) 18%, var(--line-strong) 82%, transparent);
 }
+/* та же линия там, где у блока нет заголовка раздела (и над заголовками закреплённых сцен) */
+.section-rule {
+  width: 100%;
+  height: 1px;
+  margin-bottom: clamp(24px, 3vw, 44px);
+  background: linear-gradient(90deg, transparent, var(--line-strong) 18%, var(--line-strong) 82%, transparent);
+}
+.plate-scene__head .section-rule,
+.layers-scene__head .section-rule {
+  margin-bottom: clamp(16px, 2.4svh, 28px);
+}
 /* весь заголовок смещён на колонку вправо (без text-indent — он рвёт строки при анимации по словам) */
 .section-head__title {
   grid-column: 2 / span 10;
