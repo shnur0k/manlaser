@@ -43,6 +43,14 @@ export function initHeader() {
       on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
     });
 
+    // ссылки подменю и мобильного меню на текущую страницу — для экранных дикторов
+    const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+    const here = url.replace(/#.*$/, '');
+    document.querySelectorAll('[data-header] .drop__link, [data-mobile-menu] a[href]').forEach((a) => {
+      const path = new URL(a.href, location.origin).pathname.replace(base, '');
+      path === here ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
+    });
+
     if (phone) {
       phone.href = telHref(contact);
       phone.querySelector('[data-phone-label]').textContent = contact.label;

@@ -75,6 +75,22 @@ export default function sitePlugin() {
       },
     },
 
+    // robots.txt и sitemap.xml для поисковиков (только публичные страницы: без черновиков блога и 404)
+    generateBundle() {
+      if (!content) return;
+      const site = content.site.url;
+      const day = new Date().toISOString().slice(0, 10);
+      const urls = buildRoutes(content)
+        .filter((r) => !r.noindex)
+        .map((r) => `  <url><loc>${site}${r.url}</loc><lastmod>${day}</lastmod></url>`);
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sitemap.xml',
+        source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`,
+      });
+      this.emitFile({ type: 'asset', fileName: 'robots.txt', source: `User-agent: *\nAllow: /\n\nSitemap: ${site}/sitemap.xml\n` });
+    },
+
     resolveId(id) {
       const n = normalizePath(id);
       if (pages.has(n)) return n;

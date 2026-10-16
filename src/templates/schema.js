@@ -25,7 +25,6 @@ export function business(ctx) {
     address,
     openingHours: site.hours.schema,
     areaServed: ['Пружаны', 'Брестская область', 'Беларусь'],
-    priceRange: 'BYN',
     contactPoint: [
       { '@type': 'ContactPoint', telephone: site.contacts.services.tel, contactType: 'customer service', name: site.contacts.services.label, availableLanguage: 'ru' },
     ],

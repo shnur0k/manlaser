@@ -4,6 +4,9 @@ import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
 import { mergeGeometries, toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
 import { patchMaterial } from '../lib/patch.js';
 
+/** SVGLoader не понимает градиенты и currentColor (шумит предупреждениями), а цвет всё равно задаёт шейдер — подставляем белый. */
+const plainSvg = (t) => t.replace(/fill="url\([^)]*\)"/g, 'fill="#ffffff"').replace(/currentColor/g, '#ffffff');
+
 // Фирменный градиент знака (из assets/logo.svg); последний цвет чуть светлее чёрного, чтобы «хвост» читался в 3D
 const STOPS = [
   [0, '#dec390'],
@@ -68,7 +71,7 @@ function dissolve(material, key) {
  * Центрирован, ширина width; толще, чем финальный логотип, чтобы читался как металлическое литьё.
  */
 export function buildLogoGeometry(svgText, { width = 2.9, depthUnits = 30, quality = 'high', only = 'all' } = {}) {
-  const data = new SVGLoader().parse(svgText);
+  const data = new SVGLoader().parse(plainSvg(svgText));
   const opts = {
     depth: depthUnits,
     bevelEnabled: true,
@@ -101,7 +104,7 @@ export function buildLogoGeometry(svgText, { width = 2.9, depthUnits = 30, quali
 }
 
 export function buildLogo(svgText, { quality, dot, width = 3.6 }) {
-  const data = new SVGLoader().parse(svgText);
+  const data = new SVGLoader().parse(plainSvg(svgText));
   const S = width / 740; // ширина viewBox логотипа — 740
   const cx = 1364;
   const cy = 51;
