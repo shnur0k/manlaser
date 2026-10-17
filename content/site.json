@@ -1,0 +1,157 @@
+{
+  "name": "manlaser",
+  "url": "https://manlaser.by",
+  "lang": "ru",
+  "tagline": "Лазерная очистка металла и антикоррозийная обработка автомобилей в Пружанах",
+  "about": "manlaser — лазерный сервис в Пружанах. Очищаем металл лазером и делаем антикоррозийную обработку автомобилей материалами Dinitrol и Mercasol.",
+  "equipmentNote": {
+    "text": "Лазерная очистка металла и антикоррозийная обработка автомобилей",
+    "label": "manlaser-center.by",
+    "url": "https://manlaser-center.by"
+  },
+  "address": {
+    "region": "Брестская область",
+    "city": "Пружаны",
+    "street": "ул. Лазо, 5/5",
+    "postalCode": "[ИНДЕКС]",
+    "country": "BY",
+    "full": "Брестская обл., г. Пружаны, ул. Лазо, 5/5",
+    "mapQuery": "Пружаны, ул. Лазо 5/5",
+    "geo": {
+      "lat": 52.551718,
+      "lng": 24.478903
+    }
+  },
+  "hours": {
+    "text": "Ежедневно с 9:00 до 19:00, без выходных",
+    "short": "9:00–19:00, без выходных",
+    "schema": [
+      "Mo-Su 09:00-19:00"
+    ],
+    "open": "09:00",
+    "close": "19:00",
+    "days": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "timezone": "Europe/Minsk"
+  },
+  "email": "Inlazer@yandex.ru",
+  "responsePromise": "Ответим в течение 3 минут",
+  "requisites": "[РЕКВИЗИТЫ: наименование юрлица, УНП, банк, р/с]",
+  "contacts": {
+    "services": {
+      "label": "Запись на обработку",
+      "phone": "+375 (44) 768-76-77",
+      "tel": "+375447687677",
+      "telegram": "+375447687677",
+      "viber": "+375447687677",
+      "whatsapp": "375447687677"
+    }
+  },
+  "cta": {
+    "services": {
+      "label": "Записаться",
+      "url": "/zapis/"
+    }
+  },
+  "nav": [
+    {
+      "label": "Услуги",
+      "url": "/uslugi/",
+      "section": "services",
+      "items": [
+        {
+          "label": "Лазерная очистка металла",
+          "url": "/uslugi/lazernaya-ochistka/",
+          "text": "Ржавчина, окалина, краска, масло — без абразива и пыли",
+          "icon": "spark"
+        },
+        {
+          "label": "Антикоррозийная обработка",
+          "url": "/uslugi/antikor/",
+          "text": "Днище, арки, пороги, скрытые полости. Dinitrol и Mercasol",
+          "icon": "shield"
+        }
+      ],
+      "icon": "spark"
+    },
+    {
+      "label": "Работы",
+      "url": "/raboty/",
+      "icon": "gallery"
+    },
+    {
+      "label": "Калькулятор",
+      "url": "/uslugi/kalkulyator/",
+      "icon": "calc"
+    },
+    {
+      "label": "Блог",
+      "url": "/blog/",
+      "icon": "article"
+    },
+    {
+      "label": "О нас",
+      "url": "/o-nas/",
+      "items": [
+        {
+          "label": "О компании",
+          "url": "/o-nas/",
+          "text": "Кто мы и как работаем",
+          "icon": "info"
+        },
+        {
+          "label": "Контакты",
+          "url": "/kontakty/",
+          "text": "Адрес, карта проезда, режим работы",
+          "icon": "pin"
+        },
+        {
+          "label": "Частые вопросы",
+          "url": "/voprosy/",
+          "text": "Запись, очистка, антикор",
+          "icon": "chat"
+        }
+      ],
+      "icon": "info"
+    }
+  ],
+  "map": {
+    "_help": "Кнопки маршрута в блоке «Как нас найти» (страница «Контакты»).",
+    "yandex": "https://yandex.by/maps/?pt=24.478903,52.551718&z=17&l=map",
+    "route": "https://yandex.by/maps/?mode=routes&rtext=~52.551718%2C24.478903&rtt=auto",
+    "google": "https://www.google.com/maps/dir/?api=1&destination=52.551718%2C24.478903&travelmode=driving"
+  },
+  "requisitesList": [
+    [
+      "Наименование",
+      "[НАИМЕНОВАНИЕ ЮРЛИЦА / ИП]"
+    ],
+    [
+      "УНП",
+      "[УНП]"
+    ],
+    [
+      "Юридический адрес",
+      "[ЮРИДИЧЕСКИЙ АДРЕС]"
+    ],
+    [
+      "Банк",
+      "[НАЗВАНИЕ БАНКА]"
+    ],
+    [
+      "Расчётный счёт",
+      "[IBAN]"
+    ],
+    [
+      "БИК",
+      "[БИК]"
+    ]
+  ]
+}

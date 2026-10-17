@@ -1,0 +1,457 @@
+import { esc, t, rich, each, pad2 } from '../lib.js';
+import { icon } from '../icons.js';
+import { ruleLine, button, sectionHead, serviceFeature, features, steps, faq, counters, reviewCard, pageHero, section, messengerLinks } from '../components.js';
+import { service, faqPage } from '../schema.js';
+import { carMap, carIcon } from '../partials/car-map.js';
+
+const faqGroup = (c, id) => c.faq.groups.find((g) => g.id === id)?.items || [];
+
+function priceBlock(s) {
+  return `<div class="price-block" data-reveal>
+    <div><span class="price-block__label">Стоимость</span><span class="price-block__value">${t(s.price)}</span></div>
+    <p class="price-block__note">${t(s.priceNote)}</p>
+    <div class="actions">
+      ${button({ label: 'Рассчитать стоимость', href: '/uslugi/kalkulyator/', variant: 'ghost', size: 'sm', iconName: 'arrow-right' })}
+    </div>
+  </div>`;
+}
+
+export function servicesHub(ctx) {
+  const { c } = ctx;
+  const p = c.pages.services;
+  const s = c.services;
+  return {
+    body: `
+    ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, variant: 'wide' })}
+    ${section(`<h2 class="sr-only">Наши услуги</h2>
+    <div class="svc-grid">
+      ${serviceFeature(ctx, { title: s.cleaning.title, text: s.cleaning.short, url: s.cleaning.url, mediaKey: s.cleaning.media, index: 1, tag: 'Без абразива и химии', list: s.cleaning.removes.slice(0, 4) })}
+      ${serviceFeature(ctx, { title: 'Антикоррозийная обработка', text: s.anticor.short, url: s.anticor.url, mediaKey: s.anticor.media, index: 2, tag: 'Dinitrol · Mercasol', list: s.anticor.zones.map((z) => z.title) })}
+    </div>`)}
+    ${section(`<a class="calc-banner" href="/uslugi/kalkulyator/" data-cursor="Посчитать">
+      <span class="calc-banner__icon">${icon('calc')}</span>
+      <span class="calc-banner__text"><strong>Калькулятор стоимости</strong><small>Выберите тип авто и зоны обработки прямо на силуэте — получите предварительную цену.</small></span>
+      <span class="calc-banner__arrow">${icon('arrow-up-right')}</span>
+    </a>`, { extra: 'section--tight' })}`,
+    schema: [service(ctx, s.cleaning), service(ctx, { ...s.anticor, title: 'Антикоррозийная обработка автомобиля' })],
+  };
+}
+
+/**
+ * Слой «до» или «после»: настоящее фото из content/media.json, если оно есть,
+ * иначе нарисованная иллюстрация — ржавая поверхность (rust) или чистая сталь (steel).
+ */
+export function metalLayer(ctx, key, tex, seed, [w, h]) {
+  const m = ctx.c.media[key];
+  if (m?.src) return `<img src="${esc(m.src)}" alt="${esc(m.alt)}" loading="lazy" decoding="async">`;
+  return `<canvas data-tex="${tex}" data-seed="${seed}" width="${w}" height="${h}" aria-hidden="true"></canvas>`;
+}
+
+export const hasPhoto = (ctx, ...keys) => keys.every((k) => ctx.c.media[k]?.src);
+
+/** Сцена «до → после»: закрепляется на экране, луч лазера идёт по ржавой пластине (scripts: pages/cleaning.js). */
+function plateScene(ctx, sc) {
+  const caps = sc.caps;
+  const ranges = [[-1, 0.2], [0.2, 0.8], [0.8, 2]];
+  return `<section class="scene-section plate-scene" data-plate-scene aria-label="Лазерная очистка: до и после">
+    <div class="container plate-scene__inner">
+      <div class="plate-scene__head">
+        ${ruleLine}
+        <h2 class="h2">${rich(sc.title)}</h2>
+      </div>
+      <div class="plate" data-plate>
+        <div class="plate__layer plate__layer--before">${metalLayer(ctx, 'cleaning.scene-before', 'rust', 7, [480, 240])}</div>
+        <div class="plate__layer plate__layer--after">${metalLayer(ctx, 'cleaning.scene-after', 'steel', 7, [480, 240])}</div>
+        <div class="plate__beam" aria-hidden="true"></div>
+        <canvas class="plate__sparks" data-plate-sparks aria-hidden="true"></canvas>
+        <span class="plate__tag plate__tag--before">${esc(sc.tagBefore)}</span>
+        <span class="plate__tag plate__tag--after">${esc(sc.tagAfter)}</span>
+        ${hasPhoto(ctx, 'cleaning.scene-before', 'cleaning.scene-after') ? '' : `<span class="plate__note">${esc(sc.note)}</span>`}
+      </div>
+      <div class="plate-scene__caps">
+        ${each(caps, (cap, i) => `<div class="plate-cap" data-plate-cap data-from="${ranges[i][0]}" data-to="${ranges[i][1]}"><h3 class="plate-cap__title">${t(cap.title)}</h3><p>${t(cap.text)}</p></div>`)}
+      </div>
+      <div class="plate-scene__meter" aria-hidden="true">
+        <span class="plate-scene__label">${esc(sc.readout)}</span>
+        <span class="plate-scene__bar" data-plate-bar></span>
+        <span class="plate-scene__value"><b data-plate-readout>000</b>%</span>
+      </div>
+    </div>
+  </section>`;
+}
+
+/** Карточка «до/после» при наведении: слой «после» открывается за курсором. */
+function baCard(ctx, o, i) {
+  const photo = hasPhoto(ctx, o.mediaBefore, o.media);
+  return `<article class="object">
+    <div class="ba" data-ba tabindex="0" role="group" aria-label="${esc(o.title)}: до и после" data-cursor="Проведите">
+      <div class="ba__layer ba__layer--before">${metalLayer(ctx, o.mediaBefore, 'rust', 21 + i * 13, [320, 240])}</div>
+      <div class="ba__layer ba__layer--after">${metalLayer(ctx, o.media, 'steel', 21 + i * 13, [320, 240])}</div>
+      <span class="ba__line" aria-hidden="true"></span>
+      <span class="ba__tag ba__tag--before">До</span>
+      <span class="ba__tag ba__tag--after">После</span>
+      <span class="ba__hint"><span class="ba__hint-hover">Наведите</span><span class="ba__hint-touch">Нажмите</span></span>
+      ${photo ? '' : '<span class="ba__ill">Иллюстрация</span>'}
+    </div>
+    <h3 class="object__title">${t(o.title)}</h3>
+    <p class="object__text">${t(o.text)}</p>
+  </article>`;
+}
+
+export function serviceCleaning(ctx) {
+  const { c } = ctx;
+  const s = c.services.cleaning;
+  const items = faqGroup(c, 'cleaning');
+  return {
+    body: `
+    ${pageHero(ctx, {
+      eyebrow: 'Услуга №1 · Пружаны',
+      title: s.title,
+      lead: s.lead,
+      actions: button({ label: 'Рассчитать стоимость', href: '/uslugi/kalkulyator/?service=cleaning', variant: 'ghost', iconName: 'arrow-right' }),
+      mediaKey: s.media,
+    })}
+
+    ${plateScene(ctx, s.scene)}
+
+    ${section(`${sectionHead({ eyebrow: 'Что удаляем', title: 'Лазер снимает всё лишнее', lead: s.short })}
+      <ul class="chips" data-stagger>${each(s.removes, (r) => `<li class="chip">${icon('spark')}${t(r)}</li>`)}</ul>`)}
+
+    ${section(`${sectionHead({ eyebrow: 'Почему лазер', title: 'Преимущества метода' })}${features(s.benefits)}`)}
+
+    ${section(`${sectionHead({ eyebrow: 'Что чистим', title: 'Для авто и производства', lead: s.objectsLead })}
+      <div class="objects-grid" data-stagger>${each(s.objects, (o, i) => baCard(ctx, o, i))}</div>`)}
+
+
+    ${section(`<div class="split">
+      <div>${sectionHead({ eyebrow: 'Как работаем', title: 'Этапы', align: 'left' })}${priceBlock(s)}</div>
+      <div>${steps(s.steps)}</div>
+    </div>`)}
+
+    ${section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые вопросы', id: 'faq' })}${faq(items, { id: 'faq-cleaning' })}`)}`,
+    cta: { title: 'Привезите деталь — покажем результат' },
+    schema: [service(ctx, s, { serviceType: 'Лазерная очистка металла' }), faqPage(items)],
+  };
+}
+
+/** «Разрез» слоёв защиты: закрепляется на экране, слои ложатся по скроллу (скрипт: pages/anticor.js). */
+function layersScene(ctx, s) {
+  const sc = s.scene;
+  const n = s.layers.length;
+  // сверху вниз: защитный слой → … → металл кузова
+  const stack = [...s.layers].reverse();
+  return `<section class="scene-section layers-scene" data-layers-scene aria-label="Слои антикоррозийной защиты">
+    <div class="container layers-scene__inner">
+      <div class="layers-scene__head">${ruleLine}<h2 class="h2">${rich(sc.title)}</h2></div>
+      <div class="layers-scene__grid">
+        <ol class="layer-caps">
+          ${each(s.layers, (l, i) => `<li class="layer-cap" data-layer-cap="${i}"><span class="layer-cap__num">${pad2(i + 1)}</span><div><h3 class="layer-cap__title">${t(l.title)}</h3><p>${t(l.text)}</p></div></li>`)}
+        </ol>
+        <div class="slab" data-slab>
+          <div class="slab__stack">
+            ${each(
+              stack,
+              (l) => `<div class="slab__layer slab__layer--${esc(l.id)}" data-layer="${s.layers.indexOf(l)}">${
+                l.id === 'clean' ? '<canvas class="slab__rust" data-tex="rust" data-seed="5" width="480" height="64" aria-hidden="true"></canvas>' : ''
+              }<span class="slab__badge">${pad2(s.layers.indexOf(l) + 1)}</span></div>`,
+            )}
+            <div class="slab__beam" aria-hidden="true"></div>
+            <canvas class="slab__sparks" data-slab-sparks aria-hidden="true"></canvas>
+          </div>
+          <span class="slab__note">${esc(sc.note)}</span>
+        </div>
+      </div>
+      <div class="layers-scene__meter" aria-hidden="true">
+        <span class="layers-scene__label">${esc(sc.readout)}</span>
+        <span class="layers-scene__bar" data-layers-bar></span>
+        <span class="layers-scene__value"><b data-layers-readout>01</b> / ${pad2(n)}</span>
+      </div>
+    </div>
+  </section>`;
+}
+
+/** Интерактивная схема: типы кузова, зоны на силуэте и карточки зон связаны между собой (pages/anticor.js). */
+function zoneMap(ctx, s) {
+  const cars = ctx.c.prices.anticor.cars;
+  return `<div class="zone-map" data-zone-map>
+    <div class="zone-map__stage">
+      <div class="car-map">${carMap(cars[0].id)}</div>
+      <div class="type-switch" role="group" aria-label="Тип кузова">
+        ${each(cars, (car, i) => `<button class="type-btn${i === 0 ? ' is-active' : ''}" type="button" data-car="${esc(car.id)}" aria-pressed="${i === 0}">${esc(car.label)}</button>`)}
+      </div>
+    </div>
+    <div class="zones zones--stack" data-zones>${each(
+      s.zones,
+      (z, i) => `<article class="zone" data-zone="${esc(z.id)}" tabindex="0" role="button" aria-pressed="false"><span class="zone__num">${pad2(i + 1)}</span><h3 class="zone__title">${t(z.title)}</h3><p class="zone__text">${t(z.text)}</p></article>`,
+    )}</div>
+  </div>`;
+}
+
+export function serviceAnticor(ctx) {
+  const { c } = ctx;
+  const s = c.services.anticor;
+  const items = faqGroup(c, 'anticor');
+  return {
+    body: `
+    ${pageHero(ctx, {
+      eyebrow: 'Dinitrol · Mercasol · Пружаны',
+      title: s.title,
+      lead: s.lead,
+      actions: button({ label: 'Рассчитать стоимость', href: '/uslugi/kalkulyator/?service=anticor', variant: 'ghost', iconName: 'arrow-right' }),
+      mediaKey: s.media,
+    })}
+
+    ${layersScene(ctx, s)}
+
+    ${section(`<div class="split">
+      <div>${sectionHead({ eyebrow: 'Технология', title: 'Как мы обрабатываем авто', align: 'left' })}${priceBlock(s)}</div>
+      <div>${steps(s.steps)}</div>
+    </div>`)}
+
+    ${section(`${sectionHead({ eyebrow: 'Материалы', title: 'Dinitrol и Mercasol' })}
+      <div class="materials" data-stagger>${each(s.materials, (m) => `<article class="material" data-tilt="soft"><h3 class="material__name">${esc(m.name)}</h3><p>${t(m.text)}</p></article>`)}</div>`)}
+
+    ${section(`${sectionHead({ eyebrow: 'Наши работы', title: 'Фото из бокса', action: button({ label: 'Все работы', href: '/raboty/', variant: 'ghost', size: 'sm' }) })}
+      <div class="works-teaser" data-stagger>
+        ${ctx.media('anticor.prep', { cls: 'works-teaser__item' })}
+        ${ctx.media('anticor.underbody', { cls: 'works-teaser__item works-teaser__item--tall', ratio: '4/5' })}
+        ${ctx.media('anticor.arches', { cls: 'works-teaser__item' })}
+        ${ctx.media('anticor.materials', { cls: 'works-teaser__item' })}
+      </div>`)}
+
+    ${section(`${sectionHead({ eyebrow: 'Отзывы', title: 'Отзывы об антикоре', lead: `${c.reviews.stats.prefix}${c.reviews.stats.value}${c.reviews.stats.suffix} ${c.reviews.stats.label}.`, action: button({ label: 'Все отзывы', href: '/raboty/#otzyvy', variant: 'ghost', size: 'sm' }) })}<div class="reviews-grid" data-stagger>${each(c.reviews.services.filter((r) => r.service === 'anticor').slice(0, 3), reviewCard)}</div>`)}
+    ${section(`${sectionHead({ eyebrow: 'FAQ', title: 'Частые вопросы', id: 'faq' })}${faq(items, { id: 'faq-anticor' })}`)}`,
+    cta: { title: 'Узнайте стоимость за 10 минут', text: 'Бесплатная оценка без разбора пластиковых элементов. Мастер перезвонит и проконсультирует.' },
+    schema: [service(ctx, s, { serviceType: 'Антикоррозийная обработка автомобиля' }), faqPage(items)],
+  };
+}
+
+export function calculator(ctx) {
+  const { c } = ctx;
+  const p = c.pages.calculator;
+  const pr = c.prices;
+  const a = pr.anticor;
+  const cl = pr.cleaning;
+  const materialText = (id) => c.services.anticor.materials.find((m) => m.name.toLowerCase() === id)?.text || '';
+  const step = (n, title, inner, extra = '') =>
+    `<fieldset class="calc-step ${extra}"><legend class="calc-step__title"><span class="calc-step__num">${pad2(n)}</span>${esc(title)}</legend>${inner}</fieldset>`;
+  const radio = (name, value, checked, body, cls = '') =>
+    `<label class="choice ${cls}"><input type="radio" name="${name}" value="${esc(value)}"${checked ? ' checked' : ''}><span class="choice__body">${body}</span></label>`;
+
+  const body = `
+    ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, variant: 'compact' })}
+    <section class="section calc" data-calc>
+      <div class="container">${ruleLine}</div>
+      <div class="container calc__grid">
+        <form class="calc__form" data-calc-form novalidate>
+          ${step(
+            1,
+            'Услуга',
+            `<div class="choice-grid choice-grid--2">
+              ${radio('service', 'anticor', true, `${icon('shield')}<strong>Антикоррозийная обработка</strong><small>Днище, арки, пороги, полости</small>`, 'choice--big')}
+              ${radio('service', 'cleaning', false, `${icon('spark')}<strong>Лазерная очистка металла</strong><small>Детали, диски, рамы, днище</small>`, 'choice--big')}
+            </div>`,
+          )}
+
+          <div class="calc-branch" data-branch="anticor">
+            ${step(
+              2,
+              'Тип автомобиля',
+              `<div class="choice-grid choice-grid--4">
+                ${each(a.cars, (car, i) => radio('car', car.id, i === 0, `${carIcon(car.id)}<strong>${esc(car.label)}</strong><small>${esc(car.hint)}</small>`, 'choice--car'))}
+              </div>`,
+            )}
+            ${step(
+              3,
+              'Зоны обработки',
+              `<p class="calc-step__hint">Нажмите на зону прямо на схеме или выберите из списка.</p>
+              <div class="car-map">${carMap(a.cars[0].id)}</div>
+              <div class="chip-select">
+                ${each(a.zones, (z) => `<label class="chip-check"><input type="checkbox" name="zone" value="${esc(z.id)}"${a.defaultZones.includes(z.id) ? ' checked' : ''}><span>${icon('check')}${esc(z.label)}</span></label>`)}
+              </div>`,
+            )}
+            ${step(
+              4,
+              'Материал',
+              `<div class="choice-grid choice-grid--2">
+                ${each(a.materials, (m, i) => radio('material', m.id, i === 0, `<strong class="choice__brand">${esc(m.label)}</strong><small>${t(materialText(m.id))}</small>`, 'choice--material'))}
+              </div>`,
+            )}
+            ${step(
+              5,
+              'Дополнительно',
+              each(
+                a.extras,
+                (x) => `<label class="switch"><input type="checkbox" name="extra" value="${esc(x.id)}"><span class="switch__track"><span class="switch__thumb"></span></span><span class="switch__label">${esc(x.label)}</span></label>`,
+              ),
+            )}
+          </div>
+
+          <div class="calc-branch" data-branch="cleaning" hidden>
+            ${step(
+              2,
+              'Как считаем',
+              `<div class="seg" role="radiogroup">
+                ${radio('mode', 'parts', true, 'По деталям', 'seg__item')}
+                ${radio('mode', 'area', false, 'По площади', 'seg__item')}
+              </div>
+              <div class="calc-mode" data-mode="parts">
+                <ul class="parts">${each(
+                  cl.parts,
+                  (pt) => `<li class="part">
+                    <span class="part__label">${esc(pt.label)}</span>
+                    <span class="stepper" data-stepper>
+                      <button type="button" class="stepper__btn" data-step="-1" aria-label="Меньше">−</button>
+                      <input class="stepper__input" type="number" name="part:${esc(pt.id)}" value="0" min="0" max="99" inputmode="numeric" aria-label="${esc(pt.label)}, количество">
+                      <button type="button" class="stepper__btn" data-step="1" aria-label="Больше">+</button>
+                    </span>
+                  </li>`,
+                )}</ul>
+              </div>
+              <div class="calc-mode" data-mode="area" hidden>
+                <div class="area">
+                  <output class="area__value" data-area-out>${String(cl.area.default).replace('.', ',')} <small>м²</small></output>
+                  <input class="range" type="range" name="area" min="${cl.area.min}" max="${cl.area.max}" step="${cl.area.step}" value="${cl.area.default}" aria-label="Площадь очистки, м²">
+                  <div class="area__scale"><span>${String(cl.area.min).replace('.', ',')} м²</span><span>${cl.area.max} м²</span></div>
+                </div>
+              </div>`,
+            )}
+            ${step(
+              3,
+              'Что удаляем',
+              `<div class="choice-grid choice-grid--3">${each(cl.dirt, (d, i) => radio('dirt', d.id, i === 0, `<strong>${esc(d.label)}</strong>`, 'choice--small'))}</div>`,
+            )}
+          </div>
+        </form>
+
+        <aside class="calc__summary">
+          <div class="summary" data-calc-summary>
+            ${pr.demo ? '<span class="summary__demo">Демо-цены · заменить в content/prices.json</span>' : ''}
+            <span class="summary__label">Предварительно</span>
+            <div class="summary__total"><span data-calc-total>0</span><small>${esc(pr.currency)}</small></div>
+            <p class="summary__range" data-calc-range></p>
+            <ul class="summary__lines" data-calc-lines></ul>
+            <p class="summary__note">${icon('info')}${esc(pr.note)}</p>
+            <a class="btn btn--primary summary__cta" href="/zapis/?from=calc" data-calc-submit data-magnetic><span class="btn__label">Записаться с этим расчётом</span><span class="btn__icon">${icon('arrow-up-right')}</span></a>
+            <a class="summary__phone" href="tel:${esc(ctx.contact.tel)}">${icon('phone')}${esc(ctx.contact.phone)}</a>
+          </div>
+        </aside>
+      </div>
+      <!-- закреплённая полоска с ценой: на телефоне итог виден, пока выбираешь параметры -->
+      <div class="calc-bar is-hidden" data-calc-bar>
+        <span class="calc-bar__sum"><small>Предварительно</small><b><span data-calc-bar-total>—</span> ${esc(pr.currency)}</b></span>
+        <button class="btn btn--primary btn--sm calc-bar__btn" type="button" data-calc-bar-go><span class="btn__label">К расчёту</span></button>
+      </div>
+    </section>`;
+  return { body, cta: false }; // свой призыв — «Записаться с этим расчётом»
+}
+
+export function booking(ctx) {
+  const { c, site } = ctx;
+  const p = c.pages.booking;
+  const a = c.services.anticor;
+  const step = (n, title, inner) =>
+    `<fieldset class="calc-step"><legend class="calc-step__title"><span class="calc-step__num">${pad2(n)}</span>${esc(title)}</legend>${inner}</fieldset>`;
+  const chip = (name, value, label, checked = false) =>
+    `<label class="chip-check chip-check--radio"><input type="radio" name="${name}" value="${esc(value)}"${checked ? ' checked' : ''}><span>${icon('check')}${esc(label)}</span></label>`;
+  const field = (id, label, input, hint = '') =>
+    `<div class="field" data-field="${id}"><label class="field__label" for="bk-${id}">${label}</label>${input}<p class="field__error" id="bk-${id}-error" aria-live="polite"></p>${hint ? `<p class="field__hint">${hint}</p>` : ''}</div>`;
+
+  return {
+    cta: false, // форма записи сама и есть призыв
+    body: `
+    ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, lead: p.lead, variant: 'compact' })}
+    <section class="section booking" data-booking>
+      <div class="container">${ruleLine}</div>
+      <div class="container booking__grid">
+        <div class="booking__main">
+          <form class="booking-form" data-booking-form novalidate>
+            ${step(
+              1,
+              'Услуга',
+              `<div class="choice-grid choice-grid--3" data-field="service">
+                <label class="choice choice--small"><input type="radio" name="service" value="anticor" checked><span class="choice__body">${icon('shield')}<strong>Антикоррозийная обработка</strong></span></label>
+                <label class="choice choice--small"><input type="radio" name="service" value="cleaning"><span class="choice__body">${icon('spark')}<strong>Лазерная очистка металла</strong></span></label>
+                <label class="choice choice--small"><input type="radio" name="service" value="consult"><span class="choice__body">${icon('chat')}<strong>Нужна консультация</strong></span></label>
+              </div>`,
+            )}
+            ${step(
+              2,
+              'Контакты',
+              `<div class="field-row">
+                ${field('name', 'Как к вам обращаться', `<input class="input" id="bk-name" name="name" type="text" autocomplete="name" maxlength="60" placeholder="Имя" aria-describedby="bk-name-error">`)}
+                ${field('phone', 'Телефон <span class="field__req">*</span>', `<input class="input" id="bk-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+375 (__) ___-__-__" required aria-required="true" aria-describedby="bk-phone-error">`)}
+              </div>
+              <p class="field__label">Как удобнее связаться</p>
+              <div class="chip-select">
+                ${chip('contact', 'call', 'Позвонить', true)}${chip('contact', 'telegram', 'Telegram')}${chip('contact', 'viber', 'Viber')}${chip('contact', 'whatsapp', 'WhatsApp')}
+              </div>`,
+            )}
+            ${step(
+              3,
+              'Автомобиль или деталь',
+              `${field('object', '<span data-object-label>Марка, модель и год автомобиля</span>', `<input class="input" id="bk-object" name="object" type="text" maxlength="120" placeholder="Например, Volkswagen Passat B6, 2008" data-object-input>`)}
+              ${field('comment', 'Комментарий', `<textarea class="input input--area" id="bk-comment" name="comment" rows="3" maxlength="800" placeholder="Что беспокоит, какие зоны интересуют, есть ли очаги ржавчины"></textarea>`)}`,
+            )}
+            ${step(
+              4,
+              'Когда удобно приехать',
+              `<div class="field-row">
+                ${field('date', 'Дата', `<input class="input" id="bk-date" name="date" type="date" data-date-input>`, 'Можно не указывать — мастер предложит время')}
+                <div class="field">
+                  <p class="field__label">Время</p>
+                  <div class="chip-select">${chip('time', 'morning', '9:00–12:00')}${chip('time', 'day', '12:00–16:00')}${chip('time', 'evening', '16:00–19:00')}</div>
+                </div>
+              </div>`,
+            )}
+            <div class="booking-form__footer">
+              <label class="consent" data-field="consent">
+                <input type="checkbox" name="consent" required aria-describedby="bk-consent-error">
+                <span class="consent__box">${icon('check')}</span>
+                <span class="consent__text">Согласен на обработку персональных данных для связи по заявке. ${t('[ССЫЛКА НА ПОЛИТИКУ КОНФИДЕНЦИАЛЬНОСТИ]')}</span>
+              </label>
+              <p class="field__error" id="bk-consent-error" aria-live="polite"></p>
+              <button class="btn btn--primary booking-form__submit" type="submit" data-magnetic>
+                <span class="btn__label">Отправить заявку</span><span class="btn__icon">${icon('arrow-up-right')}</span>
+              </button>
+              <p class="booking-form__note">${icon('clock')}Перезвоним в рабочее время: ${esc(site.hours.short)}</p>
+            </div>
+          </form>
+
+          <div class="booking-success" data-booking-success hidden tabindex="-1">
+            <svg class="booking-success__mark" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="booking-success__ring" cx="60" cy="60" r="52"/>
+              <path class="booking-success__check" d="M36 62 L53 78 L86 44"/>
+            </svg>
+            <canvas class="booking-success__sparks" data-success-sparks></canvas>
+            <h2 class="h2 booking-success__title">Заявка сформирована</h2>
+            <p class="lead booking-success__text" data-success-text></p>
+            <p class="booking-success__dev" data-success-dev hidden>Отправка заявок пока не подключена (config.js → booking.send) — заявка никуда не ушла. Текст заявки — в консоли браузера.</p>
+            <div class="actions">
+              <a class="btn btn--ghost" href="/"><span class="btn__label">На главную</span><span class="btn__icon">${icon('arrow-right')}</span></a>
+              <button class="btn btn--ghost" type="button" data-booking-again><span class="btn__label">Новая заявка</span></button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="booking__aside">
+          <div data-calc-slot></div>
+          <div class="booking-next">
+            <h2 class="booking-next__title">Что будет дальше</h2>
+            <ol class="booking-next__list">
+              <li><span>01</span><p>Мастер перезвонит, уточнит детали и проконсультирует.</p></li>
+              <li><span>02</span><p>${t(a.highlights[0])}.</p></li>
+              <li><span>03</span><p>Согласуем удобное время. Антикоррозийная обработка занимает от 2 дней.</p></li>
+            </ol>
+          </div>
+          <div class="booking-contacts">
+            <a class="phone-link phone-link--lg" href="tel:${esc(ctx.contact.tel)}"><small>Или позвоните</small><span>${esc(ctx.contact.phone)}</span></a>
+            ${messengerLinks(ctx.contact, { variant: 'icon' })}
+            <p class="booking-contacts__line">${icon('pin')}${esc(site.address.full)}</p>
+            <p class="booking-contacts__line">${icon('clock')}${esc(site.hours.text)}</p>
+          </div>
+        </aside>
+      </div>
+    </section>`,
+  };
+}

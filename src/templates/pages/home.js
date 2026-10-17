@@ -1,0 +1,124 @@
+import { esc, t, rich, each, pad2 } from '../lib.js';
+import { icon } from '../icons.js';
+import { button, eyebrow, sectionHead, serviceFeature, counters, reviewCard, section, marquee } from '../components.js';
+import { service } from '../schema.js';
+
+export function home(ctx) {
+  const { c } = ctx;
+  const p = c.pages.home;
+  const s = c.services;
+
+  // Диапазоны прогресса скролла, на которых видна каждая подпись 3D-сцены
+  const ranges = [
+    [0.15, 0.37],
+    [0.46, 0.74],
+    [0.86, 1.1], // финальный блок не гаснет в конце сцены: остаётся виден и кликабелен всю «выдержку»
+  ];
+  const secondary = button({ label: 'Рассчитать стоимость', href: '/uslugi/kalkulyator/', variant: 'ghost', iconName: 'arrow-right' });
+  const works = button({ label: 'Наши работы', href: '/raboty/', variant: 'ghost', iconName: 'arrow-right' });
+
+  const body = `
+  <section class="scene scene--home" data-scene-root="home" aria-label="Лазерная очистка и антикор: от ржавчины до защиты">
+    <div class="scene__stage" aria-hidden="true">
+      <div class="scene__poster">
+        <!-- постер = первый кадр 3D-сцены (знак в анфас): виден сразу, 3D догружается и плавно его сменяет -->
+        ${c.media['home.hero-fallback']?.src
+          ? ctx.media('home.hero-fallback', { cls: 'scene__poster-media', eager: true })
+          : '<div class="hero__beam"></div><div class="hero__glow"></div>'}
+      </div>
+      <canvas class="scene__canvas" data-scene-canvas></canvas>
+      <div class="scene__vignette"></div>
+      <!-- зернистый градиент с вертикальными полосами: тёплый свет сверху, вокруг знака пусто, при прокрутке гаснет (над виньеткой, чтобы она его не гасила) -->
+      <div class="scene__aurora"><i></i></div>
+    </div>
+
+    <!-- «видоискатель лазера»: уголки рамки, адрес -->
+    <div class="scene__hud" aria-hidden="true">
+      <span class="hud-corner hud-corner--tl"></span><span class="hud-corner hud-corner--tr"></span>
+      <span class="hud-corner hud-corner--bl"></span><span class="hud-corner hud-corner--br"></span>
+      <span class="hud-meta hud-meta--left"><i></i>${esc(c.site.address.city)} · ${esc(c.site.address.street)}</span>
+    </div>
+
+    <div class="scene__ui">
+      <div class="scene__step scene__step--intro" data-scene-step data-from="-1" data-to="0.06">
+        <div class="container intro">
+          <!-- большие надписи «Снимаем ржавчину светом / Защищаем металл надолго» убраны с экрана; h1 оставлен скрытым для поисковиков и экранных дикторов -->
+          <h1 class="sr-only">${t(p.hero.titleTop)} ${t(p.hero.titleBottom)}</h1>
+          <div class="intro__bottom" data-reveal>
+            ${eyebrow(p.hero.eyebrow)}
+            <p class="lead intro__lead">${t(p.hero.lead)}</p>
+            <div class="actions">${secondary}${works}</div>
+          </div>
+        </div>
+      </div>
+
+      ${each(p.scene.slice(0, 2), (st, i) => `<div class="scene__step scene__step--caption" data-scene-step data-from="${ranges[i][0]}" data-to="${ranges[i][1]}">
+          <span class="caption__ghost" aria-hidden="true">${pad2(i + 1)}</span>
+          <div class="container caption">
+            <div class="caption__title">
+              <span class="scene__num">${pad2(i + 1)} / 0${p.scene.length}<i></i>${esc(st.label)}</span>
+              <h2 class="h2">${t(st.title)}</h2>
+            </div>
+            <div class="caption__text">
+              <p class="lead">${t(st.text)}</p>
+              <a class="link-arrow" href="${esc(st.link.url)}">${esc(st.link.label)} ${icon('arrow-right')}</a>
+            </div>
+          </div>
+        </div>`)}
+
+      <div class="scene__step scene__step--final" data-scene-step data-from="${ranges[2][0]}" data-to="${ranges[2][1]}">
+        <div class="container final">
+          <span class="scene__num">03 / 03<i></i>${esc(p.scene[2].label)}</span>
+          <h2 class="h2 final__title">${t(p.scene[2].title)}</h2>
+          <p class="lead final__text">${t(p.scene[2].text)}</p>
+          <div class="actions">${secondary}${works}</div>
+        </div>
+      </div>
+
+      <ol class="scene__progress" aria-hidden="true">
+        ${each(p.scene, (st, i) => `<li data-scene-bar data-from="${i === 0 ? 0.06 : ranges[i][0] - 0.06}" data-to="${i === 2 ? 0.94 : ranges[i][1]}"><span>${esc(st.label)}</span><i><b></b></i></li>`)}
+      </ol>
+      <div class="hero__scroll scene__hint" aria-hidden="true"><span>Листайте</span><i></i></div>
+    </div>
+  </section>
+
+  ${marquee(p.marquee)}
+
+  ${section(
+    `${sectionHead({ align: 'center', eyebrow: 'Услуги', title: 'Очищаем и *защищаем* металл', lead: 'Лазерная очистка металла и антикоррозийная обработка автомобилей. Перед антикором удаляем очаги ржавчины лазером.' })}
+    <div class="svc-grid">
+      ${serviceFeature(ctx, { title: s.cleaning.title, text: s.cleaning.short, url: s.cleaning.url, mediaKey: s.cleaning.media, index: 1, tag: 'Без абразива и химии', list: s.cleaning.removes.slice(0, 4) })}
+      ${serviceFeature(ctx, { title: 'Антикоррозийная обработка', text: s.anticor.short, url: s.anticor.url, mediaKey: s.anticor.media, index: 2, tag: 'Dinitrol · Mercasol', list: s.anticor.zones.map((z) => z.title) })}
+    </div>`,
+    { extra: 'section--services' },
+  )}
+
+  ${section(
+    `<div class="facts-band">
+      <div class="facts-band__head">
+        <h2 class="h2" data-split>${rich('Защита, которой *можно доверять*')}</h2>
+      </div>
+      ${counters(s.anticor.facts)}
+    </div>`,
+  )}
+
+  ${section(
+    `${sectionHead({ align: 'center', eyebrow: 'Работы', title: 'Как это выглядит *вживую*', lead: 'Фото из нашего бокса в Пружанах.', action: button({ label: 'Все работы', href: '/raboty/', variant: 'ghost', size: 'sm' }) })}
+    <div class="works-teaser" data-stagger>
+      ${ctx.media('anticor.prep', { cls: 'works-teaser__item' })}
+      ${ctx.media('service.cleaning', { cls: 'works-teaser__item works-teaser__item--tall', ratio: '4/5' })}
+      ${ctx.media('anticor.underbody', { cls: 'works-teaser__item' })}
+      ${ctx.media('anticor.arches', { cls: 'works-teaser__item' })}
+    </div>`,
+  )}
+
+  ${section(
+    `${sectionHead({ align: 'center', eyebrow: 'Отзывы', title: 'Что говорят *клиенты*', lead: `${c.reviews.stats.prefix}${c.reviews.stats.value}${c.reviews.stats.suffix} ${c.reviews.stats.label}.`, action: button({ label: 'Все отзывы', href: '/raboty/#otzyvy', variant: 'ghost', size: 'sm' }) })}
+    <div class="reviews-grid" data-stagger>${each(c.reviews.services.slice(0, 3), reviewCard)}</div>`,
+  )}`;
+
+  return {
+    body,
+    schema: [service(ctx, s.cleaning), service(ctx, { ...s.anticor, title: 'Антикоррозийная обработка автомобиля' })],
+  };
+}

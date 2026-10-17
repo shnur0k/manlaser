@@ -1,0 +1,189 @@
+/* Два режима сайта: полный (компьютер, с анимацией) и лёгкий (телефон и планшет, html.is-lite — см. core/env.js).
+   Всё, что про вид и поведение сенсорных устройств, привязано к .is-lite; что про узкую раскладку — к ширине окна. */
+html.is-lite {
+  /* мелкий серый текст на чёрном читался плохо (контраст ~3,5:1) — подтягиваем до 5,9:1 */
+  --faint: #8c8c8c;
+}
+
+/* ---------- Узкая раскладка (телефон) ---------- */
+@media (max-width: 767px) {
+  /* заголовки не переносим по слогам («очист-ка»): слово целиком уходит на следующую строку */
+  .page-hero__title,
+  .h1,
+  .h2,
+  .display-2 {
+    hyphens: manual;
+  }
+  /* футер: ссылки в один столбец, строки одной высоты */
+  .site-footer__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .site-footer__col--wide {
+    grid-column: auto;
+  }
+  .site-footer__col ul {
+    gap: 0;
+  }
+  /* почта и «Как проехать» — каждое в своей строке (touch.css делал ссылки строчными) */
+  .site-footer a.site-footer__line {
+    display: flex;
+  }
+  .site-footer .link-arrow {
+    margin-top: 4px;
+  }
+}
+
+/* белый текст на фирменном оранжевом (#e85002) даёт контраст 3,6:1 — для сплошных заливок берём чуть темнее (4,7:1) */
+html.is-lite {
+  --orange-fill: #c74300;
+}
+html.is-lite .btn--primary,
+html.is-lite .skip-link,
+html.is-lite .tag-filter__btn.is-active,
+html.is-lite .chip-check input:checked + span {
+  background: var(--orange-fill);
+}
+html.is-lite .tag-filter__btn.is-active,
+html.is-lite .chip-check input:checked + span {
+  border-color: var(--orange-fill);
+}
+/* плавающие кнопки не закрывают нижнюю строку футера (реквизиты) */
+html.is-lite .site-footer {
+  padding-bottom: calc(84px + env(safe-area-inset-bottom));
+}
+/* на странице записи кнопка чата не должна лежать поверх полей формы (контакты есть на самой странице) */
+html.is-lite .floating.is-booking .floating__chat {
+  display: none;
+}
+
+/* мелкие подписи на фото и схемах — не меньше 12 px */
+html.is-lite .media__ph-label,
+html.is-lite .media__ph-meta,
+html.is-lite .summary__demo,
+html.is-lite .header-phone small,
+html.is-lite .find-us__label,
+html.is-lite .hud-meta,
+html.is-lite .plate__tag,
+html.is-lite .ba__tag,
+html.is-lite .ba__hint,
+html.is-lite .ba__ill,
+html.is-lite .plate__note,
+html.is-lite .slab__note,
+html.is-lite .burn__tag,
+html.is-lite .burn__hint,
+html.is-lite .burn__ill,
+html.is-lite .plate-scene__meter,
+html.is-lite .layers-scene__meter {
+  font-size: 0.75rem;
+}
+
+@media (max-width: 767px) {
+  /* логотип: область нажатия ровно 44 px по высоте */
+  .logo {
+    padding-block: 13px;
+    margin-block: -13px;
+  }
+  /* ссылки внутри абзацев: вёрстка не меняется, а область нажатия по высоте больше строки */
+  p a:not(.btn):not(.link-arrow),
+  .prose a,
+  .equipment-note a {
+    padding-block: 10px;
+    margin-block: -10px;
+  }
+}
+
+@media (max-width: 767px) {
+  /* короткие слова («Блог», «Услуги») в футере — область нажатия не уже 44 px */
+  .site-footer__col a {
+    min-width: 44px;
+  }
+}
+
+/* реакцию на нажатие рисуем сами (scale), поэтому серую вспышку iOS отключаем */
+a,
+button,
+summary,
+label,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- Телефон: плотнее вертикальный ритм и межстрочные интервалы ---------- */
+@media (max-width: 767px) {
+  :root {
+    --head-gap: 32px; /* заголовок раздела → содержимое */
+    --section-pad: 48px; /* отступ секции сверху и снизу: между соседними блоками ~72 px вместо 96 */
+    --section-pad-tight: 32px;
+  }
+  .feature {
+    padding: 20px 0 24px;
+    gap: 10px;
+  }
+  .counters {
+    gap: 20px;
+  }
+  .counter {
+    padding-top: 16px;
+    gap: 8px;
+  }
+  /* футер: 16 px, тонкие разделители между ссылками (область нажатия остаётся 44 px) */
+  .site-footer__col a {
+    font-size: 1rem;
+  }
+  .site-footer__col li + li {
+    border-top: 1px solid var(--line);
+  }
+  .site-footer__line {
+    line-height: 1.45;
+  }
+}
+
+/* межстрочные интервалы: тексты на телефоне и планшете плотнее (длинные статьи .prose держат свои 1.75) */
+html.is-lite body {
+  line-height: 1.5;
+}
+html.is-lite .feature__text,
+html.is-lite .counter__label,
+html.is-lite .card__text,
+html.is-lite .svc__text,
+html.is-lite .step__text,
+html.is-lite .zone__text,
+html.is-lite .object__text,
+html.is-lite .cta-band__text {
+  line-height: 1.4;
+}
+
+/* огромная надпись manlaser в футере — на всю ширину и по центру
+   (общее правило для ссылок футера на телефоне делало её строчной и «сжимало» влево) */
+.site-footer a.site-footer__giant {
+  display: block;
+  min-height: 0;
+}
+
+/* ---------- Планшет (600–1099 px): аккуратнее сетки, без «дыр» ---------- */
+@media (min-width: 600px) and (max-width: 1099px) {
+  /* цифры: 2×2 вместо «3 + 1» */
+  .counters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* фото на главной: 2×2, без пустой клетки справа внизу */
+  .works-teaser {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .works-teaser__item--tall {
+    grid-row: auto;
+  }
+  .works-teaser__item--tall.media {
+    aspect-ratio: 4 / 3;
+  }
+  /* нечётная последняя карточка отзыва — на всю ширину, а не одна в углу */
+  .reviews-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 900px) and (max-width: 1099px) {
+  .counters {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

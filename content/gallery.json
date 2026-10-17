@@ -1,0 +1,65 @@
+{
+  "_help": "Галерея на странице «Работы». type \"ba\" — пара «до/после» (фото берутся из media.json по ключам before/after; пока src пустой — рисуется иллюстрация), type \"photo\" — одиночное фото из media.json. service: cleaning | anticor.",
+  "items": [
+    {
+      "type": "ba",
+      "service": "cleaning",
+      "title": "Лазерная очистка: кузовная деталь",
+      "before": "works.c1-before",
+      "after": "works.c1-after",
+      "texAfter": "steel",
+      "seed": 3
+    },
+    {
+      "type": "photo",
+      "service": "anticor",
+      "title": "Днище в процессе подготовки",
+      "media": "anticor.prep"
+    },
+    {
+      "type": "ba",
+      "service": "anticor",
+      "title": "Антикор: днище",
+      "before": "works.a1-before",
+      "after": "works.a1-after",
+      "texAfter": "coat",
+      "seed": 11
+    },
+    {
+      "type": "photo",
+      "service": "cleaning",
+      "title": "Лазерная очистка днища в работе",
+      "media": "service.cleaning"
+    },
+    {
+      "type": "ba",
+      "service": "cleaning",
+      "title": "Лазерная очистка: диск или рычаг",
+      "before": "works.c2-before",
+      "after": "works.c2-after",
+      "texAfter": "steel",
+      "seed": 17
+    },
+    {
+      "type": "photo",
+      "service": "anticor",
+      "title": "Днище после обработки",
+      "media": "anticor.underbody"
+    },
+    {
+      "type": "ba",
+      "service": "anticor",
+      "title": "Антикор: колёсная арка",
+      "before": "works.a2-before",
+      "after": "works.a2-after",
+      "texAfter": "coat",
+      "seed": 23
+    },
+    {
+      "type": "photo",
+      "service": "anticor",
+      "title": "Колёсная арка после обработки",
+      "media": "anticor.arches"
+    }
+  ]
+}

@@ -1,0 +1,528 @@
+/* ---------- Scroll-сцены ---------- */
+.scene {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #000;
+}
+.scene__stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.scene__poster {
+  position: absolute;
+  inset: 0;
+  transition: opacity 1.4s var(--ease-out);
+}
+.scene.is-ready .scene__poster {
+  opacity: 0;
+}
+.scene__poster-media.media {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+.scene__poster-media img {
+  object-fit: cover;
+}
+/* лёгкая версия (телефон и планшет), вертикально: знак целиком, без обрезки по бокам, и крупнее */
+@media (orientation: portrait) {
+  html.is-lite .scene__poster-media img {
+    object-fit: contain;
+    transform: scale(1.5); /* в кадре постера знак занимает лишь половину ширины */
+  }
+}
+.scene__canvas,
+.scene__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease-out);
+}
+.scene__video {
+  object-fit: cover;
+}
+.scene.is-ready .scene__canvas,
+.scene.is-ready .scene__video {
+  opacity: 1;
+}
+/* Фон вступления: мягкие светящиеся пятна из краёв кадра (в одном стиле с пятнами по сайту, см. glow.css).
+   Лежат над холстом (чёрное фоном не мешает). Вокруг знака — просвет,
+   в левом нижнем углу (текст и кнопки) пятен нет. С прокрутки (--p) плавно гаснут к началу коррозии. */
+.scene__aurora {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: clamp(0, calc(1 - (var(--p, 0) - 0.02) / 0.12), 1);
+  -webkit-mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%);
+  mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%);
+}
+.scene__aurora {
+  --glow:
+    radial-gradient(46% 62% at 102% 108%, rgba(255, 126, 36, 0.6) 0%, rgba(214, 58, 10, 0.36) 40%, rgba(112, 22, 4, 0.14) 66%, transparent 84%),
+    radial-gradient(30% 56% at -6% 40%, rgba(255, 126, 36, 0.54) 0%, rgba(214, 58, 10, 0.324) 40%, rgba(112, 22, 4, 0.12600000000000003) 66%, transparent 84%),
+    radial-gradient(26% 34% at 72% 116%, rgba(255, 170, 80, 0.4) 0%, rgba(255, 126, 36, 0.16) 45%, transparent 75%),
+    radial-gradient(24% 32% at 100% -4%, rgba(255, 170, 80, 0.4) 0%, rgba(255, 126, 36, 0.16) 45%, transparent 75%),
+    radial-gradient(18% 26% at -2% 78%, rgba(255, 170, 80, 0.4) 0%, rgba(255, 126, 36, 0.16) 45%, transparent 75%);
+}
+.scene__aurora i,
+.scene__aurora::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--glow);
+}
+/* зерно только внутри пятен: та же заливка сквозь маску-шум */
+.scene__aurora::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-mask-size: 220px;
+  mask-size: 220px;
+  opacity: 0.72;
+}
+html.no-aurora .scene__aurora {
+  display: none; /* ?aurora=0 — для проверки нагрузки */
+}
+.scene__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 48%, transparent 45%, rgba(0, 0, 0, 0.82) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 22%, transparent 58%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+/* ---------- «Видоискатель»: уголки рамки и служебные надписи ---------- */
+.scene__hud {
+  position: absolute;
+  inset: calc(var(--header-h) + 8px) clamp(12px, 2.4vw, 32px) clamp(12px, 2.4vw, 28px);
+  z-index: 1;
+  pointer-events: none;
+}
+.hud-corner {
+  position: absolute;
+  width: clamp(18px, 2.2vw, 30px);
+  height: clamp(18px, 2.2vw, 30px);
+  border: 0 solid rgba(241, 96, 1, 0.75);
+}
+.hud-corner--tl { left: 0; top: 0; border-top-width: 1px; border-left-width: 1px; }
+.hud-corner--tr { right: 0; top: 0; border-top-width: 1px; border-right-width: 1px; }
+.hud-corner--bl { left: 0; bottom: 0; border-bottom-width: 1px; border-left-width: 1px; }
+.hud-corner--br { right: 0; bottom: 0; border-bottom-width: 1px; border-right-width: 1px; }
+.hud-meta {
+  position: absolute;
+  top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(249, 249, 249, 0.82); /* читается и на тёплом фоне вступления */
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.75);
+}
+.hud-meta--left { left: 44px; }
+.hud-meta--right { right: 44px; }
+.hud-meta i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: var(--glow-sm);
+  animation: hud-blink 1.6s steps(2) infinite;
+}
+.hud-meta b {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  color: var(--orange-hot);
+  min-width: 3ch;
+  text-align: right;
+}
+@keyframes hud-blink {
+  50% { opacity: 0.2; }
+}
+
+/* ---------- Слои подписей ---------- */
+.scene__ui {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.scene__step {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.scene__step.is-visible a,
+.scene__step.is-visible button {
+  pointer-events: auto;
+}
+html.js .scene:not(.is-static) .scene__step:not(.scene__step--intro) {
+  opacity: 0;
+  visibility: hidden;
+}
+.scene__num {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange-hot);
+}
+.scene__num i {
+  width: 40px;
+  height: 1px;
+  background: var(--grad-heat);
+}
+
+/* Интро: первая строка заголовка вверху слева, вторая — внизу справа, объект между ними */
+.intro {
+  position: relative;
+  height: 100%;
+  padding-top: calc(var(--header-h) + clamp(40px, 6vh, 72px));
+  padding-bottom: clamp(40px, 7vh, 80px);
+}
+.intro__title {
+  position: absolute;
+  inset: calc(var(--header-h) + clamp(40px, 6vh, 72px)) var(--gutter) clamp(150px, 26vh, 260px);
+  font-size: clamp(2.1rem, 0.9rem + 4.4vw, 6rem);
+  pointer-events: none;
+}
+.intro__line {
+  position: absolute;
+  display: block;
+  max-width: 11ch;
+}
+.intro__line--a {
+  left: 0;
+  top: 0;
+}
+/* вторая строка — контуром, как гравировка */
+.intro__line--b {
+  right: 0;
+  bottom: 0;
+  text-align: right;
+  color: #050505;
+  -webkit-text-stroke: 2px rgba(249, 249, 249, 0.85);
+  paint-order: stroke fill; /* без внутренних линий шрифта */
+}
+.intro__bottom {
+  position: absolute;
+  left: var(--gutter);
+  bottom: clamp(40px, 7vh, 80px);
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+.intro__bottom .eyebrow {
+  margin: 0;
+}
+.intro__lead {
+  font-size: 1rem;
+}
+.intro__bottom .actions {
+  pointer-events: auto;
+}
+
+/* Подписи шагов: заголовок внизу слева, описание внизу справа, гигантская контурная цифра */
+.caption {
+  position: relative;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 32px clamp(32px, 8vw, 160px);
+  padding-bottom: clamp(48px, 8vh, 96px);
+}
+.caption__title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+.caption__title .h2 {
+  max-width: 12ch;
+}
+.caption__text {
+  justify-self: end;
+  max-width: 24rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  text-align: right;
+  padding-bottom: 6px;
+}
+.caption__text .lead {
+  font-size: 1rem;
+}
+.caption__ghost {
+  position: absolute;
+  right: clamp(8px, 3vw, 48px);
+  top: calc(var(--header-h) + 20px);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(7rem, 4rem + 14vw, 20rem);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(241, 96, 1, 0.35);
+  pointer-events: none;
+}
+
+/* Финал: по центру внизу */
+.final {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  text-align: center;
+  padding-bottom: clamp(48px, 8vh, 96px);
+}
+.final__title {
+  max-width: 22ch;
+  font-size: clamp(1.4rem, 0.95rem + 1.7vw, 2.6rem);
+}
+.final__text {
+  max-width: 36ch;
+  font-size: 1rem;
+}
+
+/* индикатор прогресса сцены — вертикально справа */
+.scene__progress {
+  position: absolute;
+  right: calc(var(--gutter) + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  pointer-events: none;
+}
+.scene__progress li {
+  display: grid;
+  grid-template-columns: auto 48px;
+  align-items: center;
+  gap: 12px;
+  justify-items: end;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  transition: color 0.4s;
+}
+.scene__progress li.is-active {
+  color: var(--text);
+}
+.scene__progress i {
+  position: relative;
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: rgba(249, 249, 249, 0.12);
+  overflow: hidden;
+  border-radius: 2px;
+}
+.scene__progress b {
+  position: absolute;
+  inset: 0;
+  background: var(--grad-heat);
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+  box-shadow: 0 0 10px rgba(241, 96, 1, 0.8);
+}
+.scene__hint {
+  transition: opacity 0.5s;
+}
+.scene.is-scrolled .scene__hint {
+  opacity: 0;
+}
+
+@media (max-width: 899px) {
+  .hud-meta--left {
+    display: none;
+  }
+  .scene__progress {
+    top: auto;
+    bottom: 22px;
+    right: 50%;
+    transform: translateX(50%);
+    flex-direction: row;
+    gap: 8px;
+  }
+  .scene__progress li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    justify-items: center;
+  }
+  .scene__progress i {
+    width: 40px;
+  }
+  .scene__progress span,
+  .scene__hint {
+    display: none;
+  }
+  .intro__title {
+    bottom: clamp(220px, 34vh, 300px);
+  }
+  .intro__bottom {
+    right: var(--gutter);
+    bottom: 56px;
+  }
+  .intro__bottom .eyebrow {
+    display: none;
+  }
+  .caption {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding-bottom: 64px;
+  }
+  .caption__text {
+    justify-self: start;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .caption::before {
+    content: '';
+    position: absolute;
+    inset: auto calc(var(--gutter) * -1) 0;
+    height: 70%;
+    z-index: -1;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.92) 35%, transparent);
+  }
+  .final {
+    padding-bottom: 64px;
+  }
+}
+
+/* невысокие экраны (горизонтальный телефон, маленькое окно) */
+@media (max-height: 720px) {
+  .intro__title {
+    font-size: clamp(1.6rem, 7vh, 4.5rem);
+  }
+  .intro__lead,
+  .caption__text .lead {
+    display: none;
+  }
+}
+
+/* ---------- Статичный режим (уменьшение движения / нет WebGL) ---------- */
+.scene.is-static {
+  height: auto;
+  min-height: 100svh;
+}
+.scene.is-static .scene__ui {
+  position: relative;
+  inset: auto;
+  pointer-events: auto;
+}
+.scene.is-static .scene__step {
+  position: relative;
+  inset: auto;
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.scene.is-static .scene__step--intro {
+  height: 100svh;
+  min-height: 560px;
+}
+.scene.is-static .scene__step--caption,
+.scene.is-static .scene__step--final {
+  border-top: 1px solid var(--line);
+}
+.scene.is-static .caption,
+.scene.is-static .final {
+  height: auto;
+  padding-block: 56px;
+}
+.scene.is-static .caption__ghost {
+  top: 24px;
+  font-size: clamp(5rem, 3rem + 8vw, 10rem);
+}
+.scene.is-static .scene__progress,
+.scene.is-static .scene__canvas {
+  display: none;
+}
+.scene.is-static .scene__stage,
+.scene.is-static .scene__hud {
+  height: 100svh;
+}
+.scene.is-static .scene__hud {
+  inset: calc(var(--header-h) + 8px) clamp(12px, 2.4vw, 32px) auto;
+  height: calc(100svh - var(--header-h) - 36px);
+}
+
+/* ---------- Лёгкая версия (телефон и планшет): статичная главная ---------- */
+/* подложка постера чёрная: иначе поля вокруг знака (object-fit: contain) серее самого кадра и видны резкие горизонтальные края */
+html.is-lite .scene__poster-media.media {
+  background: #000;
+}
+/* подписи «01 / 03 Очистка» и «02 / 03 Антикор» дублируют блок «Услуги» ниже */
+html.is-lite .scene.is-static .scene__step--caption {
+  display: none;
+}
+/* первый экран — только знак: текст, кнопки и подсказка «Листайте» убраны */
+html.is-lite .scene.is-static .intro__bottom,
+html.is-lite .scene .scene__hint {
+  display: none;
+}
+/* знак закреплён, а финальный блок при прокрутке выезжает на него снизу */
+html.is-lite .scene.is-static {
+  overflow: clip;
+}
+html.is-lite .scene.is-static .scene__stage {
+  position: sticky;
+  inset: auto;
+  top: 0;
+  margin-bottom: -100svh;
+}
+html.is-lite .scene.is-static .scene__step--final {
+  margin-top: -4svh;
+  border-top: 0;
+  background: linear-gradient(180deg, transparent 0, rgba(0, 0, 0, 0.9) 72px, #000 140px);
+}
+html.is-lite .scene.is-static .final {
+  padding-top: 120px;
+}
+html.is-lite .scene.is-static .final .scene__num {
+  display: none;
+}
+html.is-lite .scene.is-static .final .actions {
+  justify-content: center;
+}
+/* пятно на статичном экране не обрывается по низу кадра, а плавно гаснет */
+html.is-lite .scene.is-static .scene__aurora {
+  -webkit-mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%), linear-gradient(180deg, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 36% 32% at 50% 42%, transparent 55%, #000 100%), linear-gradient(180deg, #000 62%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+/* телефон горизонтально и другие низкие экраны: первый экран — высота окна, а не 560 px */
+@media (max-height: 560px) {
+  html.is-lite .scene.is-static .scene__step--intro {
+    min-height: 100svh;
+  }
+}

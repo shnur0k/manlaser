@@ -1,0 +1,67 @@
+{
+  "_help": "Места под фото. Чтобы добавить фото: положите файл в /public/images/... и впишите путь в src (например \"/images/works/my-photo.webp\"). Пока src = null, на сайте показывается заглушка с описанием из want. Список всех мест: http://localhost:5173/_photos/",
+
+  "nav.cleaning": { "src": "/images/works/laser-cleaning-underbody.jpg", "alt": "Лазерная очистка днища автомобиля", "want": "Луч лазера снимает ржавчину, видны искры", "ratio": "4/3" },
+  "nav.anticor": { "src": "/images/works/anticor-underbody-after.png", "alt": "Днище автомобиля после антикоррозийной обработки", "want": "Днище после антикора", "ratio": "4/3" },
+  "nav.cutting": { "src": null, "alt": "Лазерная резка металла", "want": "Лазерная резка или сварка: шов/рез крупным планом, искры, тёмный фон", "ratio": "4/3" },
+  "nav.calc": { "src": null, "alt": "Калькулятор стоимости", "want": "Можно не фото — оставить фирменную графику", "ratio": "4/3" },
+  "nav.eq-cleaning": { "src": null, "alt": "Аппарат лазерной чистки MAN", "want": "Аппарат лазерной чистки MAN C01 на тёмном фоне, 3/4 ракурс", "ratio": "4/3" },
+  "nav.eq-welding": { "src": null, "alt": "Аппарат лазерной сварки 4 в 1", "want": "Аппарат лазерной сварки 4 в 1 с ручной головкой", "ratio": "4/3" },
+  "nav.eq-cutting": { "src": null, "alt": "Станок лазерной резки с ЧПУ", "want": "Станок лазерной резки MAN в цеху", "ratio": "4/3" },
+  "nav.eq-parts": { "src": null, "alt": "Лазерный источник Raycus", "want": "Лазерный источник Raycus / комплектующие", "ratio": "4/3" },
+  "nav.eq-repair": { "src": null, "alt": "Ремонт лазерного оборудования", "want": "Мастер ремонтирует лазерную головку / аппарат на верстаке", "ratio": "4/3" },
+  "nav.eq-delivery": { "src": null, "alt": "Доставка оборудования", "want": "Упакованный аппарат / погрузка в машину", "ratio": "4/3" },
+
+  "home.hero-fallback": { "src": null, "alt": "Лазерная очистка металла", "want": "Кадр для мобильных/слабых устройств вместо 3D: раскалённый луч на ржавом металле, тёмный фон, горизонталь 16:9", "ratio": "16/9" },
+  "home.bridge": { "src": null, "alt": "Мастер manlaser работает лазерным аппаратом", "want": "Ваш мастер с аппаратом CNMLaser в работе — подпись «работаем тем, что продаём»", "ratio": "4/5" },
+  "home.team": { "src": null, "alt": "Сервис manlaser в Пружанах", "want": "Общий план сервиса/бокса: авто на подъёмнике, аппарат рядом", "ratio": "16/9" },
+
+  "service.cleaning": { "src": "/images/works/laser-cleaning-underbody.jpg", "alt": "Лазерная очистка металла в Пружанах", "want": "Лазерная очистка в процессе", "ratio": "4/5" },
+  "service.anticor": { "src": "/images/works/anticor-underbody-after.png", "alt": "Антикоррозийная обработка днища в Пружанах", "want": "Днище после антикора", "ratio": "4/5" },
+  "service.cutting": { "src": null, "alt": "Лазерная резка и сварка металла", "want": "Лазерная сварка/резка крупным планом, вертикальный кадр", "ratio": "4/5" },
+
+  "cleaning.obj-car": { "src": null, "alt": "Лазерная очистка кузовной детали", "want": "Кузовная деталь/днище: половина очищена, половина в ржавчине", "ratio": "4/3" },
+  "cleaning.obj-parts": { "src": null, "alt": "Лазерная очистка диска", "want": "Диск, рычаг подвески или рама до/после", "ratio": "4/3" },
+  "cleaning.obj-industrial": { "src": null, "alt": "Лазерная очистка металлоконструкции", "want": "Металлоконструкция/оборудование в процессе очистки", "ratio": "4/3" },
+  "cleaning.obj-prep": { "src": null, "alt": "Подготовка металла под покраску", "want": "Чистый металл, готовый под покраску или сварку", "ratio": "4/3" },
+  "cleaning.process": { "src": null, "alt": "Процесс лазерной очистки", "want": "Видео или серия кадров: луч проходит по ржавой детали (для scroll-сцены)", "ratio": "16/9" },
+
+  "anticor.underbody": { "src": "/images/works/anticor-underbody-after.png", "alt": "Днище после обработки", "want": "Днище после обработки", "ratio": "4/3" },
+  "anticor.arches": { "src": "/images/works/anticor-arch-after.webp", "alt": "Колёсная арка после обработки", "want": "Арка после обработки", "ratio": "4/3" },
+  "anticor.prep": { "src": "/images/works/underbody-preparation.png", "alt": "Подготовка днища к антикору", "want": "Днище в процессе подготовки", "ratio": "4/3" },
+  "anticor.materials": { "src": null, "alt": "Материалы Dinitrol и Mercasol", "want": "Банки/баллоны Dinitrol и Mercasol на полке сервиса", "ratio": "16/9" },
+
+  "cutting.rezka": { "src": null, "alt": "Лазерная резка металла", "want": "Лазерная резка: рез по листу, искры", "ratio": "4/3" },
+  "cutting.svarka": { "src": null, "alt": "Лазерная сварка металла", "want": "Ручная лазерная сварка: аккуратный шов крупным планом", "ratio": "4/3" },
+
+  "eq.cat-cleaning": { "src": null, "alt": "Аппараты лазерной чистки", "want": "Линейка аппаратов чистки MAN C01–C03 рядом", "ratio": "16/10" },
+  "eq.cat-welding": { "src": null, "alt": "Аппараты лазерной сварки", "want": "Аппарат сварки 4 в 1 с головкой и автоподатчиком", "ratio": "16/10" },
+  "eq.cat-cutting": { "src": null, "alt": "Станки лазерной резки", "want": "Станок лазерной резки, общий план", "ratio": "16/10" },
+  "eq.cat-parts": { "src": null, "alt": "Комплектующие", "want": "Источник Raycus, линзы, сопла, головка — раскладка", "ratio": "16/10" },
+  "eq.repair": { "src": null, "alt": "Ремонт лазерного оборудования", "want": "Мастер с открытым аппаратом/головкой", "ratio": "16/10" },
+  "eq.delivery": { "src": null, "alt": "Доставка оборудования", "want": "Погрузка/установка оборудования у клиента", "ratio": "16/10" },
+  "eq.showroom": { "src": null, "alt": "Демо-зал manlaser", "want": "Демо-зал в Пружанах с аппаратами", "ratio": "16/9" },
+
+  "product.man-c01": { "src": null, "alt": "Аппарат лазерной чистки MAN C01", "want": "MAN C01: фото на нейтральном/тёмном фоне, 3/4 ракурс", "ratio": "1/1" },
+  "product.man-c02": { "src": null, "alt": "Аппарат лазерной чистки MAN C02", "want": "MAN C02: фото на тёмном фоне", "ratio": "1/1" },
+  "product.man-c03": { "src": null, "alt": "Аппарат лазерной чистки MAN C03", "want": "MAN C03: фото на тёмном фоне", "ratio": "1/1" },
+  "product.gs-p": { "src": null, "alt": "Импульсный аппарат лазерной чистки GS-P", "want": "GS-P 100–300W", "ratio": "1/1" },
+  "product.gs-cl": { "src": null, "alt": "Аппарат лазерной чистки GS-CL", "want": "GS-CL 1500–2000W", "ratio": "1/1" },
+  "product.gs-cl-3000": { "src": null, "alt": "Аппарат лазерной чистки GS-CL 3000W", "want": "GS-CL 3000W", "ratio": "1/1" },
+  "product.man-f01": { "src": null, "alt": "Аппарат лазерной сварки MAN F01", "want": "MAN F01 с горелкой", "ratio": "1/1" },
+  "product.man-f02": { "src": null, "alt": "Аппарат лазерной сварки MAN F02", "want": "MAN F02 с горелкой", "ratio": "1/1" },
+  "product.man-f03": { "src": null, "alt": "Аппарат лазерной сварки MAN F03", "want": "MAN F03 с горелкой", "ratio": "1/1" },
+  "product.gs-hw": { "src": null, "alt": "Аппарат лазерной сварки GS-HW", "want": "GS-HW 1500–2000W", "ratio": "1/1" },
+  "product.gs-hw-3000": { "src": null, "alt": "Аппарат лазерной сварки GS-HW 3000W", "want": "GS-HW 3000W", "ratio": "1/1" },
+  "product.rezka-tube": { "src": null, "alt": "Станок лазерной резки с труборезным модулем", "want": "Станок с труборезным модулем", "ratio": "1/1" },
+  "product.man-1500": { "src": null, "alt": "Станок лазерной резки MAN 1500 Вт", "want": "Станок MAN 1500 Вт", "ratio": "1/1" },
+  "product.man-2000": { "src": null, "alt": "Станок лазерной резки MAN 2000 Вт", "want": "Станок MAN 2000 Вт", "ratio": "1/1" },
+  "product.man-3000": { "src": null, "alt": "Станок лазерной резки MAN 3000 Вт", "want": "Станок MAN 3000 Вт", "ratio": "1/1" },
+  "product.man-6000": { "src": null, "alt": "Станок лазерной резки MAN 6000 Вт", "want": "Станок MAN 6000 Вт", "ratio": "1/1" },
+  "product.raycus": { "src": null, "alt": "Лазерный источник Raycus", "want": "Лазерный источник Raycus", "ratio": "1/1" },
+
+  "about.company": { "src": null, "alt": "Команда manlaser", "want": "Команда/мастера у входа в сервис или в боксе", "ratio": "16/10" },
+  "about.service": { "src": null, "alt": "Сервисный центр manlaser в Пружанах", "want": "Фасад сервиса на ул. Лазо 5/5 — чтобы клиенты узнали здание", "ratio": "16/10" },
+
+  "blog.default": { "src": null, "alt": "Блог manlaser", "want": "Обложка статьи по умолчанию", "ratio": "16/9" }
+}

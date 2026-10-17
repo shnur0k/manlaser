@@ -1,0 +1,288 @@
+import * as THREE from 'three';
+import { patchMaterial } from '../lib/patch.js';
+import { buildLogoGeometry, brandGradientGLSL } from './logo.js';
+
+/**
+ * Объёмный знак manlaser («деталь» первой сцены) + лазерная головка.
+ * Сначала знак чистый (в анфас), затем uRust 0→1 — его покрывает коррозия, затем uBeam 0→1 — лазер снимает ржавчину, оставляя чистую сталь.
+ */
+export function buildPart({ quality, dot, svg }) {
+  const group = new THREE.Group();
+
+  const geo = buildLogoGeometry(svg, { width: 2.4, depthUnits: 30, quality, only: 'mark' }); // на очистке — только знак, без надписи
+  geo.center();
+  // знак сдвигаем так, чтобы средний нижний кружок оказался строго по центру (x = 0): ищем кластеры вершин в нижней четверти
+  {
+    geo.computeBoundingBox();
+    const b0 = geo.boundingBox;
+    const yCut = b0.min.y + (b0.max.y - b0.min.y) * 0.25;
+    const xs = [];
+    const p0 = geo.attributes.position;
+    for (let i = 0; i < p0.count; i++) if (p0.getY(i) < yCut) xs.push(p0.getX(i));
+    xs.sort((a, b) => a - b);
+    const gap = (b0.max.x - b0.min.x) * 0.06;
+    const clusters = [];
+    for (const x of xs) {
+      const last = clusters[clusters.length - 1];
+      if (last && x - last.max < gap) last.max = x;
+      else clusters.push({ min: x, max: x });
+    }
+    if (clusters.length >= 3) {
+      const mid = clusters[Math.floor(clusters.length / 2)];
+      geo.translate(-(mid.min + mid.max) / 2, 0, 0);
+    }
+  }
+  geo.computeBoundingBox();
+  const bb = geo.boundingBox;
+
+  // профиль логотипа по X: нижняя и верхняя кромка в каждом столбце — по ним линия сканирования не вылезает за буквы
+  const BINS = 240;
+  const lo = new Float32Array(BINS).fill(Infinity);
+  const hi = new Float32Array(BINS).fill(-Infinity);
+  const pa = geo.attributes.position;
+  for (let i = 0; i < pa.count; i++) {
+    const b = Math.min(BINS - 1, Math.max(0, Math.floor(((pa.getX(i) - bb.min.x) / (bb.max.x - bb.min.x)) * BINS)));
+    lo[b] = Math.min(lo[b], pa.getY(i));
+    hi[b] = Math.max(hi[b], pa.getY(i));
+  }
+  for (let i = 1; i < BINS; i++) if (lo[i] === Infinity) { lo[i] = lo[i - 1]; hi[i] = hi[i - 1]; } // пробелы между буквами — как у соседа слева
+  for (let i = BINS - 2; i >= 0; i--) if (lo[i] === Infinity) { lo[i] = lo[i + 1]; hi[i] = hi[i + 1]; }
+  const loS = new Float32Array(BINS);
+  const hiS = new Float32Array(BINS);
+  for (let i = 0; i < BINS; i++) {
+    let a = Infinity;
+    let b = -Infinity;
+    for (let k = Math.max(0, i - 3); k <= Math.min(BINS - 1, i + 3); k++) { a = Math.min(a, lo[k]); b = Math.max(b, hi[k]); }
+    loS[i] = a;
+    hiS[i] = b;
+  }
+  const profileRange = (x, out) => {
+    if (x < bb.min.x || x > bb.max.x) return false;
+    const i = Math.min(BINS - 1, Math.floor(((x - bb.min.x) / (bb.max.x - bb.min.x)) * BINS));
+    out[0] = loS[i];
+    out[1] = hiS[i];
+    return true;
+  };
+  const range = [0, 0];
+
+  const uniforms = {
+    uBeam: { value: 0 },
+    uActive: { value: 0 },
+    uRust: { value: 0 },
+    uTime: { value: 0 },
+    uMin: { value: bb.min.clone() },
+    uMax: { value: bb.max.clone() },
+  };
+
+  const material = patchMaterial(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3, metalness: 0.4 }), {
+    key: 'rust',
+    octaves: 3,
+    uniforms,
+    varyings: 'varying vec3 vLocal;',
+    vertex: 'vLocal = position;',
+    fragmentHead: /* glsl */ `
+      float g_clean; float g_hot; float g_h; float g_n2; float g_rm; float g_rust; float g_d; float g_brush;
+      ${brandGradientGLSL()}
+    `,
+    color: /* glsl */ `
+      vec3 bp = (vLocal - uMin) / (uMax - uMin);
+      float coord = bp.x * 0.82 + (1.0 - bp.y) * 0.18;
+      float n1 = ml_fbm(vLocal * 4.0);
+      g_n2 = ml_snoise(vLocal * 17.0);
+      float front = uBeam * 1.16 - 0.08;
+      g_d = front - coord + n1 * 0.055;
+      g_clean = smoothstep(0.0, 0.018, g_d);
+      g_hot = exp(-pow(g_d / 0.016, 2.0)) * uActive;
+
+      // коррозия расползается пятнами: порог по шуму растёт вместе с uRust (снизу вверх чуть раньше)
+      float rn = ml_fbm(vLocal * 3.0 + vec3(7.1)) * 0.5 + 0.5;
+      float seed = rn + (1.0 - bp.y) * 0.18;
+      g_rm = smoothstep(0.0, 0.12, uRust * 1.3 - seed);
+      g_rust = g_rm * (1.0 - g_clean);
+
+      // исходный вид знака — фирменный градиент; после лазера — чистая шлифованная сталь с побежалостью за фронтом
+      vec3 brand = ml_brand(bp.x);
+      g_brush = ml_snoise(vec3(vLocal.x * 1.5, vLocal.y * 90.0, vLocal.z * 90.0)) * 0.5 + 0.5;
+      vec3 steel = vec3(0.56, 0.57, 0.6) * (0.86 + g_brush * 0.22);
+      float tint = smoothstep(0.0, 0.02, g_d) * exp(-g_d * 16.0);
+      steel = mix(steel, vec3(0.72, 0.5, 0.24), tint * 0.55);
+      steel = mix(steel, vec3(0.28, 0.32, 0.62), smoothstep(0.02, 0.05, g_d) * exp(-g_d * 26.0) * 0.4);
+      vec3 base = mix(brand, steel, g_clean);
+
+      // ржавчина: тёмная окалина + рыжие хлопья
+      float rm = smoothstep(-0.45, 0.6, n1 + g_n2 * 0.25);
+      vec3 rust = mix(vec3(0.075, 0.03, 0.014), vec3(0.36, 0.13, 0.04), rm);
+      rust = mix(rust, vec3(0.55, 0.24, 0.07), smoothstep(0.5, 0.95, g_n2) * 0.55);
+      rust *= 0.75 + 0.25 * smoothstep(-0.3, 0.3, ml_snoise(vLocal * 40.0));
+
+      diffuseColor.rgb = mix(base, rust, g_rust);
+      // рельеф только там, где ржавчина: раковины и «хлопья»
+      g_h = g_rust * (n1 * 0.7 + g_n2 * 0.3);
+    `,
+    roughness: /* glsl */ `
+      roughnessFactor = mix(mix(0.26, 0.2 + g_brush * 0.14, g_clean), 0.92 - g_n2 * 0.05, g_rust);
+    `,
+    metalness: /* glsl */ `
+      metalnessFactor = mix(mix(0.42, 1.0, g_clean), 0.12, g_rust);
+    `,
+    normal: /* glsl */ `
+      normal = ml_bump(-vViewPosition, normal, g_h, 0.05);
+    `,
+    emissive: /* glsl */ `
+      float flick = 0.7 + 0.3 * ml_snoise(vec3(vLocal.xy * 34.0, uTime * 9.0));
+      totalEmissiveRadiance += vec3(1.0, 0.36, 0.06) * g_hot * g_rm * 3.0 * flick;
+      totalEmissiveRadiance += vec3(1.0, 0.8, 0.55) * pow(g_hot, 5.0) * g_rm * 3.2;
+      // тлеющие точки на ржавчине у самого фронта
+      float ember = smoothstep(0.82, 0.98, g_n2) * exp(-pow((g_d + 0.035) / 0.03, 2.0)) * uActive * g_rm;
+      totalEmissiveRadiance += vec3(1.0, 0.3, 0.05) * ember * 2.6;
+    `,
+  });
+
+  const mesh = new THREE.Mesh(geo, material);
+  group.add(mesh);
+
+  // ---------- лазерная головка ----------
+  const rig = new THREE.Group();
+  const nozzle = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.06, 0.34, 24), new THREE.MeshStandardMaterial({ color: 0x1a1a1c, roughness: 0.35, metalness: 0.9 }));
+  body.rotation.x = Math.PI / 2;
+  body.position.z = -0.17; // корпус позади сопла (сопло смотрит на деталь по +Z)
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.038, 0.007, 10, 32), new THREE.MeshBasicMaterial({ color: new THREE.Color(2, 0.75, 0.18), toneMapped: false }));
+  nozzle.add(body, ring);
+  rig.add(nozzle);
+
+  // веер луча (головка → линия сканирования)
+  const fanGeo = new THREE.BufferGeometry();
+  fanGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(9), 3));
+  fanGeo.setAttribute('aT', new THREE.BufferAttribute(new Float32Array([0, 1, 1]), 1));
+  const fanMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    blending: THREE.AdditiveBlending,
+    toneMapped: false,
+    uniforms: { uA: { value: 0 } },
+    vertexShader: 'attribute float aT; varying float vT; void main(){ vT = aT; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+    fragmentShader: 'uniform float uA; varying float vT; void main(){ gl_FragColor = vec4(vec3(1.0,0.42,0.08) * (0.15 + vT * vT * 0.9) * uA, 1.0); }',
+  });
+  const fan = new THREE.Mesh(fanGeo, fanMat);
+  fan.frustumCulled = false;
+  rig.add(fan);
+
+  // яркая линия сканирования на поверхности
+  const lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(12), 3));
+  lineGeo.setIndex([0, 1, 2, 2, 1, 3]);
+  const lineMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(2.6, 1.0, 0.3), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, side: THREE.DoubleSide });
+  const scanLine = new THREE.Mesh(lineGeo, lineMat);
+  scanLine.frustumCulled = false;
+  rig.add(scanLine);
+
+  // ядро луча до текущей точки
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 1, 6, 1, true), new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 1.3, 0.5), toneMapped: false, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+  core.frustumCulled = false;
+  rig.add(core);
+
+  // свечение в точке контакта
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: new THREE.Color(0.9, 0.34, 0.09), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  glow.scale.setScalar(0.12);
+  rig.add(glow);
+
+  const light = new THREE.PointLight(0xff6a1a, 0, 3.5, 2);
+  rig.add(light);
+  group.add(rig);
+
+  // ---------- обновление ----------
+  const size = new THREE.Vector3().subVectors(bb.max, bb.min);
+  const frontZ = bb.max.z + 0.003;
+  const A = new THREE.Vector3();
+  const B = new THREE.Vector3();
+  const S = new THREE.Vector3();
+  const tip = new THREE.Vector3();
+  const tmp = new THREE.Vector3();
+  const up = new THREE.Vector3(0, 1, 0);
+  const worldS = new THREE.Vector3();
+  const worldN = new THREE.Vector3();
+  const normalMatrix = new THREE.Matrix3();
+
+  const toLocal = (bx, by, out) => out.set(bb.min.x + bx * size.x, bb.min.y + by * size.y, frontZ);
+
+  /**
+   * beam — 0..1 положение фронта, active — 0..1 включён ли лазер, rust — 0..1 насколько знак покрыт коррозией.
+   * Возвращает точку контакта и нормаль в мировых координатах (для искр) или null.
+   */
+  function update(beam, active, time, rust = 0) {
+    uniforms.uBeam.value = beam;
+    uniforms.uRust.value = rust;
+    uniforms.uActive.value = active;
+    uniforms.uTime.value = time;
+
+    const on = active > 0.01;
+    rig.visible = on;
+    if (!on) {
+      light.intensity = 0;
+      return null;
+    }
+
+    // линия фронта в нормированных координатах: bx*0.82 + (1-by)*0.18 = front
+    const front = beam * 1.16 - 0.08;
+    const bxTop = front / 0.82; // при by = 1
+    const bxBottom = (front - 0.18) / 0.82; // при by = 0
+    const midX = bb.min.x + ((bxTop + bxBottom) / 2) * size.x;
+    const inside = profileRange(midX, range);
+    const byMin = Math.max(0, (range[0] - bb.min.y) / size.y);
+    const byMax = Math.min(1, (range[1] - bb.min.y) / size.y);
+    const lerpX = (by) => bxBottom + (bxTop - bxBottom) * by;
+    if (!inside || byMax <= byMin) {
+      rig.visible = false;
+      light.intensity = 0;
+      return null;
+    }
+    toLocal(lerpX(byMin), byMin, A);
+    toLocal(lerpX(byMax), byMax, B);
+
+    // быстрое сканирование вверх-вниз, как у ручного лазера
+    const s = 0.5 + 0.5 * Math.sin(time * 23.0);
+    S.lerpVectors(A, B, s);
+
+    // головка: спереди-сверху от линии
+    tip.set((A.x + B.x) / 2 + 0.18, (A.y + B.y) / 2 + 0.42, frontZ + 0.62);
+    nozzle.position.copy(tip);
+    nozzle.lookAt(group.localToWorld(tmp.lerpVectors(A, B, 0.5)));
+
+    const fp = fanGeo.attributes.position.array;
+    fp.set([tip.x, tip.y, tip.z, A.x, A.y, A.z, B.x, B.y, B.z]);
+    fanGeo.attributes.position.needsUpdate = true;
+    fanMat.uniforms.uA.value = 0.55 * active;
+
+    // полоска шириной w вдоль линии
+    const dir = tmp.subVectors(B, A).normalize();
+    const w = 0.006;
+    const nx = -dir.y * w;
+    const ny = dir.x * w;
+    lineGeo.attributes.position.array.set([A.x + nx, A.y + ny, frontZ, A.x - nx, A.y - ny, frontZ, B.x + nx, B.y + ny, frontZ, B.x - nx, B.y - ny, frontZ]);
+    lineGeo.attributes.position.needsUpdate = true;
+    lineMat.opacity = active;
+
+    // ядро луча от головки к точке
+    const len = tip.distanceTo(S);
+    core.position.lerpVectors(tip, S, 0.5);
+    core.scale.set(1, len, 1);
+    core.quaternion.setFromUnitVectors(up, tmp.subVectors(S, tip).normalize());
+    core.material.opacity = active;
+
+    glow.position.copy(S);
+    glow.position.z += 0.01;
+    const flicker = 0.75 + Math.random() * 0.25;
+    glow.material.opacity = active * flicker;
+    light.position.set(S.x, S.y, S.z + 0.12);
+    light.intensity = 1.0 * active * flicker;
+
+    worldS.copy(S).applyMatrix4(group.matrixWorld);
+    normalMatrix.getNormalMatrix(group.matrixWorld);
+    worldN.set(0, 0, 1).applyMatrix3(normalMatrix).normalize();
+    return { point: worldS, normal: worldN };
+  }
+
+  return { group, mesh, update };
+}
