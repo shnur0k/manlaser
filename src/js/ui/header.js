@@ -32,7 +32,7 @@ export function initHeader() {
 
   /** Вызывается при каждой смене страницы. */
   function update({ url, section }) {
-    const key = site.contacts[sectionKey(section)] ? sectionKey(section) : 'services';
+    const key = sectionKey(section);
     const contact = { ...site.contacts[key], email: site.email };
     document.body.dataset.section = key;
 
@@ -47,8 +47,10 @@ export function initHeader() {
     const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const here = url.replace(/#.*$/, '');
     document.querySelectorAll('[data-header] .drop__link, [data-mobile-menu] a[href]').forEach((a) => {
-      const path = new URL(a.href, location.origin).pathname.replace(base, '');
-      path === here ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
+      const u = new URL(a.href, location.origin);
+      const path = u.pathname.replace(base, '');
+      // ссылки-фильтры каталога (?cat=…) на странице не «текущие»
+      path === here && !u.search ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
     });
 
     if (phone) {

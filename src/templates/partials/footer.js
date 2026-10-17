@@ -4,22 +4,22 @@ import { equipmentNote } from '../components.js';
 
 export function footer(ctx) {
   const { site } = ctx;
-  const services = site.nav.find((n) => n.section === 'services');
+  const catalog = site.nav.find((n) => n.url === '/oborudovanie/');
   const year = new Date().getFullYear();
 
   return `<footer class="site-footer">
     <div class="container">
       <div class="site-footer__grid">
         <div class="site-footer__col">
-          <h2 class="site-footer__h">Услуги</h2>
-          <ul>${each(services.items, (i) => `<li><a href="${esc(i.url)}">${esc(i.label)}</a></li>`)}
-            <li><a href="/uslugi/kalkulyator/">Калькулятор стоимости</a></li>
-            <li><a href="/zapis/">Запись на обработку</a></li></ul>
+          <h2 class="site-footer__h">Оборудование</h2>
+          <ul>${each(catalog.items, (i) => `<li><a href="${esc(i.url)}">${esc(i.label)}</a></li>`)}
+            <li><a href="/zapros/">Запросить цену</a></li></ul>
         </div>
         <div class="site-footer__col">
           <h2 class="site-footer__h">Компания</h2>
           <ul>
-            <li><a href="/raboty/">Работы и отзывы</a></li>
+            <li><a href="/remont/">Ремонт и диагностика</a></li>
+            <li><a href="/oplata-i-dostavka/">Оплата и доставка</a></li>
             <li><a href="/o-nas/">О компании</a></li>
             <li><a href="/voprosy/">Частые вопросы</a></li>
             <li><a href="/blog/">Блог</a></li>

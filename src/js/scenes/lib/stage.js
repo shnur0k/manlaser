@@ -12,18 +12,18 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
  * База для 3D-сцен: рендерер, камера, окружение для отражений металла, bloom (на мощных устройствах)
  * и адаптивное качество — если кадр рисуется дольше ~22 мс, снижаем разрешение, затем выключаем bloom.
  */
-export function createStage(canvas, { quality = 'high', fov = 35, envIntensity = 0.35, exposure = 1, bloom = {} } = {}) {
+export function createStage(canvas, { quality = 'high', fov = 35, envIntensity = 0.35, exposure = 1, bloom = {}, background = 0x000000, toneMapping = THREE.ACESFilmicToneMapping } = {}) {
   const high = quality === 'high';
   const useComposer = high && debug.bloom !== false; // ?bloom=0 — без свечения
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: !high, powerPreference: 'high-performance', alpha: false, stencil: false });
-  renderer.setClearColor(0x000000, 1);
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.setClearColor(background, 1);
+  renderer.toneMapping = toneMapping;
   renderer.toneMappingExposure = exposure;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   renderer.info.autoReset = false; // считаем вызовы за весь кадр, включая постобработку (для счётчика ?perf=1)
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x000000);
+  scene.background = new THREE.Color(background);
   const pmrem = new THREE.PMREMGenerator(renderer);
   const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   scene.environment = envTexture;

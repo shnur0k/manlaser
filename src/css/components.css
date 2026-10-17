@@ -74,7 +74,7 @@
 }
 
 .btn--primary {
-  background: var(--orange);
+  background: var(--accent);
   color: #fff;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), var(--glow-btn);
 }
@@ -87,14 +87,14 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(105deg, transparent 30%, rgba(255, 240, 220, 0.55) 48%, transparent 66%);
+  background: linear-gradient(105deg, transparent 30%, rgba(235, 246, 255, 0.55) 48%, transparent 66%);
   transform: translateX(-120%);
   transition: transform 0.8s var(--ease-out);
 }
 @media (hover: hover) {
   .btn--primary:hover {
-    background: var(--orange-hot);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 16px 60px -10px rgba(241, 96, 1, 0.95), 0 0 0 4px rgba(232, 80, 2, 0.18);
+    background: var(--accent-hot);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 16px 60px -10px rgba(46, 147, 255, 0.95), 0 0 0 4px rgba(0, 123, 255, 0.18);
   }
 }
 @media (hover: hover) {
@@ -113,13 +113,13 @@
 }
 @media (hover: hover) {
   .btn--ghost:hover {
-    border-color: rgba(232, 80, 2, 0.7);
-    background: rgba(232, 80, 2, 0.08);
+    border-color: rgba(0, 123, 255, 0.7);
+    background: rgba(0, 123, 255, 0.08);
   }
 }
 @media (hover: hover) {
   .btn--ghost:hover .btn__icon {
-    background: var(--orange);
+    background: var(--accent);
     color: #fff;
   }
 }
@@ -145,7 +145,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--orange);
+  background: var(--accent);
   box-shadow: var(--glow-sm);
   flex: none;
 }
@@ -187,7 +187,7 @@
   color: var(--text);
 }
 .stock--in::before {
-  background: var(--orange);
+  background: var(--accent);
   box-shadow: var(--glow-sm);
 }
 
@@ -209,7 +209,7 @@
 .chip .icon {
   width: 18px;
   height: 18px;
-  color: var(--orange);
+  color: var(--accent);
 }
 
 .link-arrow {
@@ -224,11 +224,11 @@
 .link-arrow .icon {
   width: 18px;
   height: 18px;
-  color: var(--orange);
+  color: var(--accent);
 }
 @media (hover: hover) {
   .link-arrow:hover {
-    color: var(--orange-hot);
+    color: var(--accent-hot);
     gap: 12px;
   }
 }
@@ -245,8 +245,8 @@
 }
 @media (hover: hover) {
   .pill-link:hover {
-    border-color: var(--orange);
-    background: rgba(232, 80, 2, 0.08);
+    border-color: var(--accent);
+    background: rgba(0, 123, 255, 0.08);
   }
 }
 
@@ -271,7 +271,7 @@
 }
 @media (hover: hover) {
   .phone-link:hover span {
-    color: var(--orange-hot);
+    color: var(--accent-hot);
   }
 }
 .phone-link--lg span {
@@ -308,8 +308,8 @@
 }
 @media (hover: hover) {
   .messenger:hover {
-    border-color: var(--orange);
-    background: var(--orange);
+    border-color: var(--accent);
+    background: var(--accent);
     color: #fff;
   }
 }
@@ -334,10 +334,10 @@ html.js .media img:not(.is-loaded) {
 }
 .media--ph {
   background:
-    radial-gradient(120% 90% at 100% 0%, rgba(232, 80, 2, 0.2), transparent 55%),
-    radial-gradient(90% 70% at 0% 100%, rgba(193, 8, 1, 0.16), transparent 60%),
+    radial-gradient(120% 90% at 100% 0%, rgba(0, 123, 255, 0.2), transparent 55%),
+    radial-gradient(90% 70% at 0% 100%, rgba(0, 70, 190, 0.16), transparent 60%),
     #0a0a0a;
-  border: 1px dashed rgba(232, 80, 2, 0.32);
+  border: 1px dashed rgba(0, 123, 255, 0.32);
 }
 .media--ph::before {
   content: '';
@@ -366,8 +366,8 @@ html.js .media img:not(.is-loaded) {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(232, 80, 2, 0.4);
-  color: var(--orange-hot);
+  border: 1px solid rgba(0, 123, 255, 0.4);
+  color: var(--accent-hot);
 }
 .media__ph-icon .icon {
   width: 20px;
@@ -378,7 +378,7 @@ html.js .media img:not(.is-loaded) {
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--orange-hot);
+  color: var(--accent-hot);
 }
 .media__ph-want {
   font-size: 0.9rem;
@@ -411,8 +411,8 @@ html.js .media img:not(.is-loaded) {
 }
 @media (hover: hover) {
   .card:hover {
-    border-color: rgba(232, 80, 2, 0.45);
-    box-shadow: 0 40px 90px -40px rgba(232, 80, 2, 0.55);
+    border-color: rgba(0, 123, 255, 0.45);
+    box-shadow: 0 40px 90px -40px rgba(0, 123, 255, 0.55);
   }
 }
 .card__media {
@@ -508,8 +508,8 @@ html.js .media img:not(.is-loaded) {
 }
 @media (hover: hover) {
   .card:hover .card__arrow {
-    background: var(--orange);
-    border-color: var(--orange);
+    background: var(--accent);
+    border-color: var(--accent);
     transform: rotate(45deg);
   }
 }
@@ -517,7 +517,7 @@ html.js .media img:not(.is-loaded) {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(420px circle at var(--mx) var(--my), rgba(232, 80, 2, 0.16), transparent 60%);
+  background: radial-gradient(420px circle at var(--mx) var(--my), rgba(0, 123, 255, 0.16), transparent 60%);
   opacity: 0;
   transition: opacity 0.5s;
   pointer-events: none;
@@ -645,7 +645,7 @@ html.js .media img:not(.is-loaded) {
 /* акцентное слово в заголовке: *слово* (без свечения — маски анимации обрезают его в прямоугольник) */
 .accent {
   font-style: normal;
-  color: var(--orange-hot);
+  color: var(--accent-hot);
 }
 
 /* ---------- Большие карточки услуг ---------- */
@@ -669,7 +669,7 @@ html.js .media img:not(.is-loaded) {
 }
 .svc__media .media {
   border-radius: inherit;
-  border-color: rgba(232, 80, 2, 0.25);
+  border-color: rgba(0, 123, 255, 0.25);
 }
 .svc__media img {
   transition: transform 1.4s var(--ease-out), opacity 0.8s;
@@ -702,7 +702,7 @@ html.js .media img:not(.is-loaded) {
 }
 @media (hover: hover) {
   .svc:hover .svc__num {
-    -webkit-text-stroke-color: var(--orange-hot);
+    -webkit-text-stroke-color: var(--accent-hot);
   }
 }
 .svc__body {
@@ -717,7 +717,7 @@ html.js .media img:not(.is-loaded) {
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--orange-hot);
+  color: var(--accent-hot);
 }
 .svc__title {
   font-family: var(--font-display);
@@ -729,7 +729,7 @@ html.js .media img:not(.is-loaded) {
 }
 @media (hover: hover) {
   .svc:hover .svc__title {
-    color: var(--orange-hot);
+    color: var(--accent-hot);
   }
 }
 .svc__text {
@@ -760,12 +760,12 @@ html.js .media img:not(.is-loaded) {
 .svc__more .icon {
   width: 18px;
   height: 18px;
-  color: var(--orange);
+  color: var(--accent);
 }
 @media (hover: hover) {
   .svc:hover .svc__more {
     gap: 16px;
-    color: var(--orange-hot);
+    color: var(--accent-hot);
   }
 }
 @media (max-width: 799px) {
@@ -805,7 +805,7 @@ html.js .media img:not(.is-loaded) {
   paint-order: stroke fill;
 }
 .marquee__star {
-  color: var(--orange);
+  color: var(--accent);
   font-size: clamp(1rem, 0.6rem + 1.4vw, 2rem);
   text-shadow: var(--glow-sm);
 }
@@ -818,14 +818,14 @@ html.js .media img:not(.is-loaded) {
   gap: clamp(16px, 2.4vw, 28px);
   padding: clamp(22px, 3vw, 40px);
   border-radius: var(--r-xl);
-  border: 1px solid rgba(232, 80, 2, 0.4);
-  background: radial-gradient(70% 160% at 0% 0%, rgba(232, 80, 2, 0.2), transparent 60%), var(--surface-1);
+  border: 1px solid rgba(0, 123, 255, 0.4);
+  background: radial-gradient(70% 160% at 0% 0%, rgba(0, 123, 255, 0.2), transparent 60%), var(--surface-1);
   transition: border-color 0.4s, box-shadow 0.4s;
 }
 @media (hover: hover) {
   .calc-banner:hover {
-    border-color: var(--orange);
-    box-shadow: 0 30px 80px -40px rgba(232, 80, 2, 0.6);
+    border-color: var(--accent);
+    box-shadow: 0 30px 80px -40px rgba(0, 123, 255, 0.6);
   }
 }
 .calc-banner__icon {
@@ -834,7 +834,7 @@ html.js .media img:not(.is-loaded) {
   width: 64px;
   height: 64px;
   border-radius: 18px;
-  background: var(--orange);
+  background: var(--accent);
   color: #fff;
   box-shadow: var(--glow-btn);
 }
@@ -865,8 +865,8 @@ html.js .media img:not(.is-loaded) {
 }
 @media (hover: hover) {
   .calc-banner:hover .calc-banner__arrow {
-    background: var(--orange);
-    border-color: var(--orange);
+    background: var(--accent);
+    border-color: var(--accent);
     transform: rotate(45deg);
   }
 }
@@ -906,11 +906,11 @@ html.js .media img:not(.is-loaded) {
 .equipment-note a .icon {
   width: 16px;
   height: 16px;
-  color: var(--orange);
+  color: var(--accent);
 }
 @media (hover: hover) {
   .equipment-note a:hover {
-    color: var(--orange-hot);
+    color: var(--accent-hot);
   }
 }
 
@@ -932,7 +932,7 @@ html.js .media img:not(.is-loaded) {
 .feature__num {
   font-family: var(--font-display);
   font-size: 0.8125rem;
-  color: var(--orange);
+  color: var(--accent);
 }
 .feature__icon {
   display: grid;
@@ -940,8 +940,8 @@ html.js .media img:not(.is-loaded) {
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: rgba(232, 80, 2, 0.1);
-  color: var(--orange-hot);
+  background: rgba(0, 123, 255, 0.1);
+  color: var(--accent-hot);
 }
 .feature__title {
   font-family: var(--font-display);
@@ -1002,8 +1002,8 @@ html.js .media img:not(.is-loaded) {
   transition: border-color 0.5s, box-shadow 0.5s, color 0.5s;
 }
 .step.is-active .step__num {
-  border-color: var(--orange);
-  color: var(--orange-hot);
+  border-color: var(--accent);
+  color: var(--accent-hot);
   box-shadow: var(--glow);
 }
 .step__body {
@@ -1046,7 +1046,7 @@ html.js .media img:not(.is-loaded) {
 }
 @media (hover: hover) {
   .faq__q:hover {
-    color: var(--orange-hot);
+    color: var(--accent-hot);
   }
 }
 .faq__icon {
@@ -1065,8 +1065,8 @@ html.js .media img:not(.is-loaded) {
 }
 .faq__item[open] .faq__icon {
   transform: rotate(45deg);
-  background: var(--orange);
-  border-color: var(--orange);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 .faq__a {
   overflow: hidden;
@@ -1154,7 +1154,7 @@ html.js .media img:not(.is-loaded) {
 }
 @media (hover: hover) {
   .compare-table tbody th a:hover {
-    color: var(--orange-hot);
+    color: var(--accent-hot);
   }
 }
 .compare-table tbody tr {
@@ -1180,7 +1180,7 @@ html.js .media img:not(.is-loaded) {
 }
 @media (hover: hover) {
   .table-link:hover {
-    background: var(--orange);
+    background: var(--accent);
   }
 }
 .spec-table th {
@@ -1204,7 +1204,7 @@ html.js .media img:not(.is-loaded) {
 .review__stars {
   display: flex;
   gap: 3px;
-  color: var(--orange);
+  color: var(--accent);
 }
 .review__stars .icon {
   width: 16px;
@@ -1264,7 +1264,7 @@ html.js .media img:not(.is-loaded) {
   width: 18px;
   height: 18px;
   margin-top: 3px;
-  color: var(--orange);
+  color: var(--accent);
 }
 
 /* ---------- CTA-полоса ---------- */
@@ -1281,8 +1281,8 @@ html.js .media img:not(.is-loaded) {
   border-radius: var(--r-xl);
   border: 1px solid var(--line);
   background:
-    radial-gradient(80% 120% at 100% 100%, rgba(232, 80, 2, 0.3), transparent 60%),
-    radial-gradient(60% 80% at 0% 0%, rgba(193, 8, 1, 0.12), transparent 60%),
+    radial-gradient(80% 120% at 100% 100%, rgba(0, 123, 255, 0.3), transparent 60%),
+    radial-gradient(60% 80% at 0% 0%, rgba(0, 70, 190, 0.12), transparent 60%),
     #080808;
   overflow: hidden;
   isolation: isolate;
@@ -1303,7 +1303,7 @@ html.js .media img:not(.is-loaded) {
   top: 0;
   height: 1px;
   background: var(--grad-beam);
-  box-shadow: 0 0 18px rgba(241, 96, 1, 0.8);
+  box-shadow: 0 0 18px rgba(46, 147, 255, 0.8);
   animation: beam-sweep 5s var(--ease-in-out) infinite;
 }
 @keyframes beam-sweep {

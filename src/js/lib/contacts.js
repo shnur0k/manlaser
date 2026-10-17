@@ -1,6 +1,6 @@
 /**
  * Ссылки на телефон и мессенджеры. Общий код: используется и шаблонами (Node), и браузером.
- * contact — объект из content/site.json → contacts.services.
+ * contact — объект из content/site.json → contacts.main.
  */
 
 export const telHref = (contact) => `tel:${contact.tel}`;
@@ -30,4 +30,5 @@ export const MESSENGERS = [
   { type: 'whatsapp', label: 'WhatsApp' },
 ];
 
-export const sectionKey = (section) => (section === 'equipment' ? 'equipment' : 'services');
+/** Набор контактов сайта один (site.json → contacts.main); ключ оставлен для единообразия шаблонов и шапки. */
+export const sectionKey = () => 'main';

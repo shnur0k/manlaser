@@ -79,12 +79,12 @@ export function loadContent() {
   return {
     site: loadJSON('site'),
     pages: loadJSON('pages'),
-    services: loadJSON('services'),
+    equipment: loadJSON('equipment'),
+    repair: loadJSON('repair'),
+    delivery: loadJSON('delivery'),
     faq: loadJSON('faq'),
     reviews: loadJSON('reviews'),
     media: loadJSON('media'),
-    gallery: fs.existsSync(path.join(CONTENT_DIR, 'gallery.json')) ? loadJSON('gallery') : { items: [] },
-    prices: fs.existsSync(path.join(CONTENT_DIR, 'prices.json')) ? loadJSON('prices') : {},
     posts: loadPosts(),
     logo: loadLogo(),
   };

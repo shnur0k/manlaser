@@ -7,13 +7,7 @@ export default {
   // «молекулярная» сетка, 'heat' — шторка из фирменного градиента, 'fade' — простой.
   transition: 'laser',
 
-  // Интро с прорисовкой логотипа: показывается один раз за сессию браузера.
-  intro: {
-    enabled: true,
-    oncePerSession: true,
-  },
-
-  // Форма записи. send: false — заявка только проверяется и показывается экран успеха,
+  // Форма заявки «Запросить цену». send: false — заявка только проверяется и показывается экран успеха,
   // никуда не отправляется (отправку в Telegram / Viber / WhatsApp / почту подключим позже).
   booking: {
     send: false,
@@ -34,19 +28,9 @@ export default {
   scenes: {
     home: {
       mode: '3d',
-      mobileMode: 'static', // на телефоне (ширина < 768) 3D не грузится вообще — обычная вёрстка без сцены
+      mobileMode: 'static', // на телефоне и планшете 3D не грузится вообще — постер со знаком, как на сайте услуг
       frames: { path: '/frames/home/', count: 240, pad: 4, ext: 'webp' },
       video: { src: '/video/home.mp4' },
-    },
-    cleaning: {
-      mode: '3d',
-      frames: { path: '/frames/cleaning/', count: 160, pad: 4, ext: 'webp' },
-      video: { src: '/video/cleaning.mp4' },
-    },
-    anticor: {
-      mode: '3d',
-      frames: { path: '/frames/anticor/', count: 160, pad: 4, ext: 'webp' },
-      video: { src: '/video/anticor.mp4' },
     },
   },
 };

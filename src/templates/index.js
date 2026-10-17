@@ -6,8 +6,8 @@ import { resetSectionIndex } from './components.js';
 import * as pages from './pages/index.js';
 
 function createContext(route, c, { dev }) {
-  // сайт услуг: один набор контактов (раздел оборудования вынесен на отдельный сайт)
-  const key = c.site.contacts[sectionKey(route.section)] ? sectionKey(route.section) : 'services';
+  // один набор контактов для всего сайта
+  const key = sectionKey(route.section);
   return {
     c,
     route,
@@ -16,6 +16,8 @@ function createContext(route, c, { dev }) {
     sectionKey: key,
     contact: { ...c.site.contacts[key], email: c.site.email },
     logo: c.logo,
+    // только знак — для постера лёгкой версии главной
+    logoMark: c.logo.replace(/<path class="logo__letter"[^>]*\/>\s*/g, '').replace(/viewBox="[^"]*"/, 'viewBox="994 0 182 102"'),
     // только надпись — для гигантского логотипа в футере
     logoWord: c.logo
       .replace(/<defs>[\s\S]*?<\/defs>/, '')
@@ -36,7 +38,7 @@ export function renderPage(route, c, opts = {}) {
 export function renderError(err) {
   return `<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Ошибка сборки страницы</title>
   <style>body{background:#000;color:#f9f9f9;font:16px/1.6 system-ui;padding:48px;max-width:860px;margin:auto}
-  h1{color:#E85002;font-size:28px}pre{background:#111;border:1px solid #333;padding:16px;border-radius:12px;white-space:pre-wrap;color:#A7A7A7}</style></head>
+  h1{color:#007BFF;font-size:28px}pre{background:#111;border:1px solid #333;padding:16px;border-radius:12px;white-space:pre-wrap;color:#A7A7A7}</style></head>
   <body><h1>Страница не собралась</h1><p>${esc(err.message)}</p><pre>${esc(err.stack || '')}</pre>
   <p>Исправьте файл и обновите страницу.</p></body></html>`;
 }

@@ -46,7 +46,7 @@
   flex: none;
   width: 20px;
   height: 20px;
-  color: var(--orange);
+  color: var(--accent);
 }
 @media (max-width: 899px) {
   .product {
@@ -76,7 +76,7 @@
 .repair-item__num {
   font-family: var(--font-display);
   font-size: 0.8125rem;
-  color: var(--orange);
+  color: var(--accent);
   padding-top: 5px;
 }
 .repair-item__title {
@@ -122,12 +122,12 @@
 }
 @media (hover: hover) {
   .tag-filter__btn:hover {
-    border-color: var(--orange);
+    border-color: var(--accent);
   }
 }
 .tag-filter__btn.is-active {
-  background: var(--orange);
-  border-color: var(--orange);
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 .card--post .card__title {
@@ -166,8 +166,8 @@
   font-size: 1.25rem;
 }
 .prose a {
-  color: var(--orange-hot);
-  border-bottom: 1px solid rgba(241, 96, 1, 0.4);
+  color: var(--accent-hot);
+  border-bottom: 1px solid rgba(46, 147, 255, 0.4);
 }
 .prose ul,
 .prose ol {
@@ -187,7 +187,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--orange);
+  background: var(--accent);
 }
 .prose ol {
   list-style: decimal;
@@ -197,8 +197,8 @@
 }
 .prose blockquote {
   padding: 20px 24px;
-  border-left: 2px solid var(--orange);
-  background: rgba(232, 80, 2, 0.06);
+  border-left: 2px solid var(--accent);
+  background: rgba(0, 123, 255, 0.06);
   border-radius: 0 var(--r-sm) var(--r-sm) 0;
 }
 .prose table {
@@ -263,7 +263,7 @@
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--orange-hot);
+    color: var(--accent-hot);
   }
 }
 .prose code {
@@ -284,7 +284,7 @@
 }
 .faq-group__title {
   margin-bottom: 8px;
-  color: var(--orange-hot);
+  color: var(--accent-hot);
 }
 
 /* ---------- Контакты ---------- */
@@ -316,7 +316,7 @@
 .contact-card__title .icon {
   width: 20px;
   height: 20px;
-  color: var(--orange);
+  color: var(--accent);
 }
 .contact-card__big {
   font-family: var(--font-display);
@@ -340,8 +340,8 @@
   }
 }
 .contact-card--accent {
-  border-color: rgba(232, 80, 2, 0.4);
-  background: radial-gradient(90% 120% at 0% 0%, rgba(232, 80, 2, 0.14), transparent 60%), var(--surface-1);
+  border-color: rgba(0, 123, 255, 0.4);
+  background: radial-gradient(90% 120% at 0% 0%, rgba(0, 123, 255, 0.14), transparent 60%), var(--surface-1);
 }
 .contact-card .link-arrow .icon {
   width: 18px;
@@ -375,10 +375,10 @@
   background: var(--gray);
 }
 .hours__status.is-open {
-  border-color: rgba(232, 80, 2, 0.5);
+  border-color: rgba(0, 123, 255, 0.5);
 }
 .hours__status.is-open i {
-  background: var(--orange);
+  background: var(--accent);
   box-shadow: var(--glow-sm);
   animation: hud-blink 1.6s steps(2) infinite;
 }
@@ -410,7 +410,7 @@
   letter-spacing: -0.02em;
 }
 .hours__week li.is-today {
-  background: rgba(232, 80, 2, 0.1);
+  background: rgba(0, 123, 255, 0.1);
   color: var(--text);
   border-top-color: transparent;
 }
@@ -419,7 +419,7 @@
 }
 .hours__week li.is-today span::after {
   content: ' · сегодня';
-  color: var(--orange-hot);
+  color: var(--accent-hot);
   font-weight: 750;
 }
 
@@ -434,7 +434,7 @@
   border-radius: var(--r-xl);
   border: 1px solid var(--line);
   background:
-    radial-gradient(60% 140% at 0% 50%, rgba(232, 80, 2, 0.16), transparent 60%),
+    radial-gradient(60% 140% at 0% 50%, rgba(0, 123, 255, 0.16), transparent 60%),
     var(--surface-1);
   overflow: hidden;
   isolation: isolate;
@@ -456,7 +456,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: var(--orange);
+  background: var(--accent);
   color: #fff;
   box-shadow: var(--glow);
   animation: ping-pin 2s var(--ease-out) infinite;
@@ -466,8 +466,8 @@
   height: 30px;
 }
 @keyframes ping-pin {
-  0% { box-shadow: 0 0 0 0 rgba(232, 80, 2, 0.55), var(--glow); }
-  70%, 100% { box-shadow: 0 0 0 22px rgba(232, 80, 2, 0), var(--glow); }
+  0% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.55), var(--glow); }
+  70%, 100% { box-shadow: 0 0 0 22px rgba(0, 123, 255, 0), var(--glow); }
 }
 .find-us__text {
   display: flex;
@@ -480,7 +480,7 @@
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--orange-hot);
+  color: var(--accent-hot);
 }
 .find-us__address {
   font-family: var(--font-display);
@@ -556,7 +556,7 @@
   height: 2px;
   z-index: -1;
   background: var(--grad-beam);
-  box-shadow: 0 0 14px #f16001, 0 0 60px rgba(241, 96, 1, 0.7);
+  box-shadow: 0 0 14px #2e93ff, 0 0 60px rgba(46, 147, 255, 0.7);
   transform: rotate(-6deg);
   opacity: 0.6;
 }
