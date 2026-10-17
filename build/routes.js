@@ -18,7 +18,8 @@ export function buildRoutes(c, { dev = false } = {}) {
     add({
       url: p.url, page: 'product', namespace: 'product',
       seo: {
-        title: `${p.type} ${p.name} — купить в Беларуси | manlaser`,
+        // если тип и название вместе слишком длинные (станок с труборезным модулем) — только название
+        title: `${(p.type + p.name).length > 36 ? p.name : `${p.type} ${p.name}`} — купить в Беларуси | manlaser`,
         description: `${p.type} CNMLaser ${p.name}, мощность ${p.power}. ${p.stock === 'в наличии' ? 'В наличии. ' : ''}Бесплатная доставка по Беларуси, пусконаладка и обучение, гарантия.`,
       },
       crumbs: [catalog, { name: p.name, url: p.url }], data: { product: p, category: cat },

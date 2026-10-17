@@ -23,7 +23,7 @@ export function equipmentHub(ctx) {
     ${section(`<h2 class="sr-only">Каталог оборудования</h2>
       <div class="tag-filter" role="group" aria-label="Категории оборудования" data-cat-filter>
         <button class="tag-filter__btn is-active" type="button" data-cat="*">Все <small>${e.products.length}</small></button>
-        ${each(e.categories, (cat) => `<button class="tag-filter__btn" type="button" data-cat="${esc(cat.id)}">${esc(cat.title)} <small>${countOf(cat.id)}</small></button>`)}
+        ${each(e.categories, (cat) => `<button class="tag-filter__btn" type="button" data-cat="${esc(cat.id)}">${esc(cat.chip || cat.title)} <small>${countOf(cat.id)}</small></button>`)}
       </div>
 
       <div class="cat-info" data-cat-info>
@@ -91,7 +91,7 @@ export function repair(ctx) {
   const items = c.faq.groups.find((g) => g.id === 'repair')?.items || [];
   return {
     body: `
-    ${pageHero(ctx, { eyebrow: p.eyebrow, title: r.title, actions: button({ label: 'Оставить заявку', href: '/zapros/?product=repair' }), mediaKey: 'eq.repair' })}
+    ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, actions: button({ label: 'Оставить заявку', href: '/zapros/?product=repair' }), mediaKey: 'eq.repair' })}
     ${section(`<ul class="facts-inline">
       <li><span>Диагностика</span><strong>${t(r.diagnostics)}</strong></li>
       <li><span>Гарантия</span><strong>${t(r.warranty)}</strong></li>
@@ -119,7 +119,7 @@ export function delivery(ctx) {
   const block = (b, id, iconName) =>
     section(`${sectionHead({ title: b.title, id })}${features(b.items.map((x) => ({ ...x, icon: iconName })), { numbered: false, cols: b.items.length > 3 ? 4 : 3 })}`);
   return `
-    ${pageHero(ctx, { eyebrow: p.eyebrow, title: d.title, actions: `<a class="pill-link" href="#usloviya">Доставка</a><a class="pill-link" href="#puskonaladka">Пусконаладка и гарантия</a><a class="pill-link" href="#oplata">Оплата</a>` })}
+    ${pageHero(ctx, { eyebrow: p.eyebrow, title: p.heading, actions: `<a class="pill-link" href="#usloviya">Доставка</a><a class="pill-link" href="#puskonaladka">Пусконаладка и гарантия</a><a class="pill-link" href="#oplata">Оплата</a>` })}
     ${block(d.delivery, 'usloviya', 'truck')}
     ${block(d.launch, 'puskonaladka', 'wrench')}
     ${block(d.payment, 'oplata', 'card')}

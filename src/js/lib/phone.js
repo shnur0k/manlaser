@@ -32,7 +32,7 @@ export function formatPhone(value) {
 /** Возвращает текст ошибки или '' если номер в порядке. */
 export function phoneError(value) {
   const d = digitsOf(value);
-  if (!d) return 'Укажите телефон, чтобы мастер мог перезвонить';
+  if (!d) return 'Укажите телефон, чтобы менеджер мог перезвонить';
   if (!d.startsWith('375')) return 'Укажите белорусский номер: +375 (XX) XXX-XX-XX';
   if (d.length < 12) return 'Номер неполный: нужно 9 цифр после +375';
   return '';

@@ -18,6 +18,8 @@
   color: var(--gray-dark);
 }
 .crumbs a {
+  display: inline-block;
+  padding-block: 3px; /* область нажатия не меньше 24 px (WCAG 2.5.8) */
   color: var(--muted);
   transition: color 0.3s;
 }
@@ -32,6 +34,7 @@
 
 /* фильтр категорий: число моделей рядом с названием */
 .tag-filter__btn small {
+  white-space: nowrap;
   margin-left: 6px;
   font-size: 0.75rem;
   font-weight: 800;
@@ -217,4 +220,42 @@ html.is-lite .scene--home .intro__heading {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* хлебные крошки: на сенсорных экранах область нажатия не меньше 44 px */
+@media (pointer: coarse), (max-width: 767px) {
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .crumbs ol {
+    gap: 0 10px;
+  }
+}
+
+/* цена и описание в карточке товара не заходят под круглую стрелку в правом нижнем углу */
+.card--product .card__price,
+.card--product .card__text {
+  padding-right: 52px;
+}
+/* «В наличии» на главной: три карточки в ряд на всю ширину */
+@media (min-width: 900px) {
+  .product-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* крупные заголовки не переносим по слогам («диагно-стика», «обору-дование») на любой ширине — слово целиком уходит на следующую строку */
+.page-hero__title,
+.h1,
+.h2,
+.display-2,
+.intro__heading {
+  hyphens: manual;
+}
+
+/* атрибут hidden должен скрывать и карточки с display: flex (фильтр каталога) */
+[hidden] {
+  display: none !important;
 }

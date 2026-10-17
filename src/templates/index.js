@@ -17,11 +17,16 @@ function createContext(route, c, { dev }) {
     contact: { ...c.site.contacts[key], email: c.site.email },
     logo: c.logo,
     // только знак — для постера лёгкой версии главной
-    logoMark: c.logo.replace(/<path class="logo__letter"[^>]*\/>\s*/g, '').replace(/viewBox="[^"]*"/, 'viewBox="994 0 182 102"'),
+    // (id у копий логотипа переименованы или убраны, чтобы на странице не было повторов)
+    logoMark: c.logo
+      .replace(/<path class="logo__letter"[^>]*\/>\s*/g, '')
+      .replace(/ id="logo-(mark|word)"/g, '')
+      .replace(/logo-grad/g, 'logo-grad-poster')
+      .replace(/viewBox="[^"]*"/, 'viewBox="994 0 182 102"'),
     // только надпись — для гигантского логотипа в футере
     logoWord: c.logo
       .replace(/<defs>[\s\S]*?<\/defs>/, '')
-      .replace(/<path class="logo__mark"[^>]*\/>/, '').replace(/viewBox="[^"]*"/, 'viewBox="1224 15 510 88"'),
+      .replace(/<path class="logo__mark"[^>]*\/>/, '').replace(/ id="logo-word"/, '').replace(/viewBox="[^"]*"/, 'viewBox="1224 15 510 88"'),
     media: (key2, opts) => media(c.media, key2, opts),
   };
 }

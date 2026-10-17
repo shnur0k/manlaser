@@ -307,8 +307,8 @@
   }
 }
 .chip-check input:checked + span {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
   color: #fff;
 }
 .chip-check input:checked + span .icon {

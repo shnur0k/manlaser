@@ -93,7 +93,7 @@ export function home(ctx) {
   ${inStock.length
     ? section(
         `${sectionHead({ align: 'center', eyebrow: 'Склад', title: 'В наличии *сейчас*', action: button({ label: 'Весь каталог', href: '/oborudovanie/', variant: 'ghost', size: 'sm' }) })}
-    <div class="product-grid" data-stagger>${each(inStock, (pr) => productCard(ctx, pr))}</div>`,
+    <div class="product-grid product-grid--3" data-stagger>${each(inStock, (pr) => productCard(ctx, pr))}</div>`,
       )
     : ''}
 

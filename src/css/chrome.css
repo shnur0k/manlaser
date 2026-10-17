@@ -187,6 +187,8 @@
   gap: 10px;
 }
 .site-footer__col a {
+  display: inline-block;
+  padding-block: 2px; /* область нажатия не меньше 24 px (WCAG 2.5.8) */
   color: rgba(249, 249, 249, 0.85);
   font-weight: 600;
   transition: color 0.3s;

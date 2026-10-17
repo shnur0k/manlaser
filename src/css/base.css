@@ -107,7 +107,7 @@ table {
   z-index: 1000;
   padding: 10px 16px;
   border-radius: 999px;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   font-weight: 700;
   transform: translateY(-200%);
