@@ -30,8 +30,8 @@ export function initFloating() {
       visibleCtas.clear();
       cta?.classList.remove('is-hidden');
       if (!container || !('IntersectionObserver' in window)) return;
-      // на странице записи плавающая кнопка не нужна вовсе
-      root.classList.toggle('is-booking', container.dataset.barbaNamespace === 'booking');
+      // на странице заявки плавающая кнопка не нужна вовсе
+      root.classList.toggle('is-booking', container.dataset.barbaNamespace === 'request');
       io = new IntersectionObserver(
         (entries) => {
           entries.forEach((e) => (e.isIntersecting ? visibleCtas.add(e.target) : visibleCtas.delete(e.target)));
@@ -39,7 +39,7 @@ export function initFloating() {
         },
         { rootMargin: '0px 0px -60px 0px' },
       );
-      container.querySelectorAll('a[href*="/zapis/"]').forEach((a) => io.observe(a));
+      container.querySelectorAll('a[href*="/zapros/"]').forEach((a) => io.observe(a));
     },
   };
 }

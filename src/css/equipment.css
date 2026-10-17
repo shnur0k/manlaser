@@ -1,0 +1,220 @@
+/* ---------- Каталог оборудования ---------- */
+
+/* хлебные крошки на карточке товара */
+.crumbs {
+  margin-bottom: clamp(20px, 3vw, 36px);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--faint);
+}
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+.crumbs li + li::before {
+  content: '/';
+  margin-right: 10px;
+  color: var(--gray-dark);
+}
+.crumbs a {
+  color: var(--muted);
+  transition: color 0.3s;
+}
+@media (hover: hover) {
+  .crumbs a:hover {
+    color: var(--accent-hot);
+  }
+}
+.crumbs [aria-current] {
+  color: var(--text);
+}
+
+/* фильтр категорий: число моделей рядом с названием */
+.tag-filter__btn small {
+  margin-left: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  opacity: 0.6;
+}
+
+/* описание выбранной категории над сеткой */
+.cat-info {
+  margin-block: clamp(20px, 3vw, 36px) clamp(24px, 3.4vw, 48px);
+}
+.cat-info__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 62ch;
+}
+.cat-info__item[hidden] {
+  display: none;
+}
+.cat-info__price {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.1rem, 1rem + 0.6vw, 1.5rem);
+  color: var(--orange);
+}
+.notes {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+/* карточки: категория и товар */
+.card--cat .card__media,
+.card--product .card__media {
+  margin-bottom: 0;
+}
+.card--product .card__body {
+  gap: 8px;
+}
+.card__price {
+  margin-top: auto;
+  padding-top: 8px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.0625rem;
+  letter-spacing: -0.03em;
+  color: var(--orange);
+}
+.card--product .card__text {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+/* цена на странице товара и наличие — фирменным оранжевым */
+.product__price {
+  color: var(--orange);
+}
+.stock--in::before {
+  background: var(--orange);
+  box-shadow: 0 0 12px rgba(232, 80, 2, 0.7);
+}
+
+.chips--center {
+  justify-content: center;
+}
+.about-lead {
+  max-width: 62ch;
+  margin-bottom: var(--head-gap);
+}
+.bridge__note {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+.bridge__note a {
+  color: var(--text);
+  font-weight: 750;
+}
+
+/* ---------- Главная: светлая сцена (грузовик на белом фоне) ---------- */
+/* пока грузится 3D (и на компьютере вообще), фон сцены белый, а не чёрный */
+html:not(.is-lite) .scene--home:not(.is-static) .scene__stage,
+html:not(.is-lite) .scene--home:not(.is-static) {
+  background: #fff;
+}
+html:not(.is-lite) .scene--home:not(.is-static) .scene__poster {
+  display: none;
+}
+/* подписи на белом — тёмные; когда камера входит в кузов, сцена тёмная — подписи белые (класс is-dark ставит scroll-scene) */
+.scene--home:not(.is-static):not(.is-dark) .scene__ui {
+  color: #0a0a0a;
+  --text: #0a0a0a;
+  --muted: #3a3f45;
+  --line: rgba(0, 0, 0, 0.14);
+  --line-strong: rgba(0, 0, 0, 0.3);
+}
+.scene--home:not(.is-static):not(.is-dark) .scene__num,
+.scene--home:not(.is-static):not(.is-dark) .link-arrow {
+  color: #0a0a0a;
+}
+.scene--home:not(.is-static):not(.is-dark) .caption__ghost {
+  -webkit-text-stroke-color: rgba(0, 123, 255, 0.35);
+}
+.scene--home:not(.is-static):not(.is-dark) .btn--ghost {
+  color: #0a0a0a;
+  border-color: rgba(0, 0, 0, 0.3);
+}
+.scene--home:not(.is-static):not(.is-dark) .scene__progress li {
+  color: #6c727a;
+}
+.scene--home:not(.is-static):not(.is-dark) .scene__progress li.is-active {
+  color: #0a0a0a;
+}
+.scene--home:not(.is-static):not(.is-dark) .scene__progress i {
+  background: rgba(0, 0, 0, 0.14);
+}
+.scene--home:not(.is-static):not(.is-dark) .hero__scroll {
+  color: #3a3f45;
+}
+.scene--home .intro__heading {
+  position: absolute;
+  inset: calc(var(--header-h) + clamp(28px, 5vh, 64px)) var(--gutter) auto;
+  max-width: 13ch;
+  font-size: clamp(1.8rem, 0.9rem + 3.1vw, 4.2rem);
+  pointer-events: none;
+}
+.scene--home .scene__step--final .final__title {
+  max-width: 24ch;
+}
+
+/* постер лёгкой версии: знак на фирменном свечении */
+.scene__poster-mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #000;
+  overflow: hidden;
+}
+.scene__poster-mark i {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(46% 36% at 50% 44%, rgba(0, 123, 255, 0.5), rgba(0, 70, 190, 0.2) 55%, transparent 80%),
+    radial-gradient(34% 28% at 82% 62%, rgba(232, 80, 2, 0.34), transparent 75%),
+    radial-gradient(40% 30% at 14% 24%, rgba(135, 206, 235, 0.3), transparent 75%);
+}
+.scene__poster-mark svg {
+  position: relative;
+  width: min(62vw, 560px);
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 28px rgba(0, 123, 255, 0.55));
+}
+
+/* шапка поверх белой сцены: тёмные буквы, пока страница не прокручена */
+html.home-light .site-header:not(.is-scrolled):not(.is-menu-open) .logo,
+html.home-light .site-header:not(.is-scrolled):not(.is-menu-open) .header-phone {
+  color: #0a0a0a;
+}
+html.home-light .site-header:not(.is-scrolled):not(.is-menu-open) .nav__list {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+html.home-light .site-header:not(.is-scrolled):not(.is-menu-open) .nav__link {
+  color: rgba(10, 10, 10, 0.8);
+}
+html.home-light .site-header:not(.is-scrolled):not(.is-menu-open) .nav__link.is-active {
+  color: #0a0a0a;
+}
+html.home-light .site-header:not(.is-scrolled):not(.is-menu-open) .header-phone small {
+  color: #4d535a;
+}
+
+/* лёгкая версия: первый экран — только знак (как на сайте услуг); заголовок остаётся для поисковиков и экранных дикторов */
+html.is-lite .scene--home .intro__heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

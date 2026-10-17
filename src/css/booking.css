@@ -46,7 +46,7 @@ p.field__label {
   margin-bottom: 10px;
 }
 .field__req {
-  color: var(--orange-hot);
+  color: var(--accent-hot);
 }
 .input {
   width: 100%;
@@ -70,8 +70,8 @@ p.field__label {
 }
 .input:focus {
   outline: none;
-  border-color: var(--orange);
-  box-shadow: 0 0 0 4px rgba(232, 80, 2, 0.18);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.18);
   background: #0b0b0b;
 }
 .input--area {
@@ -102,8 +102,8 @@ input[type='date'].input {
   box-shadow: 0 0 0 4px rgba(255, 107, 74, 0.14);
 }
 .chip-check--radio input:checked + span {
-  background: var(--orange);
-  border-color: var(--orange);
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 
@@ -151,15 +151,15 @@ input[type='date'].input {
   transition: opacity 0.3s, transform 0.4s var(--ease-out);
 }
 .consent input:checked + .consent__box {
-  background: var(--orange);
-  border-color: var(--orange);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 .consent input:checked + .consent__box .icon {
   opacity: 1;
   transform: none;
 }
 .consent input:focus-visible + .consent__box {
-  outline: 2px solid var(--orange-hot);
+  outline: 2px solid var(--accent-hot);
   outline-offset: 3px;
 }
 .consent.is-invalid .consent__box {
@@ -183,7 +183,7 @@ input[type='date'].input {
 .booking-form__note .icon {
   width: 18px;
   height: 18px;
-  color: var(--orange);
+  color: var(--accent);
 }
 
 /* экран успеха */
@@ -195,8 +195,8 @@ input[type='date'].input {
   gap: 16px;
   padding: clamp(32px, 5vw, 72px) clamp(20px, 4vw, 56px);
   border-radius: var(--r-xl);
-  border: 1px solid rgba(232, 80, 2, 0.4);
-  background: radial-gradient(70% 60% at 50% 0%, rgba(232, 80, 2, 0.2), transparent 70%), var(--surface-1);
+  border: 1px solid rgba(0, 123, 255, 0.4);
+  background: radial-gradient(70% 60% at 50% 0%, rgba(0, 123, 255, 0.2), transparent 70%), var(--surface-1);
   text-align: center;
   overflow: hidden;
   outline: none;
@@ -212,17 +212,17 @@ input[type='date'].input {
 }
 .booking-success__ring {
   fill: none;
-  stroke: rgba(241, 96, 1, 0.9);
+  stroke: rgba(46, 147, 255, 0.9);
   stroke-width: 2;
-  filter: drop-shadow(0 0 8px rgba(241, 96, 1, 0.8));
+  filter: drop-shadow(0 0 8px rgba(46, 147, 255, 0.8));
 }
 .booking-success__check {
   fill: none;
-  stroke: #fff3e6;
+  stroke: #eaf5ff;
   stroke-width: 6;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 10px rgba(241, 96, 1, 1));
+  filter: drop-shadow(0 0 10px rgba(46, 147, 255, 1));
 }
 .booking-success__sparks {
   position: absolute;
@@ -268,7 +268,7 @@ input[type='date'].input {
 }
 @media (hover: hover) {
   .calc-result__remove:hover {
-    background: var(--orange);
+    background: var(--accent);
     color: #fff;
   }
 }
@@ -298,7 +298,7 @@ input[type='date'].input {
 .booking-next__list span {
   font-family: var(--font-display);
   font-size: 0.8125rem;
-  color: var(--orange-hot);
+  color: var(--accent-hot);
   padding-top: 2px;
 }
 .booking-contacts {
@@ -318,7 +318,7 @@ input[type='date'].input {
   flex: none;
   width: 18px;
   height: 18px;
-  color: var(--orange);
+  color: var(--accent);
   margin-top: 2px;
 }
 

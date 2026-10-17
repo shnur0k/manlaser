@@ -1,7 +1,7 @@
 {
-  "name": "manlaser — лазерная очистка и антикор",
+  "name": "manlaser — лазерное оборудование CNMLaser",
   "short_name": "manlaser",
-  "description": "Лазерная очистка металла и антикоррозийная обработка автомобилей в Пружанах",
+  "description": "Продажа и ремонт лазерного оборудования CNMLaser в Беларуси",
   "lang": "ru",
   "start_url": "./",
   "scope": "./",

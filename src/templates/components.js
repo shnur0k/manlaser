@@ -63,6 +63,37 @@ export function pageHero(ctx, { eyebrow: eb, title, lead: leadText, actions = ''
   </section>`;
 }
 
+/** Хлебные крошки страницы (для карточки товара). */
+export function crumbs(route) {
+  const all = [{ name: 'Главная', url: '/' }, ...(route.crumbs || [])];
+  return `<nav class="crumbs" aria-label="Вы здесь"><ol>${all
+    .map((c, i) => (i === all.length - 1 ? `<li aria-current="page">${esc(c.name)}</li>` : `<li><a href="${esc(c.url)}">${esc(c.name)}</a></li>`))
+    .join('')}</ol></nav>`;
+}
+
+/** Таблица характеристик товара: пары [название, значение]. */
+export function specTable(specs) {
+  return `<div class="table-wrap" data-reveal><table class="spec-table"><tbody>${each(specs, ([k, v]) => `<tr><th scope="row">${t(k)}</th><td>${t(v)}</td></tr>`)}</tbody></table></div>`;
+}
+
+/** Бейдж наличия: «в наличии» — зелёный, остальное — под заказ/уточнить. */
+export const stockBadge = (stock) => `<span class="stock stock--${stock === 'в наличии' ? 'in' : 'order'}">${t(stock)}</span>`;
+
+/** Карточка товара в каталоге. */
+export function productCard(ctx, p, { tags = '' } = {}) {
+  return `<a class="card card--product" href="${esc(p.url)}" data-tags="${esc(tags || p.category)}" data-tilt="soft" data-cursor="Подробнее">
+    <div class="card__media">${ctx.media(p.media, { ratio: '1/1' })}</div>
+    <div class="card__body">
+      <div class="card__top"><span class="tag">${t(p.power)}</span>${stockBadge(p.stock)}</div>
+      <h3 class="card__title">${t(p.name)}</h3>
+      <p class="card__text">${t(p.type)}</p>
+      <p class="card__price">${t(p.price)}</p>
+      <span class="card__arrow">${icon('arrow-up-right')}</span>
+    </div>
+    <span class="card__glow" aria-hidden="true"></span>
+  </a>`;
+}
+
 export function serviceCard(ctx, { title, text, url, mediaKey, mediaHoverKey, index, tag }) {
   return `<a class="card card--service" href="${esc(url)}" data-tilt data-cursor="Подробнее">
     <div class="card__media">
@@ -79,27 +110,13 @@ export function serviceCard(ctx, { title, text, url, mediaKey, mediaHoverKey, in
   </a>`;
 }
 
-/** Большая карточка услуги (главная и раздел «Услуги»). */
-export function serviceFeature(ctx, { title, text, url, mediaKey, index, tag, list = [] }) {
-  return `<a class="svc" href="${esc(url)}" data-tilt="soft" data-cursor="Подробнее">
-    <div class="svc__media">${ctx.media(mediaKey, { ratio: '4/5' })}<span class="svc__num" aria-hidden="true">${pad2(index)}</span></div>
-    <div class="svc__body">
-      ${tag ? `<span class="svc__tag">${esc(tag)}</span>` : ''}
-      <h3 class="svc__title">${t(title)}</h3>
-      <p class="svc__text">${t(text)}</p>
-      ${list.length ? `<ul class="svc__list">${each(list, (li) => `<li>${t(li)}</li>`)}</ul>` : ''}
-      <span class="svc__more">Подробнее ${icon('arrow-right')}</span>
-    </div>
-  </a>`;
-}
-
 /** Бегущая строка: слова чередуются заливкой и контуром. */
 export function marquee(items) {
   const row = each(items, (it, i) => `<span class="marquee__item${i % 2 ? ' marquee__item--outline' : ''}">${esc(it)}</span><span class="marquee__star">✦</span>`);
   return `<div class="marquee" aria-hidden="true"><div class="marquee__track">${row}${row}</div></div>`;
 }
 
-/** Единственное упоминание об аппаратах — со ссылкой на сайт оборудования. */
+/** Единственное упоминание об услугах — со ссылкой на сайт услуг (manlaser-center.by). */
 export function equipmentNote(ctx, extra = '') {
   const n = ctx.site.equipmentNote;
   if (!n) return '';
@@ -195,13 +212,13 @@ export function ctaBand(ctx, { title, text, primary, secondary } = {}) {
       <div class="cta-band__inner">
         <div class="cta-band__beam" aria-hidden="true"></div>
         <div class="cta-band__text">
-          <h2 class="h2" data-split>${rich(title || 'Запишитесь *на обработку*')}</h2>
-          <p class="lead">${t(text || 'Мастер перезвонит, уточнит детали и подскажет стоимость.')}</p>
+          <h2 class="h2" data-split>${rich(title || 'Подберём *оборудование* под вашу задачу')}</h2>
+          <p class="lead">${t(text || 'Назовём цену, покажем аппарат в работе и привезём по всей Беларуси.')}</p>
         </div>
         <div class="cta-band__actions">
           <div class="actions">
-            ${primary || button({ label: 'Записаться', href: '/zapis/' })}
-            ${secondary ?? (ctx.route.page === 'calculator' ? '' : button({ label: 'Калькулятор', href: '/uslugi/kalkulyator/', variant: 'ghost', iconName: 'arrow-right' }))}
+            ${primary || button({ label: 'Запросить цену', href: '/zapros/' })}
+            ${secondary ?? button({ label: 'Каталог', href: '/oborudovanie/', variant: 'ghost', iconName: 'arrow-right' })}
           </div>
           <div class="cta-band__contacts">
             ${phoneLink(contact, { extra: 'phone-link--lg' })}

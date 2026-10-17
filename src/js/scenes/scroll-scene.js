@@ -21,11 +21,12 @@ const hasWebGL = () => {
  *         и полосками прогресса [data-scene-bar data-from data-to].
  * name  — ключ сцены в config.js → scenes (режим '3d' | 'frames' | 'video').
  * load3d — () => import('./<scene>/index.js'): модуль 3D грузится только при необходимости.
+ * darkAt — прогресс, после которого сцена становится тёмной (класс is-dark для подписей).
  * hold  — «выдержка» в конце: доля длины, на которую сцена остаётся на финальном кадре (0.3 = +30% скролла).
  *
  * Модуль 3D экспортирует createScene(canvas, { quality, onReady }) → { update(p, dt), resize(), setPointer(x, y), destroy() }.
  */
-export function createScrollScene(root, { name, load3d, length = 4, mobileLength = 3.2, hold = 0 }) {
+export function createScrollScene(root, { name, load3d, length = 4, mobileLength = 3.2, hold = 0, darkAt = null }) {
   const cfg = config.scenes?.[name] || { mode: '3d' };
   const canvas = root.querySelector('[data-scene-canvas]');
   const steps = [...root.querySelectorAll('[data-scene-step]')].map((el) => ({
@@ -80,6 +81,7 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
       b.el.classList.toggle('is-active', p >= b.from && p <= b.to + 0.02);
     }
     root.classList.toggle('is-scrolled', p > 0.01);
+    if (darkAt != null) root.classList.toggle('is-dark', p >= darkAt); // сцена светлая → тёмная (см. scene.css)
     root.style.setProperty('--p', p.toFixed(4)); // прогресс для CSS (например, затухание фона вступления)
     if (readout) readout.textContent = String(Math.round(p * 100)).padStart(3, '0');
   }
@@ -188,7 +190,15 @@ export function createScrollScene(root, { name, load3d, length = 4, mobileLength
   }
 
   // отладка: root.__snap() — сразу перейти к текущему прогрессу без сглаживания
-  if (import.meta.env.DEV) root.__snap = () => (current = target);
+  // root.__set(p) — сразу показать кадр сцены с прогрессом p (0..1), не дожидаясь скролла и тикера
+  if (import.meta.env.DEV) {
+    root.__snap = () => (current = target);
+    root.__set = (p) => {
+      target = current = p;
+      renderer?.update(p, 0.016);
+      updateUi(p);
+    };
+  }
 
   if (mode === 'static') {
     makeStatic();

@@ -15,18 +15,18 @@ export function business(ctx) {
   if (!isPlaceholder(a.postalCode)) address.postalCode = a.postalCode;
 
   const node = {
-    '@type': ['LocalBusiness', 'AutoRepair'],
+    '@type': ['LocalBusiness', 'Store'],
     '@id': `${site.url}/#business`,
     name: site.name,
     description: site.tagline,
     url: `${site.url}/`,
     email: site.email,
-    telephone: site.contacts.services.tel,
+    telephone: site.contacts.main.tel,
     address,
     openingHours: site.hours.schema,
-    areaServed: ['Пружаны', 'Брестская область', 'Беларусь'],
+    areaServed: ['Беларусь'],
     contactPoint: [
-      { '@type': 'ContactPoint', telephone: site.contacts.services.tel, contactType: 'customer service', name: site.contacts.services.label, availableLanguage: 'ru' },
+      { '@type': 'ContactPoint', telephone: site.contacts.main.tel, contactType: 'customer service', name: site.contacts.main.label, availableLanguage: 'ru' },
     ],
   };
   if (a.geo?.lat && a.geo?.lng) node.geo = { '@type': 'GeoCoordinates', latitude: a.geo.lat, longitude: a.geo.lng };

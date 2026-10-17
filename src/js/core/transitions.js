@@ -102,7 +102,7 @@ export function createTransition(mode = 'laser', { fast = false } = {}) {
         if (k <= 0) continue;
         // связи с нижними соседями
         if (!breaking || n.rnd > 0.35) {
-          ctx2d.strokeStyle = `rgba(232,80,2,${0.55 * k})`;
+          ctx2d.strokeStyle = `rgba(0, 123, 255,${0.55 * k})`;
           ctx2d.lineWidth = 1.2 + 10 * k;
           ctx2d.beginPath();
           ctx2d.moveTo(n.x, n.y);
@@ -116,7 +116,7 @@ export function createTransition(mode = 'laser', { fast = false } = {}) {
         ctx2d.arc(n.x, n.y, R * k, 0, Math.PI * 2);
         ctx2d.fill();
         if (k < 0.98) {
-          ctx2d.strokeStyle = `rgba(241,96,1,${0.9 * (1 - k)})`;
+          ctx2d.strokeStyle = `rgba(46, 147, 255,${0.9 * (1 - k)})`;
           ctx2d.lineWidth = 1.5;
           ctx2d.stroke();
         }

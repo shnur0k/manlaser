@@ -26,9 +26,9 @@ export function mobileMenu(ctx) {
         </ul>
       </nav>
       <div class="mobile-menu__footer">
-        ${button({ label: 'Записаться на обработку', href: '/zapis/', extra: 'mobile-menu__cta' })}
+        ${button({ label: 'Запросить цену', href: '/zapros/', extra: 'mobile-menu__cta' })}
         <div class="mobile-menu__phones">
-          ${phoneLink(site.contacts.services)}
+          ${phoneLink(site.contacts.main)}
         </div>
         ${messengerLinks(ctx.contact, { variant: 'icon' })}
         <p class="mobile-menu__meta">${esc(site.address.full)} · ${esc(site.hours.short)}</p>

@@ -1,39 +1,39 @@
 :root {
   /* единый отступ от заголовка (страницы или раздела) до содержимого */
   --head-gap: clamp(44px, 6vw, 96px);
-  /* Фирменные цвета */
-  --orange: #e85002; /* Branding Orange — главный акцент */
-  --black: #000000; /* Primary */
-  --white: #f9f9f9;
+  /* Фирменные цвета (палитра владельца: оранжевый + голубые акценты, чёрный и белый) */
+  --orange: #e85002; /* Branding Orange — фирменный оранжевый: знак, цены, «горячие» акценты */
+  --accent: #007bff; /* Vibrant Blue — главный акцент интерфейса: кнопки, ссылки, свечение */
+  --accent-hot: #2e93ff; /* светлее акцента — подсветка при наведении */
+  --accent-deep: #0046be; /* темнее акцента — тени и глубина */
+  --sky: #87ceeb; /* Light Sky Blue — мягкий акцент, светлые поверхности */
+  --black: #000000; /* Secondary: Primary */
+  --white: #ffffff; /* Secondary: Clean White */
   --gray-light: #a7a7a7;
-  --gray: #646464;
+  --gray: #646464; /* UI Gray */
   --gray-dark: #333333;
-  /* Цвета фирменного градиента */
-  --sand: #d9c3ab;
-  --orange-hot: #f16001;
-  --red: #c10801;
 
-  /* Фирменный градиент слева направо */
-  --grad-brand: linear-gradient(90deg, #d9c3ab 0%, #f16001 33%, #c10801 66%, #000 100%);
-  /* Тот же градиент без чёрного хвоста — для текста и линий на чёрном фоне */
-  --grad-heat: linear-gradient(90deg, #d9c3ab 0%, #f16001 45%, #c10801 100%);
-  --grad-beam: linear-gradient(90deg, transparent 0%, #c10801 18%, #f16001 40%, #fff3e6 50%, #f16001 60%, #c10801 82%, transparent 100%);
+  /* Фирменный градиент: белый → небесный → голубой → оранжевый */
+  --grad-brand: linear-gradient(90deg, #ffffff 0%, #87ceeb 34%, #007bff 68%, #e85002 100%);
+  /* Тот же градиент для текста и линий на чёрном фоне (без белого начала — он слепит) */
+  --grad-heat: linear-gradient(90deg, #87ceeb 0%, #007bff 55%, #e85002 100%);
+  --grad-beam: linear-gradient(90deg, transparent 0%, #0046be 18%, #007bff 38%, #eaf5ff 50%, #007bff 62%, #e85002 82%, transparent 100%);
 
   /* Поверхности (оттенки чёрного) */
   --bg: var(--black);
   --surface-1: #070707;
   --surface-2: #0d0d0d;
   --surface-3: #161616;
-  --line: rgba(249, 249, 249, 0.09);
-  --line-strong: rgba(249, 249, 249, 0.18);
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.18);
   --text: var(--white);
   --muted: var(--gray-light);
   --faint: var(--gray);
 
   /* Свечение */
-  --glow-sm: 0 0 12px rgba(232, 80, 2, 0.6);
-  --glow: 0 0 24px rgba(232, 80, 2, 0.55), 0 0 72px rgba(232, 80, 2, 0.25);
-  --glow-btn: 0 12px 40px -12px rgba(232, 80, 2, 0.85);
+  --glow-sm: 0 0 12px rgba(0, 123, 255, 0.6);
+  --glow: 0 0 24px rgba(0, 123, 255, 0.55), 0 0 72px rgba(0, 123, 255, 0.25);
+  --glow-btn: 0 12px 40px -12px rgba(0, 123, 255, 0.85);
 
   /* Шрифты */
   --font-body: 'Nunito Variable', 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
