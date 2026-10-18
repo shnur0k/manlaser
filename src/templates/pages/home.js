@@ -40,11 +40,11 @@ export function home(ctx) {
     <div class="scene__ui">
       <div class="scene__step scene__step--intro" data-scene-step data-from="-1" data-to="0.1">
         <div class="container intro">
-          <h1 class="h1 intro__heading">${rich(p.hero.title)}</h1>
+          <h1 class="sr-only">${t(p.hero.title)}</h1>
           <div class="intro__bottom" data-reveal>
             ${eyebrow(p.hero.eyebrow)}
             <p class="lead intro__lead">${t(p.hero.lead)}</p>
-            <div class="actions">${primary}${catalog}</div>
+            <div class="actions">${catalog}${primary}</div>
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@ export function home(ctx) {
           <span class="scene__num">03 / ${total}<i></i>${esc(steps[2].label)}</span>
           <h2 class="h2 final__title">${t(steps[2].title)}</h2>
           <p class="lead final__text">${t(steps[2].text)}</p>
-          <div class="actions">${primary}${catalog}</div>
+          <div class="actions">${catalog}${primary}</div>
         </div>
       </div>
 

@@ -142,7 +142,11 @@ html:not(.is-lite) .scene--home:not(.is-static) .scene__poster {
 }
 .scene--home:not(.is-static):not(.is-dark) .btn--ghost {
   color: #0a0a0a;
-  border-color: rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(0, 0, 0, 0.28);
+}
+.scene--home:not(.is-static):not(.is-dark) .btn--ghost .btn__icon {
+  background: rgba(0, 0, 0, 0.07);
 }
 .scene--home:not(.is-static):not(.is-dark) .scene__progress li {
   color: #6c727a;
@@ -155,13 +159,6 @@ html:not(.is-lite) .scene--home:not(.is-static) .scene__poster {
 }
 .scene--home:not(.is-static):not(.is-dark) .hero__scroll {
   color: #3a3f45;
-}
-.scene--home .intro__heading {
-  position: absolute;
-  inset: calc(var(--header-h) + clamp(28px, 5vh, 64px)) var(--gutter) auto;
-  max-width: 13ch;
-  font-size: clamp(1.8rem, 0.9rem + 3.1vw, 4.2rem);
-  pointer-events: none;
 }
 .scene--home .scene__step--final .final__title {
   max-width: 24ch;
@@ -258,4 +255,16 @@ html.is-lite .scene--home .intro__heading {
 /* атрибут hidden должен скрывать и карточки с display: flex (фильтр каталога) */
 [hidden] {
   display: none !important;
+}
+
+/* первый экран: подпись в левом нижнем углу компактная, кнопки в один ряд («Каталог» слева, «Запросить цену» справа) и не заходят на фургон */
+.scene--home .intro__bottom {
+  max-width: min(34rem, 44vw);
+}
+.scene--home .intro__bottom .actions {
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+.scene--home .intro__bottom .btn {
+  white-space: nowrap;
 }
