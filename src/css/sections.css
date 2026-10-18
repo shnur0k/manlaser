@@ -170,10 +170,10 @@
 /* заголовок страницы и (если есть) кнопка справа от него в одной строке */
 .page-hero__row {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center; /* кнопка по вертикали по центру заголовка */
+  flex-direction: column; /* заголовок по центру, кнопка под ним */
+  align-items: center;
   justify-content: center;
-  gap: 24px 48px;
+  gap: 28px;
 }
 /* большой заголовок страницы по центру */
 .page-hero__title {
@@ -194,7 +194,7 @@
   font-size: clamp(1.05rem, 0.98rem + 0.32vw, 1.25rem);
 }
 .page-hero__actions {
-  justify-content: flex-end;
+  justify-content: center;
 }
 /* кинокадр 21:9 */
 .page-hero__media {
@@ -208,7 +208,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .page-hero__actions {
-    justify-content: flex-start;
+    justify-content: center;
   }
   .page-hero__media .media {
     --ratio: 16 / 10 !important;
