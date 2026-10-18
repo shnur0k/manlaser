@@ -108,9 +108,10 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
   // ---------- колёса ----------
   const wheelParts = {
     tire: new THREE.CylinderGeometry(GROUND_CLEARANCE, GROUND_CLEARANCE, 0.3, high ? 48 : 28).rotateX(Math.PI / 2),
-    rim: new THREE.CylinderGeometry(0.33, 0.33, 0.31, high ? 32 : 18).rotateX(Math.PI / 2),
-    hub: new THREE.CylinderGeometry(0.13, 0.13, 0.34, 16).rotateX(Math.PI / 2),
-    bolt: new THREE.CylinderGeometry(0.018, 0.018, 0.34, 6).rotateX(Math.PI / 2),
+    // диск, ступица и болты выступают из шины на 2 см каждый уровень — грани не лежат близко друг к другу
+    rim: new THREE.CylinderGeometry(0.33, 0.33, 0.34, high ? 32 : 18).rotateX(Math.PI / 2),
+    hub: new THREE.CylinderGeometry(0.13, 0.13, 0.38, 16).rotateX(Math.PI / 2),
+    bolt: new THREE.CylinderGeometry(0.018, 0.018, 0.42, 6).rotateX(Math.PI / 2),
   };
   const wheel = (x, z) => {
     const w = new THREE.Group();
@@ -122,6 +123,9 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
       const a = (i / 6) * Math.PI * 2;
       add(wheelParts.bolt, m.metal, Math.cos(a) * 0.2, Math.sin(a) * 0.2, 0, w);
     }
+    // на мелких выступающих деталях колеса тень не принимаем: ячейка карты теней (~1 см) крупнее выступа,
+    // и на диске получалась «рябь», которая мигала при движении камеры
+    w.children.forEach((c) => (c.receiveShadow = false));
     group.add(w);
   };
   for (const s of [1, -1]) {
