@@ -132,6 +132,10 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
     wheel(2.4, s * 1.0);
     wheel(-2.15, s * 0.72);
     wheel(-2.15, s * 1.03);
+    // арка над задними колёсами: тёмный короб входит в пол кузова и закрывает узкую щель (4 см) между шиной и полом —
+    // тонкая щель на расстоянии «мерцала» при движении камеры
+    const fender = add(rbox(1.35, 0.2, 0.7, 0.03), m.dark, -2.15, 1.08, s * 0.9);
+    fender.receiveShadow = false;
     // брызговики за задними колёсами
     add(new THREE.BoxGeometry(0.03, 0.42, 0.5), m.rubber, -2.75, 0.62, s * 0.9);
   }
