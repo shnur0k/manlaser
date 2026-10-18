@@ -8,6 +8,34 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
+/** Заменяет NaN и отрицательные значения нулём и ограничивает яркость сверху (до bloom). */
+const SANITIZE = {
+  uniforms: { tDiffuse: { value: null } },
+  vertexShader: /* glsl */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: /* glsl */ `
+    uniform sampler2D tDiffuse; varying vec2 vUv;
+    void main() {
+      vec4 c = texture2D(tDiffuse, vUv);
+      vec3 r = c.rgb;
+      r.x = (r.x == r.x) ? r.x : 0.0;
+      r.y = (r.y == r.y) ? r.y : 0.0;
+      r.z = (r.z == r.z) ? r.z : 0.0;
+      gl_FragColor = vec4(clamp(r, 0.0, 12.0), 1.0);
+    }`,
+};
+
+/** Обрезает цвет до 0…1 (LDR) перед FXAA. */
+const CLAMP_LDR = {
+  uniforms: { tDiffuse: { value: null } },
+  vertexShader: SANITIZE.vertexShader,
+  fragmentShader: /* glsl */ `
+    uniform sampler2D tDiffuse; varying vec2 vUv;
+    void main() {
+      vec4 c = texture2D(tDiffuse, vUv);
+      gl_FragColor = vec4(clamp(c.rgb, 0.0, 1.0), 1.0);
+    }`,
+};
+
 /**
  * База для 3D-сцен: рендерер, камера, окружение для отражений металла, bloom (на мощных устройствах)
  * и адаптивное качество — если кадр рисуется дольше ~22 мс, снижаем разрешение, затем выключаем bloom.
@@ -43,9 +71,14 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
     const rt = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType });
     composer = new EffectComposer(renderer, rt);
     composer.addPass(new RenderPass(scene, camera));
+    // защита от «битых» пикселей (NaN, отрицательные и бесконечные значения): на некоторых видеокартах Mac они расползаются
+    // через размытие bloom цветными и тёмными точками
+    composer.addPass(new ShaderPass(SANITIZE));
     bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), bloom.strength ?? 0.9, bloom.radius ?? 0.6, bloom.threshold ?? 0.85);
     composer.addPass(bloomPass);
     composer.addPass(new OutputPass());
+    // без тон-мэппинга после OutputPass остаются значения > 1; FXAA считает яркость по ним и даёт шум — обрезаем до 0…1
+    composer.addPass(new ShaderPass(CLAMP_LDR));
     fxaaPass = new ShaderPass(FXAAShader);
     composer.addPass(fxaaPass);
   }
