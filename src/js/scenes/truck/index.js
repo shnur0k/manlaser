@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { createStage, softDot, smoothstep } from '../lib/stage.js';
+import { createStage, softDot, softGlow, smoothstep } from '../lib/stage.js';
 import { buildTruck } from './truck.js';
 import { buildSign } from './sign.js';
 import logoSvg from '../../../../assets/logo.svg?raw';
@@ -91,6 +91,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   const { scene, camera, renderer } = stage;
   const high = quality === 'high';
   const dot = softDot();
+  const glow = softGlow();
 
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = high ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
@@ -146,7 +147,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   // ореол за вывеской
   const halo = new THREE.Mesh(
     new THREE.PlaneGeometry(3.6, 2.4),
-    new THREE.MeshBasicMaterial({ map: dot, color: new THREE.Color(0.1, 0.45, 1.4), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }),
+    new THREE.MeshBasicMaterial({ map: glow, color: new THREE.Color(0.1, 0.45, 1.4), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }),
   );
   halo.position.set(interior.x1 - 0.015, interior.cy + 0.1, 0);
   halo.rotation.y = -Math.PI / 2;
@@ -226,6 +227,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
     destroy() {
       stage.dispose();
       dot.dispose();
+      glow.dispose();
     },
   };
 }

@@ -185,6 +185,29 @@ export function softDot(size = 64) {
   return tex;
 }
 
+/**
+ * Мягкое пятно света для аддитивных ореолов: НЕПРОЗРАЧНЫЙ холст, яркость в градациях серого (центр белый, край чёрный).
+ * Прозрачный холст (как у softDot) в Safari при загрузке в текстуру «разпремультиплицируется» с шумом по каналам —
+ * при цветной подсветке это даёт россыпь разноцветных точек.
+ */
+export function softGlow(size = 128) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const g = c.getContext('2d');
+  g.fillStyle = '#000';
+  g.fillRect(0, 0, size, size);
+  const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0, 'rgb(255,255,255)');
+  grad.addColorStop(0.35, 'rgb(120,120,120)');
+  grad.addColorStop(0.7, 'rgb(28,28,28)');
+  grad.addColorStop(1, 'rgb(0,0,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.NoColorSpace;
+  return tex;
+}
+
 /** Ключевые кадры: пара соседних кадров для прогресса p и плавный коэффициент t между ними. */
 export function keyframes(list, p) {
   if (p <= list[0].p) return { a: list[0], b: null, t: 0 };
