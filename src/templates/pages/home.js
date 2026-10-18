@@ -7,10 +7,20 @@ export function home(ctx) {
   const p = c.pages.home;
   const e = c.equipment;
 
-  // Диапазоны прогресса скролла, на которых видны подписи 3D-сцены (грузовик → поворот к дверцам → дверцы открываются → логотип)
-  const caption = { from: 0.16, to: 0.5 };
+  // Диапазоны прогресса скролла, на которых видны подписи 3D-сцены:
+  // 01 — грузовик в профиль и обход, 02 — дверцы открываются, 03 — камера внутри кузова с логотипом
+  const captions = [
+    { from: 0.14, to: 0.46 },
+    { from: 0.56, to: 0.8 },
+  ];
   const final = { from: 0.9, to: 1.1 }; // финальный блок не гаснет в конце сцены: остаётся виден и кликабелен всю «выдержку»
+  const bars = [
+    [0.06, 0.52],
+    [0.52, 0.86],
+    [0.86, 0.96],
+  ];
   const steps = p.scene;
+  const total = `0${steps.length}`;
   const primary = button({ label: 'Запросить цену', href: '/zapros/' });
   const catalog = button({ label: 'Каталог оборудования', href: '/oborudovanie/', variant: 'ghost', iconName: 'arrow-right' });
   const inStock = e.products.filter((x) => x.stock === 'в наличии');
@@ -39,32 +49,31 @@ export function home(ctx) {
         </div>
       </div>
 
-      <div class="scene__step scene__step--caption" data-scene-step data-from="${caption.from}" data-to="${caption.to}">
-        <span class="caption__ghost" aria-hidden="true">${pad2(1)}</span>
+      ${each(captions, (r, i) => `<div class="scene__step scene__step--caption" data-scene-step data-from="${r.from}" data-to="${r.to}">
+        <span class="caption__ghost" aria-hidden="true">${pad2(i + 1)}</span>
         <div class="container caption">
           <div class="caption__title">
-            <span class="scene__num">01 / 0${steps.length}<i></i>${esc(steps[0].label)}</span>
-            <h2 class="h2">${t(steps[0].title)}</h2>
+            <span class="scene__num">${pad2(i + 1)} / ${total}<i></i>${esc(steps[i].label)}</span>
+            <h2 class="h2">${t(steps[i].title)}</h2>
           </div>
           <div class="caption__text">
-            <p class="lead">${t(steps[0].text)}</p>
-            <a class="link-arrow" href="${esc(steps[0].link.url)}">${esc(steps[0].link.label)} ${icon('arrow-right')}</a>
+            <p class="lead">${t(steps[i].text)}</p>
+            <a class="link-arrow" href="${esc(steps[i].link.url)}">${esc(steps[i].link.label)} ${icon('arrow-right')}</a>
           </div>
         </div>
-      </div>
+      </div>`)}
 
       <div class="scene__step scene__step--final" data-scene-step data-from="${final.from}" data-to="${final.to}">
         <div class="container final">
-          <span class="scene__num">02 / 0${steps.length}<i></i>${esc(steps[1].label)}</span>
-          <h2 class="h2 final__title">${t(steps[1].title)}</h2>
-          <p class="lead final__text">${t(steps[1].text)}</p>
+          <span class="scene__num">03 / ${total}<i></i>${esc(steps[2].label)}</span>
+          <h2 class="h2 final__title">${t(steps[2].title)}</h2>
+          <p class="lead final__text">${t(steps[2].text)}</p>
           <div class="actions">${primary}${catalog}</div>
         </div>
       </div>
 
       <ol class="scene__progress" aria-hidden="true">
-        <li data-scene-bar data-from="0.06" data-to="0.6"><span>${esc(steps[0].label)}</span><i><b></b></i></li>
-        <li data-scene-bar data-from="0.6" data-to="0.96"><span>${esc(steps[1].label)}</span><i><b></b></i></li>
+        ${each(steps, (st, i) => `<li data-scene-bar data-from="${bars[i][0]}" data-to="${bars[i][1]}"><span>${esc(st.label)}</span><i><b></b></i></li>`)}
       </ol>
       <div class="hero__scroll scene__hint" aria-hidden="true"><span>Листайте</span><i></i></div>
     </div>
