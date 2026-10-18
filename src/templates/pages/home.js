@@ -123,8 +123,6 @@ export function home(ctx) {
     <div class="bridge__media">${ctx.media('home.bridge')}</div>
   </div>`)}
 
-  ${section(`${sectionHead({ align: 'center', eyebrow: 'Для кого', title: 'Подходит для разных *сфер*' })}<ul class="chips chips--center">${each(e.industries, (i) => `<li class="chip">${t(i)}</li>`)}</ul>`)}
-
   ${section(
     `${sectionHead({ align: 'center', eyebrow: 'Отзывы', title: 'Покупатели об *оборудовании*' })}
     <div class="reviews-grid" data-stagger>${each(c.reviews.equipment.slice(0, 6), reviewCard)}</div>`,
