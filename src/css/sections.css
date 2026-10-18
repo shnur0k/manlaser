@@ -171,7 +171,7 @@
 .page-hero__row {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: center; /* кнопка по вертикали по центру заголовка */
   justify-content: center;
   gap: 24px 48px;
 }
