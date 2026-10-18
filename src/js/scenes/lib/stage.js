@@ -57,7 +57,7 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
   scene.environment = envTexture;
   scene.environmentIntensity = envIntensity;
 
-  const camera = new THREE.PerspectiveCamera(fov, 1, 0.03, 120);
+  const camera = new THREE.PerspectiveCamera(fov, 1, 0.15, 100); // ближняя плоскость не слишком близко: точность буфера глубины выше, меньше «мигания» полигонов
   const baseFov = fov;
 
   const maxRatio = Math.min(window.devicePixelRatio || 1, debug.dpr ?? (high ? 1.25 : 1));

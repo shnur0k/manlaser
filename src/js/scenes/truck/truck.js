@@ -133,10 +133,14 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
   }
 
   // ---------- кузов (панели; сзади открыт) ----------
-  add(rbox(boxLen, WALL + 0.02, BOX.w), m.dark, boxCx, BOX.y0 + WALL / 2, 0); // пол снизу
-  add(rbox(boxLen, WALL + 0.02, BOX.w), m.paint, boxCx, BOX.y1 - WALL / 2, 0); // крыша
+  // Пол и крыша чуть шире, длиннее и выступают за борта (на 1–2 см): так ни одна внешняя грань не лежит
+  // в одной плоскости с гранью соседней панели — иначе по краям «мигают» полигоны (z-fighting).
+  const lip = 0.02;
+  add(rbox(boxLen + lip, WALL + lip, BOX.w + lip), m.dark, boxCx, BOX.y0 + (WALL - lip) / 2, 0); // пол (снизу выступает на 2 см)
+  add(rbox(boxLen + lip, WALL + lip, BOX.w + lip), m.paint, boxCx, BOX.y1 - (WALL - lip) / 2, 0); // крыша (сверху выступает на 2 см)
   for (const s of [1, -1]) add(rbox(boxLen, boxH, WALL), m.paint, boxCx, boxCy, s * (BOX.w / 2 - WALL / 2)); // борта
-  add(rbox(WALL, boxH, BOX.w), m.paint, BOX.x1 - WALL / 2, boxCy, 0); // передняя стенка
+  // передняя стенка — только между бортами и между полом и крышей, без наложения на них
+  add(rbox(WALL, boxH - 2 * (WALL - lip), BOX.w - 2 * WALL, 0.01), m.paint, BOX.x1 - WALL / 2, boxCy, 0);
 
   // наклейки на бортах (брендовая полоса, логотип, подпись)
   const decalTex = makeSideDecal(logoSvg);
@@ -145,7 +149,7 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
   const decalH = decalW / 3;
   for (const s of [1, -1]) {
     const d = new THREE.Mesh(new THREE.PlaneGeometry(decalW, decalH), decalMat);
-    d.position.set(-1.05, BOX.y0 + decalH / 2 + 0.08, s * (BOX.w / 2 + 0.002));
+    d.position.set(-1.05, BOX.y0 + decalH / 2 + 0.14, s * (BOX.w / 2 + 0.004));
     if (s < 0) d.rotation.y = Math.PI;
     d.receiveShadow = true;
     group.add(d);
@@ -217,7 +221,7 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
     const dir = b.clone().sub(a);
     const len = dir.length();
     const ang = Math.atan2(dir.y, dir.x);
-    const nrm = new THREE.Vector2(-Math.sin(ang), Math.cos(ang)).multiplyScalar(0.075);
+    const nrm = new THREE.Vector2(-Math.sin(ang), Math.cos(ang)).multiplyScalar(0.1);
     const mid = a.clone().add(b).multiplyScalar(0.5).add(nrm);
     const g = new THREE.Mesh(new THREE.BoxGeometry(len, 0.02, 1.95), m.glass);
     g.position.set(mid.x, mid.y, 0);
@@ -233,7 +237,7 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
   sideGlass.lineTo(2.9, 2.0);
   sideGlass.lineTo(1.3, 2.0);
   const sideGlassGeo = new THREE.ShapeGeometry(sideGlass);
-  const zFace = cabW / 2 + 0.012;
+  const zFace = cabW / 2 + 0.02; // накладки на боку кабины отстоят от неё минимум на 1 см
   for (const s of [1, -1]) {
     const sg = new THREE.Mesh(sideGlassGeo, m.glass);
     sg.position.z = s * zFace;

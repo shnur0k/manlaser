@@ -120,6 +120,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   // земля: невидимая плоскость, на которую падает только тень (фон остаётся чисто белым)
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: 0.32 }));
   ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.01; // чуть ниже колёс: плоскость с тенью не должна лежать в одной плоскости с низом шин
   ground.receiveShadow = true;
   scene.add(ground);
   // мягкая контактная тень под машиной
@@ -128,7 +129,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
     new THREE.MeshBasicMaterial({ map: dot, color: 0x000000, transparent: true, opacity: 0.28, depthWrite: false }),
   );
   blob.rotation.x = -Math.PI / 2;
-  blob.position.set(-0.1, 0.01, 0);
+  blob.position.set(-0.1, 0.004, 0);
   scene.add(blob);
 
   // ---------- фургон и вывеска внутри ----------
