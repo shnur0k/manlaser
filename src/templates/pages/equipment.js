@@ -107,7 +107,7 @@ export function product(ctx) {
         </div>
       </div>
     </section>
-    ${section(`${sectionHead({ eyebrow: 'О модели', title: `Подробнее о *${p.name}*` })}${productTabs(p)}`)}
+    ${section(`<h2 class="sr-only">Подробнее о ${esc(p.name)}</h2>${productTabs(p)}`, { extra: 'section--tight' })}
     ${related.length ? section(`${sectionHead({ eyebrow: cat.title, title: 'Другие *модели*' })}<div class="product-grid" data-stagger>${each(related, (r) => productCard(ctx, r))}</div>`) : ''}`,
     schema: [productSchema(ctx, p, route.url)],
   };
