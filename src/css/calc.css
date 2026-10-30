@@ -107,7 +107,7 @@
 }
 @media (hover: hover) {
   .choice:hover .choice__body {
-    border-color: rgba(249, 249, 249, 0.32);
+    border-color: rgba(var(--fg-rgb), 0.32);
   }
 }
 .choice input:checked + .choice__body {
@@ -205,31 +205,31 @@
 }
 .car-map__body {
   fill: #0d0d0e;
-  stroke: rgba(249, 249, 249, 0.38);
+  stroke: rgba(var(--fg-rgb), 0.38);
   stroke-width: 1.5;
 }
 .car-map__wheel circle {
   fill: #060606;
-  stroke: rgba(249, 249, 249, 0.3);
+  stroke: rgba(var(--fg-rgb), 0.3);
   stroke-width: 1.5;
 }
 .car-map__wheel circle + circle {
   fill: none;
-  stroke: rgba(249, 249, 249, 0.18);
+  stroke: rgba(var(--fg-rgb), 0.18);
 }
 .car-map__zone {
   cursor: pointer;
 }
 .car-map__zone rect {
   fill: url(#car-hatch);
-  stroke: rgba(249, 249, 249, 0.3);
+  stroke: rgba(var(--fg-rgb), 0.3);
   stroke-width: 1.2;
   stroke-dasharray: 4 4;
   transition: fill 0.3s, stroke 0.3s, filter 0.4s;
 }
 .car-map__zone--stroke path {
   fill: none;
-  stroke: rgba(249, 249, 249, 0.22);
+  stroke: rgba(var(--fg-rgb), 0.22);
   stroke-width: 9;
   stroke-linecap: round;
   stroke-dasharray: 3 7;
@@ -476,12 +476,12 @@
 .range::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 4px;
-  background: linear-gradient(90deg, var(--accent) var(--fill), rgba(249, 249, 249, 0.14) var(--fill));
+  background: linear-gradient(90deg, var(--accent) var(--fill), rgba(var(--fg-rgb), 0.14) var(--fill));
 }
 .range::-moz-range-track {
   height: 4px;
   border-radius: 4px;
-  background: rgba(249, 249, 249, 0.14);
+  background: rgba(var(--fg-rgb), 0.14);
 }
 .range::-moz-range-progress {
   height: 4px;
@@ -585,7 +585,7 @@
   font-size: 0.925rem;
 }
 .summary__lines li span {
-  color: rgba(249, 249, 249, 0.82);
+  color: rgba(var(--fg-rgb), 0.82);
 }
 .summary__lines li b {
   flex: none;

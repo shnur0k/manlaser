@@ -21,6 +21,10 @@
   --grad-heat: linear-gradient(90deg, #87ceeb 0%, #007bff 55%, #e85002 100%);
   --grad-beam: linear-gradient(90deg, transparent 0%, #0046be 18%, #007bff 38%, #eaf5ff 50%, #007bff 62%, #e85002 82%, transparent 100%);
 
+  /* Цвет текста и фона каналами — для полупрозрачных оттенков: rgba(var(--fg-rgb), 0.1) */
+  --fg-rgb: 249, 249, 249;
+  --bg-rgb: 0, 0, 0;
+
   /* Поверхности (оттенки чёрного) */
   --bg: var(--black);
   --surface-1: #070707;

@@ -109,7 +109,7 @@
   border: 1px solid var(--line-strong);
 }
 .btn--ghost .btn__icon {
-  background: rgba(249, 249, 249, 0.07);
+  background: rgba(var(--fg-rgb), 0.07);
 }
 @media (hover: hover) {
   .btn--ghost:hover {
@@ -132,7 +132,7 @@
   padding: 7px 14px 7px 12px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
-  background: rgba(249, 249, 249, 0.025);
+  background: rgba(var(--fg-rgb), 0.025);
   color: var(--muted);
   font-size: 0.75rem;
   font-weight: 800;
@@ -697,7 +697,7 @@ html.js .media img:not(.is-loaded) {
   line-height: 1;
   letter-spacing: -0.06em;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(249, 249, 249, 0.6);
+  -webkit-text-stroke: 1px rgba(var(--fg-rgb), 0.6);
   transition: -webkit-text-stroke-color 0.5s;
 }
 @media (hover: hover) {
@@ -747,7 +747,7 @@ html.js .media img:not(.is-loaded) {
   border-radius: 999px;
   font-size: 0.85rem;
   font-weight: 650;
-  color: rgba(249, 249, 249, 0.85);
+  color: rgba(var(--fg-rgb), 0.85);
 }
 .svc__more {
   display: inline-flex;
@@ -801,7 +801,7 @@ html.js .media img:not(.is-loaded) {
 /* контур без внутренних линий шрифта: обводка под заливкой цвета фона */
 .marquee__item--outline {
   color: #030303;
-  -webkit-text-stroke: 2px rgba(249, 249, 249, 0.6);
+  -webkit-text-stroke: 2px rgba(var(--fg-rgb), 0.6);
   paint-order: stroke fill;
 }
 .marquee__star {
@@ -1162,7 +1162,7 @@ html.js .media img:not(.is-loaded) {
 }
 @media (hover: hover) {
   .compare-table tbody tr:hover {
-    background: rgba(249, 249, 249, 0.025);
+    background: rgba(var(--fg-rgb), 0.025);
   }
 }
 .table-link {

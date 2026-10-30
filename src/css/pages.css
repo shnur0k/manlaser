@@ -145,7 +145,7 @@
 .prose {
   font-size: 1.08rem;
   line-height: 1.75;
-  color: rgba(249, 249, 249, 0.88);
+  color: rgba(var(--fg-rgb), 0.88);
 }
 .prose > * + * {
   margin-top: 1.1em;
@@ -571,6 +571,6 @@
   line-height: 0.85;
   letter-spacing: -0.07em;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(249, 249, 249, 0.18);
+  -webkit-text-stroke: 1px rgba(var(--fg-rgb), 0.18);
   position: relative;
 }

@@ -56,7 +56,8 @@ export function makeSideDecal(logoSvg) {
   // логотип рисуем с тёмной надписью (на белом борту белые буквы не видны)
   const svg = logoSvg
     .replace('<svg ', '<svg width="1480" height="204" ')
-    .replace(/<path class="logo__letter"/g, '<path class="logo__letter" fill="#0b0f14"');
+    .replace(/<path class="logo__letter"/g, '<path class="logo__letter" fill="#0b0f14"')
+    .replace('stop-color="#ffffff"', 'stop-color="#6cc0e6"'); // белое начало градиента на белом борту не видно
   const img = new Image();
   img.onload = () => draw(img);
   img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;

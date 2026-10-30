@@ -39,7 +39,7 @@
 .field__label {
   font-size: 0.875rem;
   font-weight: 750;
-  color: rgba(249, 249, 249, 0.85);
+  color: rgba(var(--fg-rgb), 0.85);
   margin-bottom: 0;
 }
 p.field__label {
@@ -65,7 +65,7 @@ p.field__label {
 }
 @media (hover: hover) {
   .input:hover {
-    border-color: rgba(249, 249, 249, 0.3);
+    border-color: rgba(var(--fg-rgb), 0.3);
   }
 }
 .input:focus {
@@ -292,7 +292,7 @@ input[type='date'].input {
   gap: 12px;
   padding: 12px 0;
   border-top: 1px solid var(--line);
-  color: rgba(249, 249, 249, 0.85);
+  color: rgba(var(--fg-rgb), 0.85);
   font-size: 0.95rem;
 }
 .booking-next__list span {

@@ -40,7 +40,7 @@
   display: block;
   flex: none;
   width: clamp(138px, 12vw, 172px);
-  color: var(--white);
+  color: var(--text);
 }
 .logo svg {
   width: 100%;
@@ -81,17 +81,17 @@
   border-radius: 999px;
   font-weight: 700;
   font-size: 0.9375rem;
-  color: rgba(249, 249, 249, 0.78);
+  color: rgba(var(--fg-rgb), 0.78);
   transition: color 0.3s, background-color 0.3s, box-shadow 0.4s;
 }
 .nav__item.is-open > .nav__link {
-  color: var(--white);
-  background: rgba(249, 249, 249, 0.07);
+  color: var(--text);
+  background: rgba(var(--fg-rgb), 0.07);
 }
 @media (hover: hover) {
   .nav__link:hover {
-    color: var(--white);
-    background: rgba(249, 249, 249, 0.07);
+    color: var(--text);
+    background: rgba(var(--fg-rgb), 0.07);
   }
 }
 .nav__icon {
@@ -108,7 +108,7 @@
 }
 /* текущая страница — оранжевая обводка и оранжевая иконка */
 .nav__link.is-active {
-  color: var(--white);
+  color: var(--text);
   background: rgba(0, 123, 255, 0.1);
   box-shadow: inset 0 0 0 1px rgba(0, 123, 255, 0.6), 0 0 18px -6px rgba(0, 123, 255, 0.6);
 }
@@ -209,7 +209,7 @@
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: rgba(249, 249, 249, 0.05);
+  background: rgba(var(--fg-rgb), 0.05);
   color: var(--faint);
   transition: background-color 0.3s, color 0.3s;
 }
@@ -291,7 +291,7 @@
   right: 14px;
   height: 1.6px;
   border-radius: 2px;
-  background: var(--white);
+  background: var(--text);
   transition: transform 0.5s var(--ease-out), top 0.5s var(--ease-out);
 }
 .burger span:first-child {
@@ -625,7 +625,7 @@
 }
 @media (hover: hover) {
   .mm-sub a:hover {
-    color: var(--white);
+    color: var(--text);
   }
 }
 .mobile-menu__footer {

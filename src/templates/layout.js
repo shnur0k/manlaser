@@ -5,6 +5,7 @@ import { footer } from './partials/footer.js';
 import { ctaBand } from './components.js';
 import { floating, overlays } from './partials/chrome.js';
 import { business, breadcrumbs, graph } from './schema.js';
+import config from '../../config.js';
 
 /**
  * Общий каркас каждой страницы.
@@ -18,9 +19,10 @@ export function layout(ctx, page) {
   const description = seo.description || site.tagline;
   const canonical = `${site.url}${route.url === '/404.html' ? '/' : route.url}`;
   const schema = graph([business(ctx), breadcrumbs(ctx), ...(page.schema || [])]);
+  const theme = config.theme === 'light' ? 'light' : 'dark';
 
   return `<!doctype html>
-<html lang="ru" class="no-js">
+<html lang="ru" class="no-js" data-theme="${theme}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -37,7 +39,7 @@ export function layout(ctx, page) {
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="${theme === 'light' ? '#ffffff' : '#000000'}">
   <meta name="format-detection" content="telephone=no">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
