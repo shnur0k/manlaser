@@ -77,12 +77,16 @@ export function specTable(specs) {
 }
 
 /** Бейдж наличия: «в наличии» — зелёный, остальное — под заказ/уточнить. */
-export const stockBadge = (stock) => `<span class="stock stock--${stock === 'в наличии' ? 'in' : 'order'}">${t(stock)}</span>`;
+/** Есть ли товар в наличии (в том числе «в наличии / под заказ»). */
+export const isInStock = (stock) => /^в наличии/i.test(String(stock || '').trim());
+
+/** Бейдж наличия: «в наличии» — оранжевая точка, остальное — серая. */
+export const stockBadge = (stock) => `<span class="stock stock--${isInStock(stock) ? 'in' : 'order'}">${t(stock)}</span>`;
 
 /** Карточка товара в каталоге. */
 export function productCard(ctx, p, { tags = '' } = {}) {
   return `<a class="card card--product" href="${esc(p.url)}" data-tags="${esc(tags || p.category)}" data-tilt="soft" data-cursor="Подробнее">
-    <div class="card__media">${ctx.media(p.media, { ratio: '1/1' })}</div>
+    <div class="card__media">${ctx.media(p.media, { ratio: '1/1', cls: 'media--product', alt: `${p.type} ${p.name}` })}</div>
     <div class="card__body">
       <div class="card__top"><span class="tag">${t(p.power)}</span>${stockBadge(p.stock)}</div>
       <h3 class="card__title">${t(p.name)}</h3>

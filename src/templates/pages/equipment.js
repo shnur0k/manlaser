@@ -10,6 +10,35 @@ const productLabel = (p) => `${p.type} ${p.name}`;
 /** Кнопка «Запросить цену» с предвыбором товара в форме заявки. */
 const requestButton = (p, label = 'Запросить цену / демо') => button({ label, href: p ? `/zapros/?product=${p.slug}` : '/zapros/' });
 
+/** «Функциональность»: абзацы, подзаголовки и списки; в абзаце вида «Заголовок: текст» заголовок выделяется. */
+function functionsHtml(blocks = []) {
+  return each(blocks, (b) => {
+    if (b.h) return `<h3 class="func__h">${t(b.h)}</h3>`;
+    if (b.list) return `<ul class="ticks">${each(b.list, (x) => `<li>${icon('check')}<span>${t(x)}</span></li>`)}</ul>`;
+    const m = String(b.p).match(/^([^:]{3,70}):\s+(.+)$/);
+    return m ? `<p><strong>${t(m[1])}:</strong> ${t(m[2])}</p>` : `<p>${t(b.p)}</p>`;
+  });
+}
+
+/** Вкладки страницы товара. Пустые вкладки не выводятся; без JS видны все разделы подряд (скрипт — src/js/pages/product.js). */
+function productTabs(p) {
+  const tabs = [
+    { id: 'opisanie', label: 'Описание', html: p.description ? `<p class="lead">${t(p.description)}</p>` : '' },
+    { id: 'harakteristiki', label: 'Характеристики', html: p.specs?.length ? specTable(p.specs) : '' },
+    { id: 'funkcionalnost', label: 'Функциональность', html: p.functions?.length ? `<div class="func">${functionsHtml(p.functions)}</div>` : '' },
+  ].filter((x) => x.html);
+  if (!tabs.length) return '';
+  return `<div class="ptabs" data-tabs>
+    <div class="ptabs__list" role="tablist" aria-label="Информация о модели">
+      ${each(tabs, (x, i) => `<button class="ptabs__tab${i === 0 ? ' is-active' : ''}" type="button" role="tab" id="tab-${x.id}" aria-controls="panel-${x.id}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" data-tab>${esc(x.label)}</button>`)}
+    </div>
+    ${each(tabs, (x, i) => `<div class="ptabs__panel${i === 0 ? ' is-active' : ''}" role="tabpanel" id="panel-${x.id}" aria-labelledby="tab-${x.id}" tabindex="0" data-tab-panel>
+      <h3 class="ptabs__title">${esc(x.label)}</h3>
+      ${x.html}
+    </div>`)}
+  </div>`;
+}
+
 /** Каталог: одна страница, фильтр по 4 категориям (скрипт — src/js/pages/equipment.js, предвыбор — ?cat=id). */
 export function equipmentHub(ctx) {
   const { c } = ctx;
@@ -61,7 +90,7 @@ export function product(ctx) {
       <div class="container">
         ${crumbs(route)}
         <div class="product">
-          <div class="product__media" data-reveal="scale">${ctx.media(p.media, { ratio: '1/1', eager: true })}</div>
+          <div class="product__media" data-reveal="scale">${ctx.media(p.media, { ratio: '1/1', eager: true, cls: 'media--product', alt: `${p.type} ${p.name}` })}</div>
           <div class="product__info">
             ${eyebrow(p.type)}
             <h1 class="h1">${t(p.name)}</h1>
@@ -78,7 +107,7 @@ export function product(ctx) {
         </div>
       </div>
     </section>
-    ${section(`${sectionHead({ eyebrow: 'Характеристики', title: `Технические данные *${p.name}*` })}${specTable(p.specs)}`)}
+    ${section(`${sectionHead({ eyebrow: 'О модели', title: `Подробнее о *${p.name}*` })}${productTabs(p)}`)}
     ${related.length ? section(`${sectionHead({ eyebrow: cat.title, title: 'Другие *модели*' })}<div class="product-grid" data-stagger>${each(related, (r) => productCard(ctx, r))}</div>`) : ''}`,
     schema: [productSchema(ctx, p, route.url)],
   };

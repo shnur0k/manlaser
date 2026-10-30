@@ -1,4 +1,5 @@
 import { isPlaceholder, priceNumber } from './lib.js';
+import { isInStock } from './components.js';
 
 /** Разметка Schema.org (JSON-LD). */
 
@@ -61,7 +62,7 @@ export function product(ctx, p, url) {
     name: `${p.type} ${p.name}`,
     sku: p.slug,
     brand: { '@type': 'Brand', name: 'CNMLaser' },
-    description: `${p.type} ${p.name}, мощность ${p.power}`,
+    description: p.description || `${p.type} ${p.name}, мощность ${p.power}`,
     url: `${ctx.site.url}${url}`,
   };
   const price = priceNumber(p.price);
@@ -70,7 +71,7 @@ export function product(ctx, p, url) {
       '@type': 'Offer',
       priceCurrency: 'BYN',
       price,
-      availability: p.stock === 'в наличии' ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+      availability: isInStock(p.stock) ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
       seller: { '@id': `${ctx.site.url}/#business` },
       areaServed: 'BY',
     };

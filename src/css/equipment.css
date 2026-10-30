@@ -268,3 +268,120 @@ html.is-lite .scene--home .intro__heading {
 .scene--home .intro__bottom .btn {
   white-space: nowrap;
 }
+
+/* ---------- Фото товаров: целиком на светлой подложке (фото со старого сайта разных пропорций) ---------- */
+.media--product {
+  background: #fff;
+}
+.media--product img {
+  object-fit: contain;
+  padding: 6%;
+}
+@media (hover: hover) {
+  .card:hover .media--product img {
+    transform: scale(1.04);
+  }
+}
+/* «В наличии» на главной: карточки в один ряд на всю ширину */
+@media (min-width: 900px) {
+  .product-grid--row {
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Вкладки страницы товара ---------- */
+.ptabs__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+.ptabs__tab {
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--muted);
+  font-weight: 750;
+  font-size: 1rem;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, scale 0.2s var(--ease-out);
+}
+@media (hover: hover) {
+  .ptabs__tab:hover {
+    color: var(--text);
+    border-color: var(--line-strong);
+  }
+}
+.ptabs__tab:active {
+  scale: 0.97;
+}
+.ptabs__tab.is-active {
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
+  color: #fff;
+}
+.ptabs__panel {
+  max-width: 920px;
+}
+.ptabs__panel + .ptabs__panel {
+  margin-top: clamp(32px, 4vw, 56px);
+}
+/* со скриптом — одна вкладка, заголовок раздела дублирует кнопку и скрыт визуально */
+.ptabs.is-ready .ptabs__panel + .ptabs__panel {
+  margin-top: 0;
+}
+.ptabs.is-ready .ptabs__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.ptabs__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+}
+.ptabs__panel .lead {
+  max-width: 70ch;
+}
+.ptabs__panel:focus-visible {
+  outline: 2px solid var(--accent-hot);
+  outline-offset: 6px;
+  border-radius: var(--r-xs);
+}
+.func {
+  display: grid;
+  gap: 14px;
+  max-width: 76ch;
+  color: var(--muted);
+}
+.func strong {
+  color: var(--text);
+}
+.func__h {
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+.func .ticks {
+  display: grid;
+  gap: 10px;
+}
+.func .ticks li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.func .ticks .icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  color: var(--accent);
+}
