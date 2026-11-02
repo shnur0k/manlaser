@@ -5,7 +5,6 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 /** Заменяет NaN и отрицательные значения нулём и ограничивает яркость сверху (до bloom). */
@@ -24,7 +23,7 @@ const SANITIZE = {
     }`,
 };
 
-/** Обрезает цвет до 0…1 (LDR) перед FXAA. */
+/** Обрезает цвет до 0…1 (LDR) в конце цепочки. */
 const CLAMP_LDR = {
   uniforms: { tDiffuse: { value: null } },
   vertexShader: SANITIZE.vertexShader,
@@ -38,12 +37,14 @@ const CLAMP_LDR = {
 
 /**
  * База для 3D-сцен: рендерер, камера, окружение для отражений металла, bloom (на мощных устройствах)
- * и адаптивное качество — если кадр рисуется дольше ~22 мс, снижаем разрешение, затем выключаем bloom.
+ * и адаптивное качество — если кадр рисуется дольше ~22 мс, снижаем разрешение (не ниже 1 пикселя на точку экрана), затем выключаем bloom.
+ * Сглаживание — аппаратное MSAA ×4 (и в цепочке постобработки, и без неё): FXAA на тонких светлых кромках «мерцает» лесенкой при движении камеры.
  */
 export function createStage(canvas, { quality = 'high', fov = 35, envIntensity = 0.35, exposure = 1, bloom = {}, background = 0x000000, toneMapping = THREE.ACESFilmicToneMapping } = {}) {
   const high = quality === 'high';
   const useComposer = high && debug.bloom !== false; // ?bloom=0 — без свечения
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !high, powerPreference: 'high-performance', alpha: false, stencil: false });
+  // antialias — и для запасного режима без постобработки (если bloom выключится из-за медленных кадров)
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', alpha: false, stencil: false });
   renderer.setClearColor(background, 1);
   renderer.toneMapping = toneMapping;
   renderer.toneMappingExposure = exposure;
@@ -60,15 +61,16 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
   const camera = new THREE.PerspectiveCamera(fov, 1, 0.15, 100); // ближняя плоскость не слишком близко: точность буфера глубины выше, меньше «мигания» полигонов
   const baseFov = fov;
 
-  const maxRatio = Math.min(window.devicePixelRatio || 1, debug.dpr ?? (high ? 1.25 : 1));
+  // на Retina рисуем в 1.5 раза плотнее точек экрана: при 1–1.25 кромки кузова заметно «зубчатые»
+  const maxRatio = Math.min(window.devicePixelRatio || 1, debug.dpr ?? (high ? 1.5 : 1));
+  const minRatio = Math.min(maxRatio, 1);
   let ratio = maxRatio;
   let composer = null;
   let bloomPass = null;
-  let fxaaPass = null;
 
   if (useComposer) {
-    // без MSAA ×4 (дорого на высоком разрешении): сглаживание делает быстрый FXAA в конце цепочки
-    const rt = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType });
+    // MSAA ×4 в буфере сцены: сглаживает кромки геометрии до bloom (FXAA в конце цепочки давал «прыгающие» пиксели)
+    const rt = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType, samples: 4 });
     composer = new EffectComposer(renderer, rt);
     composer.addPass(new RenderPass(scene, camera));
     // защита от «битых» пикселей (NaN, отрицательные и бесконечные значения): на некоторых видеокартах Mac они расползаются
@@ -77,10 +79,8 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
     bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), bloom.strength ?? 0.9, bloom.radius ?? 0.6, bloom.threshold ?? 0.85);
     composer.addPass(bloomPass);
     composer.addPass(new OutputPass());
-    // без тон-мэппинга после OutputPass остаются значения > 1; FXAA считает яркость по ним и даёт шум — обрезаем до 0…1
+    // без тон-мэппинга после OutputPass остаются значения > 1 — обрезаем до 0…1
     composer.addPass(new ShaderPass(CLAMP_LDR));
-    fxaaPass = new ShaderPass(FXAAShader);
-    composer.addPass(fxaaPass);
   }
 
   let width = 1;
@@ -95,7 +95,6 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
     if (composer) {
       composer.setPixelRatio(ratio);
       composer.setSize(width, height);
-      fxaaPass?.material.uniforms.resolution.value.set(1 / (width * ratio), 1 / (height * ratio));
     }
   }
   resize();
@@ -107,8 +106,8 @@ export function createStage(canvas, { quality = 'high', fov = 35, envIntensity =
     else slowFrames = Math.max(0, slowFrames - 2);
     if (slowFrames > 40) {
       slowFrames = 0;
-      if (ratio > 0.76) {
-        ratio = Math.max(0.75, ratio - 0.25);
+      if (ratio > minRatio + 0.01) {
+        ratio = Math.max(minRatio, ratio - 0.25);
         resize();
       } else if (composer) {
         composer.dispose();

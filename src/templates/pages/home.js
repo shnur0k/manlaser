@@ -8,15 +8,15 @@ export function home(ctx) {
   const e = c.equipment;
 
   // Диапазоны прогресса скролла, на которых видны подписи 3D-сцены:
-  // 01 — грузовик в профиль и обход, 02 — дверцы открываются, 03 — камера внутри кузова с логотипом
+  // 01 — фургон выезжает и закрывает логотип, 02 — обход и дверцы открываются, 03 — в кузове станок и коробки
   const captions = [
-    { from: 0.14, to: 0.46 },
-    { from: 0.56, to: 0.8 },
+    { from: 0.14, to: 0.44 },
+    { from: 0.6, to: 0.84 },
   ];
   const final = { from: 0.9, to: 1.1 }; // финальный блок не гаснет в конце сцены: остаётся виден и кликабелен всю «выдержку»
   const bars = [
-    [0.06, 0.52],
-    [0.52, 0.86],
+    [0.05, 0.46],
+    [0.46, 0.86],
     [0.86, 0.96],
   ];
   const steps = p.scene;
@@ -26,7 +26,7 @@ export function home(ctx) {
   const inStock = e.products.filter((x) => x.stock === 'в наличии');
 
   const body = `
-  <section class="scene scene--home" data-scene-root="home" aria-label="Грузовик manlaser: доставка лазерного оборудования по Беларуси">
+  <section class="scene scene--home" data-scene-root="home" aria-label="Фургон manlaser привозит лазерный станок: доставка оборудования по Беларуси">
     <div class="scene__stage" aria-hidden="true">
       <div class="scene__poster">
         <!-- постер для телефонов и слабых устройств: знак на фирменном свечении (или кадр сцены, если он задан в media.json) -->

@@ -163,6 +163,14 @@ html:not(.is-lite) .scene--home:not(.is-static) .scene__poster {
 .scene--home .scene__step--final .final__title {
   max-width: 24ch;
 }
+/* финал на компьютере: подпись слева внизу — справа в кадре открытый кузов со станком */
+html:not(.is-lite) .scene--home:not(.is-static) .final {
+  align-items: flex-start;
+  text-align: left;
+}
+html:not(.is-lite) .scene--home:not(.is-static) .final__text {
+  max-width: 32ch;
+}
 
 /* постер лёгкой версии: знак на фирменном свечении */
 .scene__poster-mark {

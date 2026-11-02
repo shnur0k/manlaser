@@ -4,7 +4,7 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 /**
  * Грузовой фургон из примитивов (метры). Нос смотрит в +X, борт к камере — +Z, задние дверцы — на -X.
  * Кузов собран из панелей и открыт сзади: внутри тёмная обшивка, рёбра, светодиодные полосы.
- * Возвращает { group, setDoors(t), interior } — t: 0 закрыты … 1 открыты.
+ * Возвращает { group, setDoors(t), interior, wheels } — t: 0 закрыты … 1 открыты; wheels — группы колёс (крутятся вокруг z).
  */
 
 // Размеры (м)
@@ -64,13 +64,14 @@ export function makeSideDecal(logoSvg) {
   return tex;
 }
 
-export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {}) {
+export function buildTruck({ quality = 'high', logoSvg = '' } = {}) {
   const high = quality === 'high';
   const group = new THREE.Group();
 
+  // лак не слишком гладкий: очень узкие блики на скруглённых кромках дают «искрящиеся» пиксели при движении камеры
   const m = {
-    paint: new THREE.MeshPhysicalMaterial({ color: 0xdfe5ec, roughness: 0.34, metalness: 0.05, clearcoat: 0.8, clearcoatRoughness: 0.1 }),
-    cab: new THREE.MeshPhysicalMaterial({ color: 0xd9e0e8, roughness: 0.3, metalness: 0.08, clearcoat: 0.9, clearcoatRoughness: 0.08 }),
+    paint: new THREE.MeshPhysicalMaterial({ color: 0xdfe5ec, roughness: 0.34, metalness: 0.05, clearcoat: 0.8, clearcoatRoughness: 0.2 }),
+    cab: new THREE.MeshPhysicalMaterial({ color: 0xd9e0e8, roughness: 0.3, metalness: 0.08, clearcoat: 0.9, clearcoatRoughness: 0.18 }),
     dark: new THREE.MeshStandardMaterial({ color: 0x15181c, roughness: 0.55, metalness: 0.35 }),
     rubber: new THREE.MeshStandardMaterial({ color: 0x0d0e10, roughness: 0.92, metalness: 0 }),
     metal: new THREE.MeshStandardMaterial({ color: 0xc4cad2, roughness: 0.35, metalness: 0.45 }),
@@ -114,6 +115,7 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
     hub: new THREE.CylinderGeometry(0.13, 0.13, 0.38, 16).rotateX(Math.PI / 2),
     bolt: new THREE.CylinderGeometry(0.018, 0.018, 0.42, 6).rotateX(Math.PI / 2),
   };
+  const wheels = [];
   const wheel = (x, z) => {
     const w = new THREE.Group();
     w.position.set(x, GROUND_CLEARANCE, z);
@@ -128,6 +130,7 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
     // и на диске получалась «рябь», которая мигала при движении камеры
     w.children.forEach((c) => (c.receiveShadow = false));
     group.add(w);
+    wheels.push(w);
   };
   for (const s of [1, -1]) {
     wheel(2.4, s * 1.0);
@@ -191,13 +194,6 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
   for (const s of [1, -1]) {
     add(new THREE.BoxGeometry(innerLen - 0.2, 0.02, 0.08), m.led, innerCx, inner.y1 - 0.012, s * 0.55);
     add(new THREE.BoxGeometry(innerLen - 0.3, 0.012, 0.03), m.ledBlue, innerCx, inner.y0 + 0.008, s * (inner.z - 0.08));
-  }
-
-  // вывеска на передней стене
-  if (sign) {
-    sign.position.set(inner.x1 - 0.02, innerCy + 0.1, 0);
-    sign.rotation.y = -Math.PI / 2;
-    group.add(sign);
   }
 
   // ---------- кабина ----------
@@ -328,6 +324,7 @@ export function buildTruck({ quality = 'high', logoSvg = '', sign = null } = {})
   return {
     group,
     setDoors,
+    wheels,
     interior: { x0: inner.x0, x1: inner.x1, y0: inner.y0, y1: inner.y1, z: inner.z, cx: innerCx, cy: innerCy },
   };
 }

@@ -11,25 +11,28 @@ const STOPS = [
   [0.62, '#007bff'],
   [1, '#e85002'],
 ];
+// для белого фона: белое начало градиента не видно — начинаем с небесного (как в theme-light.css)
+const STOPS_LIGHT = [[0, '#6cc0e6'], ...STOPS.slice(1)];
 const MARK_X0 = 994.31;
 const MARK_X1 = 1175.73;
 
-function gradientColor(t, out) {
+function gradientColor(t, out, stops = STOPS) {
   t = Math.max(0, Math.min(1, t));
-  for (let i = 0; i < STOPS.length - 1; i++) {
-    const [a, ca] = STOPS[i];
-    const [b, cb] = STOPS[i + 1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    const [a, ca] = stops[i];
+    const [b, cb] = stops[i + 1];
     if (t <= b) return out.set(ca).lerp(new THREE.Color(cb), (t - a) / (b - a));
   }
-  return out.set(STOPS[STOPS.length - 1][1]);
+  return out.set(stops[stops.length - 1][1]);
 }
 
 /**
- * Светящаяся вывеска-логотип для задней стенки кузова: знак (градиент) сверху, надпись под ним.
- * Лицевые грани — «самосветящиеся» (MeshBasic с яркими цветами → bloom), борта — тёмный металл.
- * Вывеска смотрит в сторону +z, поворачивается снаружи.
+ * Объёмный логотип: знак (градиент) сверху, надпись под ним (ширины markWidth / wordWidth). Смотрит в сторону +z, поворачивается снаружи.
+ * word: false — только знак, без надписи.
+ * light: false — «светящаяся» вывеска для тёмного фона (лицевые грани ярче 1 → bloom, буквы белые, борта — тёмный металл);
+ * light: true — для белого фона: точные фирменные цвета без свечения, буквы тёмные, борта — светлый металл.
  */
-export function buildSign(svgText, { quality = 'high', markWidth = 1.3, wordWidth = 2.0 } = {}) {
+export function buildSign(svgText, { quality = 'high', markWidth = 1.3, wordWidth = 2.0, word = true, light = false } = {}) {
   const data = new SVGLoader().parse(plainSvg(svgText));
   const opts = {
     depth: 14,
@@ -46,7 +49,7 @@ export function buildSign(svgText, { quality = 'high', markWidth = 1.3, wordWidt
     const shapes = SVGLoader.createShapes(path);
     if (!shapes.length) continue;
     if (cls.includes('logo__mark')) markGeos.push(new THREE.ExtrudeGeometry(shapes, opts));
-    else if (cls.includes('logo__letter')) letterGeos.push(new THREE.ExtrudeGeometry(shapes, opts));
+    else if (word && cls.includes('logo__letter')) letterGeos.push(new THREE.ExtrudeGeometry(shapes, opts));
   }
   if (!markGeos.length) throw new Error('В logo.svg не найден знак (class="logo__mark")');
 
@@ -75,8 +78,8 @@ export function buildSign(svgText, { quality = 'high', markWidth = 1.3, wordWidt
   const markS = place(markGeos, markWidth, markBox.clone());
   const wordS = letterGeos.length ? place(letterGeos, wordWidth, letterBox.clone()) : 1;
 
-  // знак: цвета вершин по градиенту (значения > 1 — свечение)
-  const glow = 1.35;
+  // знак: цвета вершин по градиенту (в тёмном варианте значения > 1 — свечение)
+  const glow = light ? 1 : 1.35;
   const c = new THREE.Color();
   const markCx = (markBox.min.x + markBox.max.x) / 2;
   for (const g of markGeos) {
@@ -84,15 +87,17 @@ export function buildSign(svgText, { quality = 'high', markWidth = 1.3, wordWidt
     const colors = new Float32Array(pos.count * 3);
     for (let i = 0; i < pos.count; i++) {
       const svgX = pos.getX(i) / markS + markCx;
-      gradientColor((svgX - MARK_X0) / (MARK_X1 - MARK_X0), c);
+      gradientColor((svgX - MARK_X0) / (MARK_X1 - MARK_X0), c, light ? STOPS_LIGHT : STOPS);
       colors.set([c.r * glow, c.g * glow, c.b * glow], i * 3);
     }
     g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   }
 
   const faceMark = new THREE.MeshBasicMaterial({ vertexColors: true });
-  const faceWord = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.5, 1.5, 1.55) });
-  const side = new THREE.MeshStandardMaterial({ color: 0x1b222b, metalness: 0.7, roughness: 0.35 });
+  const faceWord = new THREE.MeshBasicMaterial({ color: light ? new THREE.Color(0x0b0e13) : new THREE.Color(1.5, 1.5, 1.55) });
+  const side = light
+    ? new THREE.MeshStandardMaterial({ color: 0xc3cad3, metalness: 0.35, roughness: 0.4 })
+    : new THREE.MeshStandardMaterial({ color: 0x1b222b, metalness: 0.7, roughness: 0.35 });
 
   const group = new THREE.Group();
   const markHeight = (markBox.max.y - markBox.min.y) * markS;
@@ -110,6 +115,6 @@ export function buildSign(svgText, { quality = 'high', markWidth = 1.3, wordWidt
     word.position.y = -total / 2 + wordHeight / 2;
     group.add(word);
   }
-  group.userData.size = { width: Math.max(markWidth, wordWidth), height: total };
+  group.userData.size = { width: letterGeos.length ? Math.max(markWidth, wordWidth) : markWidth, height: total };
   return group;
 }

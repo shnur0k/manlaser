@@ -1,32 +1,41 @@
 import * as THREE from 'three';
-import { createStage, softDot, softGlow, smoothstep } from '../lib/stage.js';
+import { createStage, softDot, smoothstep } from '../lib/stage.js';
 import { buildTruck } from './truck.js';
 import { buildSign } from './sign.js';
+import { buildCargo } from './cargo.js';
 import logoSvg from '../../../../assets/logo.svg?raw';
 
 /**
  * 3D-сцена главной (Three.js). Прогресс скролла p:
- * Подписи: 01 «Привезём по всей Беларуси» (профиль и обход), 02 «Запустим и обучим» (дверцы открываются), 03 «Оборудование, которым мы работаем сами» (внутри кузова).
- *   0.00–0.12  грузовик на белом фоне, строго в профиль;
- *   0.12–0.58  камера плавно обходит фургон и разворачивается к задним дверцам;
- *   0.52–0.72  дверцы открываются, внутри — светящийся логотип;
- *   0.72–1.00  камера подъезжает и входит в кузов: кадр целиком заполняет тёмный интерьер с логотипом.
- * Подписи к шагам — в разметке страницы (content/pages.json → home.scene).
+ *   0.00–0.05  на белом фоне — крупный объёмный знак manlaser (без надписи);
+ *   0.05–0.30  слева выезжает фургон, тормозит и останавливается по центру, закрывая логотип (камера отъезжает);
+ *              как только знак закрыт, он пропадает — при облёте камерой его уже нет;
+ *   0.38–0.72  камера обходит фургон и разворачивается к задним дверцам;
+ *   0.64–0.82  дверцы открываются: в кузове станок лазерной резки и упакованные коробки;
+ *   0.82–1.00  камера чуть подаётся вперёд и сдвигает кузов вправо — слева остаётся место для финальной подписи.
+ * Подписи: 01 «Привезём по всей Беларуси» (фургон приезжает), 02 «Запустим и обучим» (дверцы открываются),
+ * 03 «Оборудование, которым мы работаем сами» (финал) — в разметке страницы (content/pages.json → home.scene).
+ * Фургон едет слева направо (нос +X), задние дверцы — на −X; в финале камера смотрит в кузов с −X.
  * Только для компьютера: на телефонах и планшетах вместо сцены показывается постер со знаком.
  */
 
 // Ключевые кадры камеры: позиция, точка взгляда, угол обзора
 const CAM = [
-  { p: 0.0, pos: [-1.0, 1.9, 19.2], look: [-1.0, 1.35, 0], fov: 28 },
-  { p: 0.12, pos: [-1.1, 1.95, 18.6], look: [-1.0, 1.4, 0], fov: 28 },
-  { p: 0.3, pos: [-8.0, 2.5, 13.6], look: [-0.9, 2.05, 0], fov: 30 },
-  { p: 0.45, pos: [-12.4, 2.6, 8.0], look: [-2.4, 2.05, 0.3], fov: 32 },
-  { p: 0.58, pos: [-12.6, 2.1, 1.6], look: [-3.6, 1.88, 0], fov: 33 },
-  { p: 0.7, pos: [-10.6, 2.0, 0.0], look: [-3.6, 1.92, 0], fov: 35 },
-  { p: 0.82, pos: [-6.8, 2.15, 0.0], look: [-1.5, 2.3, 0], fov: 42 },
-  { p: 0.92, pos: [-4.8, 2.1, 0.0], look: [0.9, 2.0, 0], fov: 46 },
-  { p: 1.0, pos: [-3.5, 2.0, 0.0], look: [0.9, 1.85, 0], fov: 46 },
+  { p: 0.0, pos: [-1.35, 2.33, 7.6], look: [-1.35, 2.33, -3.2], fov: 28 },
+  { p: 0.05, pos: [-1.35, 2.3, 8.0], look: [-1.35, 2.3, -3.2], fov: 28 },
+  { p: 0.3, pos: [-0.7, 1.95, 18.4], look: [-0.7, 1.45, 0], fov: 28 },
+  { p: 0.38, pos: [-0.8, 1.95, 18.2], look: [-0.8, 1.45, 0], fov: 28 },
+  { p: 0.5, pos: [-8.0, 2.5, 13.6], look: [-1.0, 2.05, 0], fov: 30 },
+  { p: 0.6, pos: [-12.4, 2.6, 8.0], look: [-2.4, 2.05, 0.3], fov: 32 },
+  { p: 0.7, pos: [-12.6, 2.2, 1.6], look: [-3.6, 1.9, 0], fov: 33 },
+  { p: 0.82, pos: [-11.2, 2.5, -0.2], look: [-3.6, 2.0, -0.2], fov: 35 },
+  { p: 1.0, pos: [-14.4, 3.6, 0.3], look: [-3.0, 2.1, -1.95], fov: 34 },
 ];
+
+// Въезд фургона: на каком отрезке прогресса и откуда (м по X)
+const DRIVE = { from: 0.05, to: 0.3, x: -17 };
+const LOGO_HIDE = 0.3; // знак полностью закрыт фургоном — убираем его
+const easeOutCubic = (t) => 1 - (1 - t) ** 3;
 
 /**
  * Монотонная кубическая интерполяция (PCHIP): гладкая (скорость непрерывна), без заносов за ключевые значения.
@@ -91,7 +100,6 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   const { scene, camera, renderer } = stage;
   const high = quality === 'high';
   const dot = softDot();
-  const glow = softGlow();
 
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = high ? THREE.PCFSoftShadowMap : THREE.PCFShadowMap;
@@ -100,7 +108,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   const hemi = new THREE.HemisphereLight(0xffffff, 0xc9d1da, 0.55);
   scene.add(hemi);
   const key = new THREE.DirectionalLight(0xffffff, 1.35);
-  key.position.set(4, 11, 7);
+  key.position.set(-4, 11, 7); // свет сверху со стороны задних дверец
   key.castShadow = true;
   key.shadow.mapSize.set(high ? 2048 : 1024, high ? 2048 : 1024);
   key.shadow.camera.left = -9;
@@ -112,7 +120,7 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   key.shadow.bias = -0.0008;
   key.shadow.normalBias = 0.07;
   key.shadow.radius = 4;
-  scene.add(key);
+  scene.add(key, key.target); // свет едет вместе с фургоном — тень остаётся чёткой (рамка карты теней небольшая)
   const fill = new THREE.DirectionalLight(0xdfeaff, 0.35);
   fill.position.set(-7, 4, -4);
   scene.add(fill);
@@ -123,6 +131,24 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   ground.position.y = -0.01; // чуть ниже колёс: плоскость с тенью не должна лежать в одной плоскости с низом шин
   ground.receiveShadow = true;
   scene.add(ground);
+
+  // ---------- знак на старте: висит над землёй за кузовом там, где остановится фургон (снизу между колёсами его не видно) ----------
+  const logo = buildSign(logoSvg, { quality, markWidth: 3.0, word: false, light: true });
+  const logoY = 2.33;
+  // знак несимметричный (справа «хвостик»): сдвигаем его так, чтобы по центру экрана (под надписью «Листайте») был средний нижний круг, а не середина рамки
+  logo.position.set(-1.35 + 0.19, logoY, -3.2);
+  scene.add(logo);
+
+  // ---------- фургон с грузом ----------
+  // rig — фургон целиком (кузов, свет внутри, контактная тень); едет вдоль X
+  const rig = new THREE.Group();
+  scene.add(rig);
+  const truck = buildTruck({ quality, logoSvg });
+  rig.add(truck.group);
+  const { interior } = truck;
+  const cargo = buildCargo({ quality, logoSvg, floor: interior.y0, x0: interior.x0, x1: interior.x1, z: interior.z });
+  truck.group.add(cargo.group);
+
   // мягкая контактная тень под машиной
   const blob = new THREE.Mesh(
     new THREE.PlaneGeometry(9.5, 3.4),
@@ -130,29 +156,20 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   );
   blob.rotation.x = -Math.PI / 2;
   blob.position.set(-0.1, 0.004, 0);
-  scene.add(blob);
+  rig.add(blob);
 
-  // ---------- фургон и вывеска внутри ----------
-  const sign = buildSign(logoSvg, { quality, markWidth: 1.1, wordWidth: 1.7 });
-  const truck = buildTruck({ quality, logoSvg, sign });
-  scene.add(truck.group);
-
-  // свет внутри кузова: тёплый-белый сверху и голубой отсвет от вывески
-  const { interior } = truck;
-  const lamp = new THREE.PointLight(0xdbe8ff, 0, 7, 2);
-  lamp.position.set(interior.cx - 0.4, interior.y1 - 0.25, 0);
-  scene.add(lamp);
-  const glowLight = new THREE.PointLight(0x2a8cff, 0, 6, 2);
-  glowLight.position.set(interior.x1 - 0.9, interior.cy + 0.1, 0);
-  scene.add(glowLight);
-  // ореол за вывеской
-  const halo = new THREE.Mesh(
-    new THREE.PlaneGeometry(3.6, 2.4),
-    new THREE.MeshBasicMaterial({ map: glow, color: new THREE.Color(0.1, 0.45, 1.4), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }),
-  );
-  halo.position.set(interior.x1 - 0.015, interior.cy + 0.1, 0);
-  halo.rotation.y = -Math.PI / 2;
-  scene.add(halo);
+  // свет внутри кузова: над станком, над коробками и у дверец — включается, когда дверцы открываются
+  const lamps = [
+    { color: 0xe6efff, max: 4, x: interior.cx - 0.6 },
+    { color: 0xfff3e2, max: 3, x: interior.x1 - 0.7 },
+    { color: 0xffffff, max: 2.5, x: interior.x0 + 0.5 },
+  ].map(({ color, max, x }) => {
+    const l = new THREE.PointLight(color, 0, 6, 2);
+    l.position.set(x, interior.y1 - 0.3, 0);
+    l.userData.max = max;
+    truck.group.add(l);
+    return l;
+  });
 
   // ---------- камера ----------
   const camPos = new THREE.Vector3();
@@ -165,11 +182,10 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
     camPos.set(camFns.pos[0](p), camFns.pos[1](p), camFns.pos[2](p));
     camLook.set(camFns.look[0](p), camFns.look[1](p), camFns.look[2](p));
     camera.fov = stage.fitFov(camFns.fov(p));
-    // лёгкий параллакс за курсором и «дыхание» камеры (внутри кузова параллакс слабее — стены близко)
+    // лёгкий параллакс за курсором и «дыхание» камеры
     pointerSmooth.lerp(pointer, 1 - Math.exp(-dt * 2.5));
-    const k = 1 - smoothstep(0.82, 0.95, p) * 0.7;
-    camPos.x += pointerSmooth.x * 0.1 * k;
-    camPos.y += -pointerSmooth.y * 0.07 * k;
+    camPos.x += pointerSmooth.x * 0.1;
+    camPos.y += -pointerSmooth.y * 0.07;
     camPos.y += Math.sin(time * 0.6) * 0.01;
     camera.position.copy(camPos);
     camera.lookAt(camLook);
@@ -181,23 +197,25 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   function update(p, dt) {
     time += dt;
 
-    const open = smoothstep(0.52, 0.72, p);
-    truck.setDoors(open);
+    // въезд: фургон тормозит до остановки, колёса крутятся по пройденному пути
+    const drive = easeOutCubic(THREE.MathUtils.clamp((p - DRIVE.from) / (DRIVE.to - DRIVE.from), 0, 1));
+    const rx = DRIVE.x * (1 - drive);
+    rig.position.x = rx;
+    const roll = -Math.abs(rx - DRIVE.x) / 0.52; // пройденный путь / радиус колеса
+    truck.wheels.forEach((w) => (w.rotation.z = roll));
+    // при торможении нос чуть «клюёт» и возвращается после остановки
+    truck.group.rotation.z = -0.008 * smoothstep(0.12, 0.27, p) * (1 - smoothstep(0.29, 0.37, p));
+    // при облёте свет плавно переходит на другой борт: на въезде освещён борт к камере, в финале тень уходит вправо за кузов, а не под подпись слева
+    key.position.set(-4 + rx, 11, 7 - 14 * smoothstep(0.4, 0.8, p));
+    key.target.position.set(rx, 0, 0);
 
-    // внутри светлеет по мере открытия дверец
-    const lit = smoothstep(0.5, 0.8, p);
-    lamp.intensity = lit * 4;
-    glowLight.intensity = lit * 6;
-    // когда камера в кузове, «солнце» и окружение приглушаем: интерьер светится собственными лампами
-    const inside = smoothstep(0.8, 0.93, p);
-    key.intensity = 1.35 * (1 - inside * 0.92);
-    fill.intensity = 0.35 * (1 - inside);
-    hemi.intensity = 0.55 * (1 - inside * 0.7);
-    scene.environmentIntensity = 0.45 * (1 - inside * 0.75);
-    halo.material.opacity = lit * 0.75;
+    // знак: лёгкое покачивание; пропадает, как только фургон его закрыл
+    logo.visible = p < LOGO_HIDE;
+    logo.position.y = logoY + Math.sin(time * 0.8) * 0.015;
 
-    // тень под машиной пропадает, когда камера уже в кузове
-    blob.material.opacity = 0.28 * (1 - smoothstep(0.85, 0.95, p));
+    truck.setDoors(smoothstep(0.64, 0.82, p));
+    const lit = smoothstep(0.62, 0.84, p);
+    lamps.forEach((l) => (l.intensity = lit * l.userData.max));
 
     placeCamera(p, dt);
     stage.render(dt);
@@ -228,7 +246,6 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
     destroy() {
       stage.dispose();
       dot.dispose();
-      glow.dispose();
     },
   };
 }
