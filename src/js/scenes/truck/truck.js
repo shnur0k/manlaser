@@ -83,7 +83,7 @@ export function buildTruck({ quality = 'high', logoSvg = '' } = {}) {
     liner: new THREE.MeshStandardMaterial({ color: 0x151a21, roughness: 0.8, metalness: 0.25 }),
     rib: new THREE.MeshStandardMaterial({ color: 0x262d36, roughness: 0.6, metalness: 0.5 }),
     floor: new THREE.MeshStandardMaterial({ color: 0x0f1216, roughness: 0.7, metalness: 0.2 }),
-    led: new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 2.3, 2.5) }),
+    led: new THREE.MeshBasicMaterial({ color: new THREE.Color(1.2, 1.25, 1.35) }), // чуть выше порога bloom — лёгкое свечение, без ореола
     ledBlue: new THREE.MeshBasicMaterial({ color: new THREE.Color(0.1, 0.7, 2.2) }),
   };
   const add = (geo, mat, x, y, z, parent = group) => {
@@ -140,6 +140,10 @@ export function buildTruck({ quality = 'high', logoSvg = '' } = {}) {
     // тонкая щель на расстоянии «мерцала» при движении камеры
     const fender = add(rbox(1.35, 0.2, 0.7, 0.03), m.dark, -2.15, 1.08, s * 0.9);
     fender.receiveShadow = false;
+    // арка над передним колесом: верх шины (1.04) входит в скруглённое днище кабины (0.92) — линия пересечения
+    // многогранной вращающейся шины со скруглённой кромкой «прыгала» пикселями; плоское тёмное дно арки её прячет
+    const frontFender = add(new THREE.BoxGeometry(1.2, 0.17, 0.42), m.dark, 2.4, 0.985, s * 1.0);
+    frontFender.receiveShadow = false;
     // брызговики за задними колёсами
     add(new THREE.BoxGeometry(0.03, 0.42, 0.5), m.rubber, -2.75, 0.62, s * 0.9);
   }

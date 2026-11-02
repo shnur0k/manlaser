@@ -158,14 +158,14 @@ export async function createScene(canvas, { quality = 'high', onReady } = {}) {
   blob.position.set(-0.1, 0.004, 0);
   rig.add(blob);
 
-  // свет внутри кузова: над станком, над коробками и у дверец — включается, когда дверцы открываются
+  // свет внутри кузова: над станком и над коробками — включается, когда дверцы открываются.
+  // Мягкий: лампа у дверец и яркие лампы под самым потолком давали пересвеченное пятно на потолке и наклейке портала
   const lamps = [
-    { color: 0xe6efff, max: 4, x: interior.cx - 0.6 },
-    { color: 0xfff3e2, max: 3, x: interior.x1 - 0.7 },
-    { color: 0xffffff, max: 2.5, x: interior.x0 + 0.5 },
+    { color: 0xe6efff, max: 1.6, x: interior.cx - 0.4 },
+    { color: 0xfff3e2, max: 1.4, x: interior.x1 - 0.7 },
   ].map(({ color, max, x }) => {
     const l = new THREE.PointLight(color, 0, 6, 2);
-    l.position.set(x, interior.y1 - 0.3, 0);
+    l.position.set(x, interior.y1 - 0.5, 0);
     l.userData.max = max;
     truck.group.add(l);
     return l;
