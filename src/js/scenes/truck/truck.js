@@ -11,8 +11,10 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 const BOX = { x0: -3.65, x1: 0.95, y0: 1.1, y1: 3.55, w: 2.4 }; // кузов
 const WALL = 0.1;
 const GROUND_CLEARANCE = 0.52; // радиус колеса
+// Фирменные полосы — один комплект на кабине, бортах кузова и задних дверцах: та же ширина и та же высота (центр, м)
+const STRIPE = { blue: { y: 1.38, h: 0.09 }, orange: { y: 1.275, h: 0.03 } };
 
-/** Текстура-наклейка на борт кузова: брендовая полоса, логотип и подпись. */
+/** Текстура-наклейка на борт кузова: логотип и подпись (полосы — отдельной геометрией, см. STRIPE). */
 export function makeSideDecal(logoSvg) {
   const W = 2400;
   const H = 800;
@@ -26,29 +28,14 @@ export function makeSideDecal(logoSvg) {
 
   const draw = (logo) => {
     g.clearRect(0, 0, W, H);
-    // нижняя полоса: фирменный градиент
-    const grad = g.createLinearGradient(0, 0, W, 0);
-    grad.addColorStop(0, '#ffffff');
-    grad.addColorStop(0.3, '#87ceeb');
-    grad.addColorStop(0.62, '#007bff');
-    grad.addColorStop(1, '#e85002');
-    g.fillStyle = grad;
-    g.fillRect(0, 590, W, 92);
-    g.fillStyle = '#e85002';
-    g.fillRect(0, 700, W, 14);
-    g.fillStyle = '#007bff';
-    g.fillRect(0, 730, W * 0.62, 8);
-    // логотип и подпись
-    if (logo) g.drawImage(logo, 150, 150, 1330, 183);
+    // логотип и подпись — по центру наклейки
+    const lw = 1330;
+    if (logo) g.drawImage(logo, (W - lw) / 2, 150, lw, 183);
     g.fillStyle = '#2a3038';
     g.font = '600 76px "Nunito Variable", "Nunito", system-ui, sans-serif';
     g.textBaseline = 'alphabetic';
-    g.fillText('Лазерное оборудование CNMLaser', 156, 470);
-    g.fillStyle = '#007bff';
-    g.font = '800 92px "Unbounded Variable", "Unbounded", system-ui, sans-serif';
-    g.textAlign = 'right';
-    g.fillText('manlaser.by', W - 150, 330);
-    g.textAlign = 'left';
+    g.textAlign = 'center';
+    g.fillText('Лазерное оборудование CNMLaser', W / 2, 470);
     tex.needsUpdate = true;
   };
   draw(null);
@@ -158,14 +145,21 @@ export function buildTruck({ quality = 'high', logoSvg = '' } = {}) {
   // передняя стенка — только между бортами и между полом и крышей, без наложения на них
   add(rbox(WALL, boxH - 2 * (WALL - lip), BOX.w - 2 * WALL, 0.01), m.paint, BOX.x1 - WALL / 2, boxCy, 0);
 
-  // наклейки на бортах (брендовая полоса, логотип, подпись)
+  // фирменные полосы на бортах кузова (накладки отстоят от борта, чтобы не мерцать)
+  for (const s of [1, -1]) {
+    for (const { y, h, mat } of [{ ...STRIPE.blue, mat: m.blue }, { ...STRIPE.orange, mat: m.orange }]) {
+      add(new THREE.BoxGeometry(boxLen - 0.06, h, 0.012), mat, boxCx, y, s * (BOX.w / 2 + 0.006)).castShadow = false;
+    }
+  }
+
+  // наклейки на бортах (логотип и подпись)
   const decalTex = makeSideDecal(logoSvg);
   const decalMat = new THREE.MeshStandardMaterial({ map: decalTex, transparent: true, roughness: 0.4, metalness: 0.05, polygonOffset: true, polygonOffsetFactor: -2 });
   const decalW = 3.9;
   const decalH = decalW / 3;
   for (const s of [1, -1]) {
     const d = new THREE.Mesh(new THREE.PlaneGeometry(decalW, decalH), decalMat);
-    d.position.set(-1.05, BOX.y0 + decalH / 2 + 0.14, s * (BOX.w / 2 + 0.004));
+    d.position.set(boxCx, BOX.y0 + decalH / 2 + 0.14, s * (BOX.w / 2 + 0.004));
     if (s < 0) d.rotation.y = Math.PI;
     d.receiveShadow = true;
     group.add(d);
@@ -255,8 +249,8 @@ export function buildTruck({ quality = 'high', logoSvg = '' } = {}) {
     add(new THREE.BoxGeometry(0.02, 1.45, 0.012), m.dark, 1.28, 1.72, s * zFace); // шов двери (задний)
     add(new THREE.BoxGeometry(0.02, 1.45, 0.012), m.dark, 2.95, 1.55, s * zFace); // шов двери (передний)
     add(new THREE.BoxGeometry(0.2, 0.03, 0.04), m.metal, 1.45, 1.78, s * (zFace + 0.014)); // ручка
-    add(new THREE.BoxGeometry(2.1, 0.05, 0.012), m.blue, 2.2, 1.28, s * zFace); // полосы на кабине
-    add(new THREE.BoxGeometry(2.1, 0.02, 0.012), m.orange, 2.2, 1.2, s * zFace);
+    add(new THREE.BoxGeometry(2.24, STRIPE.blue.h, 0.012), m.blue, 2.25, STRIPE.blue.y, s * (zFace + 0.003)); // полосы на кабине: на 3 мм над швами дверей, чтобы не мерцали на пересечении
+    add(new THREE.BoxGeometry(2.24, STRIPE.orange.h, 0.012), m.orange, 2.25, STRIPE.orange.y, s * (zFace + 0.003));
     // зеркало
     add(new THREE.BoxGeometry(0.05, 0.05, 0.28), m.dark, 2.55, 2.45, s * 1.28);
     add(rbox(0.1, 0.44, 0.1, 0.03), m.dark, 2.55, 2.4, s * 1.43);
@@ -296,11 +290,12 @@ export function buildTruck({ quality = 'high', logoSvg = '' } = {}) {
     mesh.receiveShadow = true;
     pivot.add(mesh);
     // наружная отделка двери: полоса и ручка-запор
-    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.09, doorW - 0.1), m.blue);
-    stripe.position.set(-doorThick / 2 - 0.004, -boxH / 2 + 0.55, -s * (doorW / 2));
+    // полосы на той же высоте, что на бортах и кабине (pivot стоит на высоте boxCy)
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.012, STRIPE.blue.h, doorW - 0.1), m.blue);
+    stripe.position.set(-doorThick / 2 - 0.004, STRIPE.blue.y - boxCy, -s * (doorW / 2));
     pivot.add(stripe);
-    const stripe2 = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.03, doorW - 0.1), m.orange);
-    stripe2.position.set(-doorThick / 2 - 0.004, -boxH / 2 + 0.43, -s * (doorW / 2));
+    const stripe2 = new THREE.Mesh(new THREE.BoxGeometry(0.012, STRIPE.orange.h, doorW - 0.1), m.orange);
+    stripe2.position.set(-doorThick / 2 - 0.004, STRIPE.orange.y - boxCy, -s * (doorW / 2));
     pivot.add(stripe2);
     const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 1.0, 10), m.metal);
     handle.position.set(-doorThick / 2 - 0.04, 0, -s * (doorW - 0.12));
